@@ -2,11 +2,8 @@
 
 GameContext context = new GameContext();
 
-context.Init();
+context.Init(context);
 
-context.Loop(() =>
-{
-  
-});
+context.Loop(context);
 
 context.Close();
