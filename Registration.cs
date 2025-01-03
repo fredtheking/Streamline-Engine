@@ -11,11 +11,10 @@ public static class Registration
   public static void Init(GameContext context)
   {
     Entity entity = new(context, "HelloObject", Config.Scenes.TestingOne);
-    entity.AddComponent(new ObjectComponent(
-      new PositionComponent(),
-      new SizeComponent(150, 100),
-      Color.White
-    ));
-    entity.AddComponent(new FigureComponent(FigureType.Circle));
+    entity.AddComponent(new PositionComponent());
+    entity.AddComponent(new SizeComponent());
+    entity.AddComponent(new FillComponent(Color.White));
+    entity.AddComponent(new FigureComponent(FigureType.Rounded, .3f));
+    entity.AddComponent(new BorderComponent(3f, Color.Red));
   }
 }

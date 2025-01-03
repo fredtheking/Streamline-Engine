@@ -6,9 +6,9 @@ namespace StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
 
 public class HitboxComponent : ComponentGroup
 {
-  public ObjectComponent Object { get; set; }
+  public FillComponent Fill { get; set; }
   public Color Color { get; set; }
   
-  public HitboxComponent(ObjectComponent @object) { Object = @object; Color = Config.DebugHitboxColor; }
-  public HitboxComponent(ObjectComponent @object, Color debugColor) { Object = @object; Color = debugColor; }
+  public HitboxComponent(FillComponent fill) { Fill = fill; Color = Config.DebugHitboxColor; }
+  public HitboxComponent(FillComponent fill, Color debugColor) { Fill = fill; Color = debugColor; }
 }

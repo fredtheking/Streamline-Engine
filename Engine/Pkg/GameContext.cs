@@ -25,7 +25,7 @@ public class GameContext
     while (!Raylib.WindowShouldClose())
     {
       Raylib.BeginDrawing();
-      Raylib.ClearBackground(Color.Black);
+      Raylib.ClearBackground(Config.WindowBackgroundColor);
       
       if (Managers.Scene.Changed) MainLoop.Enter(context);
       MainLoop.Update(context);
