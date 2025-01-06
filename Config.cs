@@ -3,7 +3,7 @@ using Raylib_cs;
 
 namespace StreamlineEngine;
 
-public struct Config()
+public struct Config
 {
   public enum Scenes
   {

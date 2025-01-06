@@ -8,6 +8,13 @@ namespace StreamlineEngine.Engine.Pkg;
 public class GameContext
 {
   public Managers Managers = new();
+
+  public void Run()
+  {
+    Init(this);
+    Loop(this);
+    Close();
+  }
   
   public void Init(GameContext context)
   {
