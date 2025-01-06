@@ -1,5 +1,5 @@
 using Raylib_cs;
-using StreamlineEngine.Engine.Pkg.Etc;
+using StreamlineEngine.Engine.Pkg.ECS.EntityDir;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
@@ -35,21 +35,10 @@ public class BorderComponent : ComponentTemplate
 
   public override void Init(GameContext context)
   {
-    FillComponent? objectComponent = context.Managers.Entity.GetEntityByComponent(this).Component<FillComponent>();
-    if (objectComponent is not null)
-    {
-      Position = objectComponent.Position;
-      Size = objectComponent.Size;
-      Figure = objectComponent.Figure;
-      if (Figure.Type == FigureType.Circle)
-        Warning("Circle border can be only 1px. Thickness parameter can/will be ignored.");
-    }
-    else
-    {
-      Position = new PositionComponent(0);
-      Size = new SizeComponent(0);
-      Figure = new FigureComponent();
-    }
+    Entity entity = context.Managers.Entity.GetEntityByComponent(this);
+    Position = entity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
+    Size = entity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Figure = entity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
   }
 
   public override void Draw(GameContext context)

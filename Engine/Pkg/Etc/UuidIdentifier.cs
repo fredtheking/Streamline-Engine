@@ -11,7 +11,7 @@ public class UuidIdentifier
   public UuidIdentifier()
   {
     Uuid = Guid.NewGuid().ToString();
-    ShortUuid = Uuid[new Range(0, 5)] + "...";
+    ShortUuid = Uuid[new Range(0, Defaults.ShortUuidLength)] + ".." + Uuid[new Range(Uuid.Length - Defaults.ShortUuidLength, Uuid.Length)];
   }
 
   private void Print(string prefix, ConsoleColor color, string message, bool once)

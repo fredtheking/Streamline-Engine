@@ -2,7 +2,7 @@ using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.Engine.Pkg.Etc.Interfaces;
 
-namespace StreamlineEngine.Engine.Pkg.Etc.Templates.Materials;
+namespace StreamlineEngine.Engine.Pkg.Etc.Materials;
 
 public class ImageMaterial : IMaterial<string?, Texture2D?>
 {
@@ -32,29 +32,22 @@ public class ImageMaterial : IMaterial<string?, Texture2D?>
     Material = texture;
     Size = new Vector2(texture.Width, texture.Height);
   }
-  
-  public void Init(GameContext context)
-  {
-    throw new NotImplementedException();
-  }
+
+  public void Init(GameContext context) { }
 
   public void Enter(GameContext context)
   {
-    throw new NotImplementedException();
+    if (Material is not null) return;
+    Raylib.LoadTexture(Filename);
   }
 
   public void Leave(GameContext context)
   {
-    throw new NotImplementedException();
+    if (Filename is null && Material is not null) return;
+    Raylib.UnloadTexture((Texture2D)Material!);
   }
 
-  public void Update(GameContext context)
-  {
-    throw new NotImplementedException();
-  }
-
-  public void Draw(GameContext context)
-  {
-    throw new NotImplementedException();
-  }
+  public void Update(GameContext context) { }
+  
+  public void Draw(GameContext context) { }
 }

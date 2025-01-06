@@ -20,9 +20,9 @@ public class FillComponent : ComponentTemplate
   public override void Init(GameContext context)
   {
     Entity entity = context.Managers.Entity.GetEntityByComponent(this);
-    Position = entity.Component<PositionComponent>() ?? Warning(new PositionComponent(), "Entity has no position component. Initialising default position.");
-    Size = entity.Component<SizeComponent>() ?? Warning(new SizeComponent(), "Entity has no size component. Initialising default size.");
-    Figure = entity.Component<FigureComponent>() ?? Warning(new FigureComponent(), "Entity has no figure component. Initialising default rectangle figure.");
+    Position = entity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
+    Size = entity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Figure = entity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
   }
 
   public override void Draw(GameContext context)

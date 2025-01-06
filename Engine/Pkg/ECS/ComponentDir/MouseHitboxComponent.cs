@@ -11,6 +11,7 @@ public class MouseHitboxComponent : ComponentTemplate
   public PositionComponent Position { get; set; }
   public SizeComponent Size { get; set; }
   public FigureComponent Figure { get; set; }
+  public BorderComponent Border { get; set; }
   public Color Color { get; set; }
   public bool[] Hover { get; private set; } = [false, false, false];
   public bool[] Click { get; private set; } = [false, false, false];
@@ -25,9 +26,10 @@ public class MouseHitboxComponent : ComponentTemplate
   public override void Init(GameContext context)
   {
     Entity entity = context.Managers.Entity.GetEntityByComponent(this);
-    Position = entity.Component<PositionComponent>() ?? Warning(new PositionComponent(), "Entity has no position component. Initialising default position.");
-    Size = entity.Component<SizeComponent>() ?? Warning(new SizeComponent(), "Entity has no position component. Initialising default position.");
-    Figure = entity.Component<FigureComponent>() ?? Warning(new FigureComponent(), "Entity has no position component. Initialising default position.");
+    Position = entity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
+    Size = entity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Figure = entity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
+    Border = Figure.Type == FigureType.Rounded ? entity.Component<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
   }
 
   private bool DecideHover()
@@ -37,10 +39,10 @@ public class MouseHitboxComponent : ComponentTemplate
       case FigureType.Rectangle:
         return Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), new Rectangle(Position.Vec2, Size.Vec2));
       case FigureType.Rounded:
-        return Warning(Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), new Rectangle(Position.Vec2, Size.Vec2)), "Hovering on rounded figure works as same as rectangle. Be careful!", true);
+        return Warning(Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), new Rectangle(Position.Vec2 - new Vector2(Border.Thickness), Size.Vec2 + new Vector2(Border.Thickness * 2))), "Hitbox on rounded figure works as same as rectangle ones. Be careful with corners!", true);
       case FigureType.Circle:
         if (Math.Abs(Size.Width - Size.Height) > 0)
-          Warning("Entity's size is not square. Hovering on circle will not work as expected. Be careful!", true);
+          Error("Entity's size is not square. Hitbox is now stretched to circle. Be careful!", true);
         return Raylib.CheckCollisionPointCircle(Raylib.GetMousePosition(), new Vector2(Position.X + Size.Width / 2, Position.Y + Size.Height / 2), Size.Width / 2);
     }
     return false;
@@ -69,7 +71,7 @@ public class MouseHitboxComponent : ComponentTemplate
     switch (Figure.Type)
     {
       case FigureType.Rectangle or FigureType.Rounded:
-        Raylib.DrawRectangleV(Position.Vec2, Size.Vec2, Color);
+        Raylib.DrawRectangleV(Position.Vec2 - new Vector2(Border.Thickness), Size.Vec2 + new Vector2(Border.Thickness * 2), Color);
         break;
       case FigureType.Circle:
         Raylib.DrawCircle((int)(Position.X + Size.Width / 2), (int)(Position.Y + Size.Height / 2), Math.Max(Size.Width, Size.Height), Color);
