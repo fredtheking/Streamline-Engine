@@ -1,8 +1,8 @@
-using StreamlineEngine.Engine.Pkg.Interfaces;
+using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
 
-public class CustomScriptComponent : ComponentGroup
+public class CustomScriptComponent : ComponentTemplate
 {
   public dynamic Script { get; private set; }
   

@@ -1,9 +1,9 @@
 using StreamlineEngine.Engine.Pkg.Etc;
-using StreamlineEngine.Engine.Pkg.Interfaces;
+using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
 
-public class LayerComponent : ComponentGroup
+public class LayerComponent : ComponentTemplate
 {
   public int Layer { get; set; }
 

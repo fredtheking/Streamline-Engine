@@ -1,5 +1,5 @@
 using StreamlineEngine.Engine.Pkg.ECS.EntityDir;
-using StreamlineEngine.Engine.Pkg.Interfaces;
+using StreamlineEngine.Engine.Pkg.Etc.Interfaces;
 
 namespace StreamlineEngine.Engine.Pkg.Manager;
 
@@ -15,6 +15,12 @@ public class Scene : IScript
   {
     foreach (Entity entity in Entities.Values)
       entity.Enter(context);
+  }
+  
+  public void Leave(GameContext context)
+  {
+    foreach (Entity entity in Entities.Values)
+      entity.Leave(context);
   }
 
   public void Update(GameContext context)
@@ -33,7 +39,7 @@ public class Scene : IScript
 public class SceneManager
 {
   public bool Changed { get; private set; }
-  public Scene Current { get; private set; }
+  public Scene? Current { get; private set; }
   public Scene[] All { get; }
 
   public SceneManager()
@@ -45,13 +51,14 @@ public class SceneManager
     Changed = true;
   }
 
-  private void PrePostChange(Action action)
+  private void PrePostChange(GameContext context, Action action)
   {
+    Current?.Leave(context);
     action();
     Changed = true;
   }
   
-  public void Change(Config.Scenes scene) => PrePostChange(() => Current = All[(int)scene]);
-  public void Change(int sceneId) => PrePostChange(() => Current = All[sceneId]);
-  public void Change(string sceneName) => PrePostChange(() => Current = All[Array.FindIndex(All, s => s.Name == sceneName)]);
+  public void Change(GameContext context, Config.Scenes scene) => PrePostChange(context, () => Current = All[(int)scene]);
+  public void Change(GameContext context, int sceneId) => PrePostChange(context, () => Current = All[sceneId]);
+  public void Change(GameContext context, string sceneName) => PrePostChange(context, () => Current = All[Array.FindIndex(All, s => s.Name == sceneName)]);
 }

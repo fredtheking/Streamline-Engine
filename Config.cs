@@ -18,10 +18,5 @@ public struct Config()
   public static string WindowTitle = "Streamline Engine";
   public static ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;
   
-  public static int RoundedSegments = 100;
-
-  public static Color DebugHitboxColor = new(255, 0, 0, 75);
-  public static Color DebugTextBorderColor = new(0, 255, 0);
-  public static Color DebugImageBorderColor = new(255, 0, 255);
-  public static Color DebugAnimationBorderColor = new(255, 255, 0);
+  public static bool DebugMode = true;
 }

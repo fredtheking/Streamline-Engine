@@ -7,7 +7,6 @@ namespace StreamlineEngine.Engine.Pkg;
 
 public class GameContext
 {
-  public Dictionary<string, Entity> Entities = [];
   public Managers Managers = new();
   
   public void Init(GameContext context)
@@ -15,8 +14,8 @@ public class GameContext
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitle);
     Raylib.InitAudioDevice();
-    Registration.Init(context);
-    foreach (Entity entity in Entities.Values)
+    Registration.EntitiesInit(context);
+    foreach (Entity entity in context.Managers.Entity.All.Values)
       entity.Init(context);
   }
 

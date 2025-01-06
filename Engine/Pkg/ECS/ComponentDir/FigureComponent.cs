@@ -1,8 +1,9 @@
 using StreamlineEngine.Engine.Pkg.Etc;
+using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
 
-public class FigureComponent : ComponentGroup
+public class FigureComponent : ComponentTemplate
 {
   public FigureType Type { get; set; }
   public float Roundness { get; set; }
