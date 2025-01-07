@@ -1,4 +1,4 @@
-namespace StreamlineEngine.Engine.Pkg.Etc.Interfaces;
+namespace StreamlineEngine.Engine.Etc.Interfaces;
 
 public interface IScript
 {

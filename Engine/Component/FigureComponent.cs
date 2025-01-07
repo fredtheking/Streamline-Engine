@@ -1,7 +1,6 @@
-using StreamlineEngine.Engine.Pkg.Etc;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
-namespace StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
+namespace StreamlineEngine.Engine.Component;
 
 public class FigureComponent : ComponentTemplate
 {

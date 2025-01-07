@@ -1,17 +1,17 @@
-using StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
+using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Pkg.Etc;
-using StreamlineEngine.Engine.Pkg.Etc.Interfaces;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
-namespace StreamlineEngine.Engine.Pkg.ECS.EntityDir;
+namespace StreamlineEngine.Engine.EntityMaterial;
 
-public class Entity : UuidIdentifier, IScript
+public class StaticEntity : UuidIdentifier, IScript
 {
   public string Name { get; private set; }
   public string[] Scenes { get; private set; }
   public List<ComponentTemplate> Components { get; } = [];
+  public List<IMaterial> Materials { get; } = [];
 
-  public Entity(GameContext context, string name, params Config.Scenes[] scenes)
+  public StaticEntity(GameContext context, string name, params Config.Scenes[] scenes)
   {
     Name = name;
     Scenes = scenes.Select(s => s.ToString()).ToArray();
@@ -26,18 +26,34 @@ public class Entity : UuidIdentifier, IScript
   public void AddComponent(ComponentTemplate component) =>
     Components.Add(component);
 
-  public void Init(GameContext context) =>
+  public void AddMaterial(IMaterial material) =>
+    Materials.Add(material);
+
+  public void Init(GameContext context)
+  {
+    Materials.ForEach(m => m.Init(context));
     Components.ForEach(c => c.Init(context));
+  }
 
-  public void Enter(GameContext context) =>
+  public void Enter(GameContext context)
+  {
+    Materials.ForEach(m => m.Enter(context));
     Components.ForEach(c => c.Enter(context));
+  }
   
-  public void Leave(GameContext context) =>
+  public void Leave(GameContext context)
+  {
+    Materials.ForEach(m => m.Leave(context));
     Components.ForEach(c => c.Leave(context));
-
-  public void Update(GameContext context) =>
+  }
+  public void Update(GameContext context)
+  {
+    Materials.ForEach(m => m.Update(context));
     Components.ForEach(c => c.Update(context));
-
-  public void Draw(GameContext context) =>
+  }
+  public void Draw(GameContext context)
+  {
+    Materials.ForEach(m => m.Draw(context));
     Components.ForEach(c => c.Draw(context));
+  }
 }

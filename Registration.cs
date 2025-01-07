@@ -1,19 +1,26 @@
+using StreamlineEngine.Engine;
+using StreamlineEngine.Engine.Component;
+using StreamlineEngine.Engine.EntityMaterial;
 using StreamlineEngine.Engine.Pkg;
-using StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
-using StreamlineEngine.Engine.Pkg.ECS.EntityDir;
 
 namespace StreamlineEngine;
 
 public static class Registration
 {
-  public static void EntitiesInit(GameContext context)
+  public static void EntitiesCreation(GameContext context)
   {
-    Entity entity = new(context, "HelloObject", Config.Scenes.TestingOne);
-    entity.AddComponent(new FigureComponent(FigureType.Rounded, .6f));
-    entity.AddComponent(new PositionComponent());
-    entity.AddComponent(new SizeComponent(100, 120));
-    entity.AddComponent(new FillComponent());
-    entity.AddComponent(new BorderComponent(4f));
-    entity.AddComponent(new MouseHitboxComponent());
+    StaticEntity staticEntity = new(context, "HelloObject", Config.Scenes.TestingOne);
+    staticEntity.AddComponent(new FigureComponent(FigureType.Rounded, .6f));
+    staticEntity.AddComponent(new PositionComponent());
+    staticEntity.AddComponent(new SizeComponent(100, 120));
+    staticEntity.AddComponent(new FillComponent());
+    staticEntity.AddComponent(new BorderComponent(4f));
+    staticEntity.AddComponent(new MouseHitboxComponent());
+  }
+
+  public static void MaterialsCreation(GameContext context)
+  {
+    ImageMaterial imageMaterial = new("Image/test.png");
+    context.Managers.Entity.GetByName("HelloObject").AddMaterial(imageMaterial);
   }
 }

@@ -1,5 +1,3 @@
-using StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
-
 namespace StreamlineEngine.Engine.Pkg.Etc;
 
 public class UuidIdentifier
@@ -27,31 +25,31 @@ public class UuidIdentifier
 
   protected T Warning<T>(T component, string message, bool once = false)
   {
-    Print("warn", ConsoleColor.Yellow, message, once);
+    Print("warn", ConsoleColor.DarkGray, message, once);
     return component;
   }
   protected void Warning(string message, bool once = false)
   {
-    Print("warn", ConsoleColor.Yellow, message, once);
+    Print("warn", ConsoleColor.DarkGray, message, once);
   }
   
   protected T Error<T>(T component, string message, bool once = false)
   {
-    Print("error", ConsoleColor.Red, message, once);
+    Print("error", ConsoleColor.Yellow, message, once);
     return component;
   }
   protected void Error(string message, bool once = false)
   {
-    Print("error", ConsoleColor.Red, message, once);
+    Print("error", ConsoleColor.Yellow, message, once);
   }
   
   protected T Critical<T>(T component, string message, bool once = false)
   {
-    Print("crit", ConsoleColor.DarkRed, message, once);
+    Print("crit", ConsoleColor.Red, message, once);
     return component;
   }
   protected void Critical(string message, bool once = false)
   {
-    Print("crit", ConsoleColor.DarkRed, message, once);
+    Print("crit", ConsoleColor.Red, message, once);
   }
 }

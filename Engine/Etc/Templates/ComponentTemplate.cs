@@ -1,4 +1,4 @@
-using StreamlineEngine.Engine.Pkg.Etc.Interfaces;
+using StreamlineEngine.Engine.Etc.Interfaces;
 
 namespace StreamlineEngine.Engine.Pkg.Etc.Templates;
 

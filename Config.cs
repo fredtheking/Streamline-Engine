@@ -8,15 +8,16 @@ public struct Config
   public enum Scenes
   {
     TestingOne,
-    TestingTwo,
+    TestingTwo
   }
   
-  public static Scenes StartScene = Scenes.TestingOne;
+  public const Scenes StartScene = Scenes.TestingOne;
   
-  public static Vector2 WindowSize = new(600, 600);
-  public static Color WindowBackgroundColor = Color.Gray;
-  public static string WindowTitle = "Streamline Engine";
-  public static ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;
+  public const string ResourcesPath = "Resources/";
+  public static readonly Vector2 WindowSize = new(600, 600);
+  public static readonly Color WindowBackgroundColor = Color.Gray;
+  public const string WindowTitle = "Streamline Engine";
+  public const ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;
   
-  public static bool DebugMode = true;
+  public const bool DebugMode = true;
 }

@@ -1,5 +1,5 @@
-using StreamlineEngine.Engine.Pkg.ECS.EntityDir;
-using StreamlineEngine.Engine.Pkg.Etc.Interfaces;
+using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc.Interfaces;
 
 namespace StreamlineEngine.Engine.Pkg.Manager;
 
@@ -7,38 +7,38 @@ public class Scene : IScript
 {
   public required string Name { get; set; }
   public required int Id { get; set; }
-  public Dictionary<string, Entity> Entities = [];
+  public Dictionary<string, StaticEntity> Entities = [];
   public void Init(GameContext context) =>
     throw new Exception("Should not be called");
 
   public void Enter(GameContext context)
   {
-    foreach (Entity entity in Entities.Values)
+    foreach (StaticEntity entity in Entities.Values)
       entity.Enter(context);
   }
   
   public void Leave(GameContext context)
   {
-    foreach (Entity entity in Entities.Values)
+    foreach (StaticEntity entity in Entities.Values)
       entity.Leave(context);
   }
 
   public void Update(GameContext context)
   {
-    foreach (Entity entity in Entities.Values)
+    foreach (StaticEntity entity in Entities.Values)
       entity.Update(context);
   }
 
   public void Draw(GameContext context)
   {
-    foreach (Entity entity in Entities.Values)
+    foreach (StaticEntity entity in Entities.Values)
       entity.Draw(context);
   }
 }
 
 public class SceneManager
 {
-  public bool Changed { get; private set; }
+  public bool Changed { get; set; }
   public Scene? Current { get; private set; }
   public Scene[] All { get; }
 

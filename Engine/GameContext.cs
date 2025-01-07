@@ -1,9 +1,9 @@
 using Raylib_cs;
-using StreamlineEngine.Engine.Pkg.ECS.EntityDir;
+using StreamlineEngine.Engine.EntityMaterial;
 using StreamlineEngine.Engine.Pkg.Etc;
 using StreamlineEngine.Engine.Pkg.Manager;
 
-namespace StreamlineEngine.Engine.Pkg;
+namespace StreamlineEngine.Engine;
 
 public class GameContext
 {
@@ -11,38 +11,40 @@ public class GameContext
 
   public void Run()
   {
-    Init(this);
-    Loop(this);
+    Init();
+    Loop();
     Close();
   }
   
-  public void Init(GameContext context)
+  private void Init()
   {
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitle);
     Raylib.InitAudioDevice();
-    Registration.EntitiesInit(context);
-    foreach (Entity entity in context.Managers.Entity.All.Values)
-      entity.Init(context);
+    Registration.EntitiesCreation(this);
+    Registration.MaterialsCreation(this);
+    foreach (StaticEntity entity in Managers.Entity.All.Values)
+      entity.Init(this);
   }
 
-  public void Loop(GameContext context)
+  private void Loop()
   {
     while (!Raylib.WindowShouldClose())
     {
       Raylib.BeginDrawing();
       Raylib.ClearBackground(Config.WindowBackgroundColor);
       
-      if (Managers.Scene.Changed) MainLoop.Enter(context);
-      MainLoop.Update(context);
-      MainLoop.Draw(context);
+      if (Managers.Scene.Changed) MainLoop.Enter(this);
+      MainLoop.Update(this);
+      MainLoop.Draw(this);
       
       Raylib.EndDrawing();
     }
   }
 
-  public void Close()
+  private void Close()
   {
+    Managers.Scene.Current?.Leave(this);
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
   }

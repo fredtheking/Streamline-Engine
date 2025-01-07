@@ -1,8 +1,8 @@
 using Raylib_cs;
-using StreamlineEngine.Engine.Pkg.ECS.EntityDir;
+using StreamlineEngine.Engine.EntityMaterial;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
-namespace StreamlineEngine.Engine.Pkg.ECS.ComponentDir;
+namespace StreamlineEngine.Engine.Component;
 
 public class BorderComponent : ComponentTemplate
 {
@@ -35,10 +35,10 @@ public class BorderComponent : ComponentTemplate
 
   public override void Init(GameContext context)
   {
-    Entity entity = context.Managers.Entity.GetEntityByComponent(this);
-    Position = entity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
-    Size = entity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
-    Figure = entity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
+    StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
+    Position = staticEntity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
+    Size = staticEntity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Figure = staticEntity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
   }
 
   public override void Draw(GameContext context)
