@@ -3,12 +3,8 @@ using Raylib_cs;
 
 namespace StreamlineEngine;
 
-public enum FigureType
-{
-  Rectangle,
-  Rounded,
-  Circle
-}
+public enum FigureType { Rectangle, Rounded, Circle }
+public enum DebuggerType { Floating, Side }
 
 public struct Defaults
 {

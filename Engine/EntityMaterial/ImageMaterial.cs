@@ -36,12 +36,13 @@ public class ImageMaterial : MaterialTemplate<string?, Texture2D?>
   public override void Enter(GameContext context)
   {
     if (Filename is null || Ready()) return;
-    Raylib.LoadTexture(Filename);
+    Material = Raylib.LoadTexture(Filename);
   }
 
   public override void Leave(GameContext context)
   {
     if (Filename is null || !Ready()) return;
     Raylib.UnloadTexture((Texture2D)Material!);
+    Material = null;
   }
 }

@@ -1,5 +1,6 @@
 using Raylib_cs;
 using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Pkg.Etc;
 using StreamlineEngine.Engine.Pkg.Manager;
 
@@ -7,9 +8,12 @@ namespace StreamlineEngine.Engine;
 
 public class GameContext
 {
-  public Managers Managers = new();
+  public Managers Managers { get; } = new();
+  public Global Global { get; } = new();
 
-  public void Run()
+  public GameContext() => Run();
+  
+  private void Run()
   {
     Init();
     Loop();
@@ -25,6 +29,7 @@ public class GameContext
     Registration.MaterialsCreation(this);
     foreach (StaticEntity entity in Managers.Entity.All.Values)
       entity.Init(this);
+    Global.Init(this);
   }
 
   private void Loop()

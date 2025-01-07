@@ -1,5 +1,6 @@
 using Raylib_cs;
 using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 using Color = Raylib_cs.Color;
 using Rectangle = Raylib_cs.Rectangle;

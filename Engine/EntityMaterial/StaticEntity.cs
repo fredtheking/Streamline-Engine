@@ -1,4 +1,6 @@
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
+using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Pkg.Etc;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
@@ -22,6 +24,9 @@ public class StaticEntity : UuidIdentifier, IScript
   
   public T? Component<T>() where T : ComponentTemplate =>
     Components.FirstOrDefault(c => c is T) as T;
+  
+  public T? Material<T>() where T : class, IMaterial =>
+    Materials.FirstOrDefault(c => c is T) as T;
 
   public void AddComponent(ComponentTemplate component) =>
     Components.Add(component);

@@ -10,11 +10,11 @@ public static class Registration
   public static void EntitiesCreation(GameContext context)
   {
     StaticEntity staticEntity = new(context, "HelloObject", Config.Scenes.TestingOne);
-    staticEntity.AddComponent(new FigureComponent(FigureType.Rounded, .6f));
+    staticEntity.AddComponent(new FigureComponent(FigureType.Circle, .6f));
     staticEntity.AddComponent(new PositionComponent());
     staticEntity.AddComponent(new SizeComponent(100, 120));
     staticEntity.AddComponent(new FillComponent());
-    staticEntity.AddComponent(new BorderComponent(4f));
+    staticEntity.AddComponent(new BorderComponent(10f));
     staticEntity.AddComponent(new MouseHitboxComponent());
   }
 

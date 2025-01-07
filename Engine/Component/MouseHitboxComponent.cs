@@ -1,6 +1,7 @@
 using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;

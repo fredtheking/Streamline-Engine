@@ -1,8 +1,9 @@
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 
 namespace StreamlineEngine.Engine.Pkg.Etc.Templates;
 
-public class MaterialTemplate<TFilename, TMaterial> : UuidIdentifier, IScript, IMaterial
+public class MaterialTemplate<TFilename, TMaterial> : UuidIdentifier, IMaterial
 {
   public TFilename? Filename { get; protected set; }
   public TMaterial? Material { get; protected set; }

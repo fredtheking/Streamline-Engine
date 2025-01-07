@@ -21,6 +21,7 @@ public class Scene : IScript
   {
     foreach (StaticEntity entity in Entities.Values)
       entity.Leave(context);
+    context.Global.Leave(context);
   }
 
   public void Update(GameContext context)
@@ -61,4 +62,7 @@ public class SceneManager
   public void Change(GameContext context, Config.Scenes scene) => PrePostChange(context, () => Current = All[(int)scene]);
   public void Change(GameContext context, int sceneId) => PrePostChange(context, () => Current = All[sceneId]);
   public void Change(GameContext context, string sceneName) => PrePostChange(context, () => Current = All[Array.FindIndex(All, s => s.Name == sceneName)]);
+  
+  public void Previous(GameContext context) => Change(context, (Array.FindIndex(All, s => s == Current) - 1 + All.Length) % All.Length);
+  public void Next(GameContext context) => Change(context, (Array.FindIndex(All, s => s == Current) + 1) % All.Length);
 }
