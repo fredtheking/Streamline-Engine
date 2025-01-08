@@ -13,7 +13,8 @@ public class ImageMaterial : MaterialTemplate<string?, Texture2D?>
   public ImageMaterial(string filename)
   {
     Filename = Config.ResourcesPath + filename;
-
+    //porno gay porno pidor porno porno 
+    //easter egg by: Mr_CorteZzik
     Texture2D texture = Raylib.LoadTexture(Filename);
     Size = new Vector2(texture.Width, texture.Height);
     Raylib.UnloadTexture(texture);
@@ -46,3 +47,4 @@ public class ImageMaterial : MaterialTemplate<string?, Texture2D?>
     Material = null;
   }
 }
+
