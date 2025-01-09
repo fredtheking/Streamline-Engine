@@ -6,14 +6,12 @@ using StreamlineEngine.Engine.Pkg.Manager;
 
 namespace StreamlineEngine.Engine;
 
-public class GameContext
+public class MainContext
 {
   public Managers Managers { get; } = new();
   public Global Global { get; } = new();
-
-  public GameContext() => Run();
   
-  private void Run()
+  public void Run()
   {
     Init();
     Loop();
@@ -25,11 +23,14 @@ public class GameContext
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitle);
     Raylib.InitAudioDevice();
+    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting entities and materials initialisation...");
     Registration.EntitiesCreation(this);
     Registration.MaterialsCreation(this);
+    Managers.Debug.PrintSeparator(ConsoleColor.Yellow);
     foreach (StaticEntity entity in Managers.Entity.All.Values)
       entity.Init(this);
     Global.Init(this);
+    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Initialisation fully ended! Enjoy! :D");
   }
 
   private void Loop()
@@ -49,7 +50,7 @@ public class GameContext
 
   private void Close()
   {
-    Managers.Scene.Current?.Leave(this);
+    Managers.Scene.Current!.Leave(this);
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
   }

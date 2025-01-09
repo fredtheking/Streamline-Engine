@@ -1,3 +1,3 @@
 ﻿using StreamlineEngine.Engine;
-
-GameContext game = new GameContext();
+MainContext game = new();
+game.Run();

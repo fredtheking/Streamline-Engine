@@ -6,11 +6,11 @@ namespace StreamlineEngine;
 
 public class Global : IScript
 {
-  public void Init(GameContext context) { }
-  public void Enter(GameContext context) { }
-  public void Leave(GameContext context) { }
+  public void Init(MainContext context) { }
+  public void Enter(MainContext context) { }
+  public void Leave(MainContext context) { }
 
-  public void Update(GameContext context)
+  public void Update(MainContext context)
   {
     #if DEBUG
     if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F1)) 
@@ -22,7 +22,7 @@ public class Global : IScript
     #endif
   }
 
-  public void Draw(GameContext context)
+  public void Draw(MainContext context)
   {
     Raylib.DrawFPS(10, 10);
   }

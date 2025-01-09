@@ -25,43 +25,35 @@ public class UuidIdentifier
     if (once && !OnceSaid.Contains(message)) OnceSaid.Add(message);
   }
 
-  protected T Information<T>(T component, string message, bool once = false)
+  protected T Information<T>(T @return, string message, bool once = false)
   {
     Print("info", null, ConsoleColor.White, message, once);
-    return component;
+    return @return;
   }
-  protected void Information(string message, bool once = false)
-  {
+  protected void Information(string message, bool once = false) =>
     Print("info", null, ConsoleColor.White, message, once);
-  }
   
-  protected T Warning<T>(T component, string message, bool once = false)
+  protected T Warning<T>(T @return, string message, bool once = false)
   {
     Print("warn", null, ConsoleColor.Yellow, message, once);
-    return component;
+    return @return;
   }
-  protected void Warning(string message, bool once = false)
-  {
+  protected void Warning(string message, bool once = false) =>
     Print("warn", null, ConsoleColor.Yellow, message, once);
-  }
   
-  protected T Error<T>(T component, string message, bool once = false)
+  protected T Error<T>(T @return, string message, bool once = false)
   {
     Print("error", null, ConsoleColor.Red, message, once);
-    return component;
+    return @return;
   }
-  protected void Error(string message, bool once = false)
-  {
+  protected void Error(string message, bool once = false) =>
     Print("error", null, ConsoleColor.Red, message, once);
-  }
   
-  protected T Critical<T>(T component, string message, bool once = false)
+  protected T Critical<T>(T @return, string message, bool once = false)
   {
     Print("crit", ConsoleColor.Red, ConsoleColor.Black, message, once);
-    return component;
+    return @return;
   }
-  protected void Critical(string message, bool once = false)
-  {
+  protected void Critical(string message, bool once = false) =>
     Print("crit", ConsoleColor.Red, ConsoleColor.Black, message, once);
-  }
 }

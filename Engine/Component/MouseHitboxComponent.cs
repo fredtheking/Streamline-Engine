@@ -23,7 +23,7 @@ public class MouseHitboxComponent : ComponentTemplate
   public MouseHitboxComponent() { Color = Defaults.DebugHitboxColor; }
   public MouseHitboxComponent(Color debugColor) { Color = debugColor; }
 
-  public override void Init(GameContext context)
+  public override void Init(MainContext context)
   {
     StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
     Position = staticEntity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
@@ -48,7 +48,7 @@ public class MouseHitboxComponent : ComponentTemplate
     return false;
   }
 
-  public override void Update(GameContext context)
+  public override void Update(MainContext context)
   {
     for (int i = 0; i < Hover.Length; i++)
     {
@@ -64,7 +64,7 @@ public class MouseHitboxComponent : ComponentTemplate
     }
   }
 
-  public override void Draw(GameContext context)
+  public override void Draw(MainContext context)
   {
     if (!context.Managers.Debug.TurnedOn) return;
 

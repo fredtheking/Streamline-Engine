@@ -9,15 +9,15 @@ public class CustomScriptComponent : ComponentTemplate
   
   public CustomScriptComponent(dynamic script) => Script = script;
 
-  public override void Init(GameContext context) =>
+  public override void Init(MainContext context) =>
     Script.Init(context);
   
-  public override void Enter(GameContext context) =>
+  public override void Enter(MainContext context) =>
     Script.Enter(context);
   
-  public override void Update(GameContext context) =>
+  public override void Update(MainContext context) =>
     Script.Update(context);
   
-  public override void Draw(GameContext context) =>
+  public override void Draw(MainContext context) =>
     Script.Draw(context);
 }

@@ -13,7 +13,7 @@ public class StaticEntity : UuidIdentifier, IScript
   public List<ComponentTemplate> Components { get; } = [];
   public List<IMaterial> Materials { get; } = [];
 
-  public StaticEntity(GameContext context, string name, params Config.Scenes[] scenes)
+  public StaticEntity(MainContext context, string name, params Config.Scenes[] scenes)
   {
     Name = name;
     Scenes = scenes.Select(s => s.ToString()).ToArray();
@@ -28,35 +28,37 @@ public class StaticEntity : UuidIdentifier, IScript
   public T? Material<T>() where T : class, IMaterial =>
     Materials.FirstOrDefault(c => c is T) as T;
 
-  public void AddComponent(ComponentTemplate component) =>
-    Components.Add(component);
-
-  public void AddMaterial(IMaterial material) =>
-    Materials.Add(material);
-
-  public void Init(GameContext context)
+  public void AddComponent(params List<ComponentTemplate> component) =>
+    component.ForEach(c => Components.Add(c));
+  
+  public void AddMaterial(IMaterial material)
+  {
+    if (!Materials.Contains(material)) Materials.Add(material);
+  }
+  
+  public void Init(MainContext context)
   {
     Materials.ForEach(m => m.Init(context));
     Components.ForEach(c => c.Init(context));
   }
 
-  public void Enter(GameContext context)
+  public void Enter(MainContext context)
   {
     Materials.ForEach(m => m.Enter(context));
     Components.ForEach(c => c.Enter(context));
   }
   
-  public void Leave(GameContext context)
+  public void Leave(MainContext context)
   {
     Materials.ForEach(m => m.Leave(context));
     Components.ForEach(c => c.Leave(context));
   }
-  public void Update(GameContext context)
+  public void Update(MainContext context)
   {
     Materials.ForEach(m => m.Update(context));
     Components.ForEach(c => c.Update(context));
   }
-  public void Draw(GameContext context)
+  public void Draw(MainContext context)
   {
     Materials.ForEach(m => m.Draw(context));
     Components.ForEach(c => c.Draw(context));

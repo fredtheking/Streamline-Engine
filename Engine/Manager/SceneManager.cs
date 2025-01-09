@@ -8,29 +8,29 @@ public class Scene : IScript
   public required string Name { get; set; }
   public required int Id { get; set; }
   public Dictionary<string, StaticEntity> Entities = [];
-  public void Init(GameContext context) =>
+  public void Init(MainContext context) =>
     throw new Exception("Should not be called");
 
-  public void Enter(GameContext context)
+  public void Enter(MainContext context)
   {
     foreach (StaticEntity entity in Entities.Values)
       entity.Enter(context);
   }
   
-  public void Leave(GameContext context)
+  public void Leave(MainContext context)
   {
     foreach (StaticEntity entity in Entities.Values)
       entity.Leave(context);
     context.Global.Leave(context);
   }
 
-  public void Update(GameContext context)
+  public void Update(MainContext context)
   {
     foreach (StaticEntity entity in Entities.Values)
       entity.Update(context);
   }
 
-  public void Draw(GameContext context)
+  public void Draw(MainContext context)
   {
     foreach (StaticEntity entity in Entities.Values)
       entity.Draw(context);
@@ -52,17 +52,20 @@ public class SceneManager
     Changed = true;
   }
 
-  private void PrePostChange(GameContext context, Action action)
+  private void PrePostChange(MainContext context, Action action)
   {
+    context.Managers.Debug.PrintSeparator(ConsoleColor.Blue, $"Changing from '{Current!.Name}' scene and loading resources...");
     Current?.Leave(context);
     action();
     Changed = true;
+    Current!.Enter(context);
+    context.Managers.Debug.PrintSeparator(ConsoleColor.Green, $"Successfully changed scene to '{Current!.Name}'!");
   }
   
-  public void Change(GameContext context, Config.Scenes scene) => PrePostChange(context, () => Current = All[(int)scene]);
-  public void Change(GameContext context, int sceneId) => PrePostChange(context, () => Current = All[sceneId]);
-  public void Change(GameContext context, string sceneName) => PrePostChange(context, () => Current = All[Array.FindIndex(All, s => s.Name == sceneName)]);
+  public void Change(MainContext context, Config.Scenes scene) => PrePostChange(context, () => Current = All[(int)scene]);
+  public void Change(MainContext context, int sceneId) => PrePostChange(context, () => Current = All[sceneId]);
+  public void Change(MainContext context, string sceneName) => PrePostChange(context, () => Current = All[Array.FindIndex(All, s => s.Name == sceneName)]);
   
-  public void Previous(GameContext context) => Change(context, (Array.FindIndex(All, s => s == Current) - 1 + All.Length) % All.Length);
-  public void Next(GameContext context) => Change(context, (Array.FindIndex(All, s => s == Current) + 1) % All.Length);
+  public void Previous(MainContext context) => Change(context, (Array.FindIndex(All, s => s == Current) - 1 + All.Length) % All.Length);
+  public void Next(MainContext context) => Change(context, (Array.FindIndex(All, s => s == Current) + 1) % All.Length);
 }

@@ -2,9 +2,9 @@ namespace StreamlineEngine.Engine.Etc.Interfaces;
 
 public interface IScript
 {
-  void Init(GameContext context);
-  void Enter(GameContext context);
-  void Leave(GameContext context);
-  void Update(GameContext context);
-  void Draw(GameContext context);
+  void Init(MainContext context);
+  void Enter(MainContext context);
+  void Leave(MainContext context);
+  void Update(MainContext context);
+  void Draw(MainContext context);
 }

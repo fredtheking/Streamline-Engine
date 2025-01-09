@@ -33,7 +33,7 @@ public class BorderComponent : ComponentTemplate
     Color = color;
   }
 
-  public override void Init(GameContext context)
+  public override void Init(MainContext context)
   {
     StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
     Position = staticEntity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
@@ -41,7 +41,7 @@ public class BorderComponent : ComponentTemplate
     Figure = staticEntity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
   }
 
-  public override void Draw(GameContext context)
+  public override void Draw(MainContext context)
   {
     switch (Figure.Type)
     {
