@@ -16,11 +16,12 @@ public static class Registration
   public static void EntitiesCreation(MainContext context)
   {
     Entity.staticEntity = new(context, "HelloObject", Config.Scenes.TestingOne);
-    Entity.staticEntity.AddComponent(new FigureComponent(FigureType.Rectangle, .6f));
+    Entity.staticEntity.AddComponent(new FigureComponent(FigureType.Rectangle, .2f));
     Entity.staticEntity.AddComponent(new PositionComponent());
     Entity.staticEntity.AddComponent(new SizeComponent());
     Entity.staticEntity.AddComponent(new BorderComponent(4f, Color.Red));
     Entity.staticEntity.AddComponent(new ImageComponent(new ImageMaterial("Image/test.png")));
+    Entity.staticEntity.AddComponent(new FillComponent());
   }
 
   public static void MaterialsCreation(MainContext context)

@@ -30,7 +30,7 @@ public class MainContext
     foreach (StaticEntity entity in Managers.Entity.All.Values)
       entity.Init(this);
     Global.Init(this);
-    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Initialisation fully ended! Enjoy! :D");
+    Managers.Debug.PrintSeparator(ConsoleColor.Green, "Initialisation fully ended! Enjoy! :D");
   }
 
   private void Loop()
@@ -50,8 +50,10 @@ public class MainContext
 
   private void Close()
   {
+    Managers.Debug.PrintSeparator(ConsoleColor.Blue, "Terminating program and unloading resources...");
     Managers.Scene.Current!.Leave(this);
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
+    Managers.Debug.PrintSeparator(ConsoleColor.Green, "Too-da-loo, kangaroo!");
   }
 }

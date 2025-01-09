@@ -31,7 +31,7 @@ public class SizeComponent : ComponentTemplate
     }
     else
     {
-      Error("Entity has no size component. Initialising default size.");
+      Error("Entity has no size component. Initialising default size.", true);
       Width = Defaults.Size.X;
       Height = Defaults.Size.Y;
     }

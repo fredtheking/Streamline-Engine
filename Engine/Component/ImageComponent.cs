@@ -34,6 +34,12 @@ public class ImageComponent : ComponentTemplate
     Border = staticEntity.Component<BorderComponent>() ?? new BorderComponent(0);
     if (staticEntity.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Critical("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
     staticEntity.AddMaterial(Resource);
+
+    FillComponent? filler = staticEntity.Component<FillComponent>();
+    if (filler is null) return;
+    
+    Warning("Fill component was deleted because of image component. ");
+    staticEntity.AddLateInit(() => staticEntity.Components.Remove(filler));
   }
 
   public override void Draw(MainContext context)

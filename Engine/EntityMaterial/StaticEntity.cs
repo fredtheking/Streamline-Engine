@@ -12,6 +12,7 @@ public class StaticEntity : UuidIdentifier, IScript
   public string[] Scenes { get; private set; }
   public List<ComponentTemplate> Components { get; } = [];
   public List<IMaterial> Materials { get; } = [];
+  public List<Action> LateInitActions { get; } = [];
 
   public StaticEntity(MainContext context, string name, params Config.Scenes[] scenes)
   {
@@ -35,11 +36,15 @@ public class StaticEntity : UuidIdentifier, IScript
   {
     if (!Materials.Contains(material)) Materials.Add(material);
   }
+
+  public void AddLateInit(Action action) =>
+    LateInitActions.Add(action);
   
   public void Init(MainContext context)
   {
     Materials.ForEach(m => m.Init(context));
     Components.ForEach(c => c.Init(context));
+    LateInitActions.ForEach(a => a());
   }
 
   public void Enter(MainContext context)
