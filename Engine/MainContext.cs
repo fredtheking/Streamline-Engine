@@ -24,8 +24,9 @@ public class MainContext
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitle);
     Raylib.InitAudioDevice();
     Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting entities and materials initialisation...");
-    Registration.EntitiesCreation(this);
-    Registration.MaterialsCreation(this);
+    Registration.EntitiesInitChanges(this);
+    Managers.Entity.RegisterFromStruct(this);
+    Registration.MaterialsInitChanges(this);
     Managers.Debug.PrintSeparator(ConsoleColor.Yellow);
     foreach (StaticEntity entity in Managers.Entity.All.Values)
       entity.Init(this);

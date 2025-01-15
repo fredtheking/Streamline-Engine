@@ -7,23 +7,28 @@ namespace StreamlineEngine;
 
 public static class Registration
 {
-  public struct Entity
+  public struct Entities
   {
-    public static StaticEntity staticEntity;
+    public static StaticEntity staticEntity = new("HelloObject", [Config.Scenes.TestingOne], [
+      new PositionComponent(),
+      new SizeComponent(),
+      new FigureComponent(FigureType.Rectangle, .2f),
+      new ImageComponent(Materials.imageMaterial),
+      new BorderComponent(4f, Color.Red)
+    ]);
   }
   
-  public static void EntitiesCreation(MainContext context)
+  public struct Materials
   {
-    Entity.staticEntity = new(context, "HelloObject", Config.Scenes.TestingOne);
-    Entity.staticEntity.AddComponent(new PositionComponent());
-    Entity.staticEntity.AddComponent(new SizeComponent());
-    Entity.staticEntity.AddComponent(new FigureComponent(FigureType.Rectangle, .2f));
-    Entity.staticEntity.AddComponent(new ImageComponent(new ImageMaterial("Image/test.png")));
-    Entity.staticEntity.AddComponent(new BorderComponent(4f, Color.Red));
-    Entity.staticEntity.AddLateInit(LateInitType.Entity, () => Entity.staticEntity.Component<BorderComponent>()!.LocalPosition.Add(30));
+    public static ImageMaterial imageMaterial = new("Image/test.png");
+  }
+  
+  public static void EntitiesInitChanges(MainContext context)
+  {
+    Entities.staticEntity.AddLateInit(LateInitType.Entity, () => Entities.staticEntity.Component<BorderComponent>()!.LocalPosition.Add(30));
   }
 
-  public static void MaterialsCreation(MainContext context)
+  public static void MaterialsInitChanges(MainContext context)
   {
     
   }

@@ -15,13 +15,13 @@ public class StaticEntity : UuidIdentifier, IScript
   public List<IMaterial> Materials { get; } = [];
   public List<(LateInitType, Action)> LateInitActions { get; } = [];
 
-  public StaticEntity(MainContext context, string name, params Config.Scenes[] scenes)
+  public StaticEntity(string name, Config.Scenes[] scenes, ComponentTemplate[] components)
   {
     Name = name;
     Scenes = scenes.Select(s => s.ToString()).ToArray();
-    context.Managers.Entity.All.Add(Uuid, this);
-    foreach (string scene in Scenes) 
-      context.Managers.Scene.All.First(s => s.Name == scene).Entities.Add(Uuid, this);
+    //context.Managers.Entity.All.Add(Uuid, this);
+    //scenes.ToList().ForEach(current => context.Managers.Scene.All.First(s => s.Name == current.ToString()).Entities.Add(Uuid, this));
+    AddComponent(components.ToList());
   }
   
   public T? Component<T>() where T : ComponentTemplate =>
