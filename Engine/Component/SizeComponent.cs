@@ -1,11 +1,11 @@
 using System.Numerics;
 using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
-using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;
 
-public class SizeComponent : ComponentTemplate
+public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
 {
   public float Width { get; set; }
   public float Height { get; set; }
@@ -16,6 +16,13 @@ public class SizeComponent : ComponentTemplate
   public SizeComponent(Vector2 size) { Width = size.X / 2; Height = size.Y / 2; }
   public SizeComponent(float w, float h) { Width = w; Height = h; }
   public SizeComponent(float wh) { Width = wh; Height = wh; }
+  
+  public void Set(Vector2 size) { Width = size.X; Height = size.Y; }
+  public void Set(float w, float h) { Width = w; Height = h; }
+  public void Set(float wh) { Width = wh; Height = wh; }
+  public void Add(Vector2 size) { Width += size.X; Height += size.Y; }
+  public void Add(float w, float h) { Width += w; Height += h; }
+  public void Add(float wh) { Width += wh; Height += wh; }
 
   public override void Init(MainContext context)
   {
@@ -36,4 +43,6 @@ public class SizeComponent : ComponentTemplate
       Height = Defaults.Size.Y;
     }
   }
+  
+  public SizeComponent Clone() => (SizeComponent)MemberwiseClone();
 }

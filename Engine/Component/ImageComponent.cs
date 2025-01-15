@@ -1,14 +1,17 @@
 using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;
 
-public class ImageComponent : ComponentTemplate
+public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
 {
+  public PositionComponent LocalPosition { get; set; }
   public PositionComponent Position { get; set; }
+  public SizeComponent LocalSize { get; set; }
   public SizeComponent Size { get; set; }
   public BorderComponent Border { get; set; }
   public ImageMaterial Resource { get; set; }
@@ -32,18 +35,20 @@ public class ImageComponent : ComponentTemplate
     Position = staticEntity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
     Size = staticEntity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
     Border = staticEntity.Component<BorderComponent>() ?? new BorderComponent(0);
+    
     if (staticEntity.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Critical("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
     staticEntity.AddMaterial(Resource);
 
     FillComponent? filler = staticEntity.Component<FillComponent>();
-    if (filler is null) return;
+    if (filler is not null) Warning("Image and Fill component are located in the same entity. Be careful with declaring them!");
     
-    Warning("Fill component was deleted because of image component. ");
-    staticEntity.AddLateInit(() => staticEntity.Components.Remove(filler));
+    staticEntity.LocalLateInit(this);
   }
 
   public override void Draw(MainContext context)
   {
-    Raylib.DrawTexturePro((Texture2D)Resource.Material!, Crop, new Rectangle(Position.Vec2 + new Vector2(Border.Thickness), Size.Vec2 - new Vector2(Border.Thickness*2)), Vector2.Zero, 0, Color.White);
+    Raylib.DrawTexturePro((Texture2D)Resource.Material!, Crop, new Rectangle(Position.Vec2  + LocalPosition.Vec2 + new Vector2(Border.Thickness), Size.Vec2  + LocalSize.Vec2 - new Vector2(Border.Thickness*2)), Vector2.Zero, 0, Color.White);
   }
+  
+  public ImageComponent Clone() => (ImageComponent)MemberwiseClone();
 }

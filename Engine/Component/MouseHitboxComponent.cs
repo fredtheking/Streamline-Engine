@@ -1,14 +1,17 @@
 using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;
 
-public class MouseHitboxComponent : ComponentTemplate
+public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxComponent>
 {
+  public PositionComponent LocalPosition { get; set; }
   public PositionComponent Position { get; set; }
+  public SizeComponent LocalSize { get; set; }
   public SizeComponent Size { get; set; }
   public FigureComponent Figure { get; set; }
   public BorderComponent Border { get; set; }
@@ -30,6 +33,7 @@ public class MouseHitboxComponent : ComponentTemplate
     Size = staticEntity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
     Figure = staticEntity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
     Border = Figure.Type == FigureType.Rounded ? staticEntity.Component<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
+    staticEntity.LocalLateInit(this);
   }
 
   private bool DecideHover()
@@ -71,11 +75,13 @@ public class MouseHitboxComponent : ComponentTemplate
     switch (Figure.Type)
     {
       case FigureType.Rectangle or FigureType.Rounded:
-        Raylib.DrawRectangleV(Position.Vec2 - new Vector2(Border.Thickness), Size.Vec2 + new Vector2(Border.Thickness * 2), Color);
+        Raylib.DrawRectangleV(Position.Vec2 + LocalPosition.Vec2 - new Vector2(Border.Thickness), Size.Vec2  + LocalSize.Vec2 + new Vector2(Border.Thickness * 2), Color);
         break;
       case FigureType.Circle:
-        Raylib.DrawCircle((int)(Position.X + Size.Width / 2), (int)(Position.Y + Size.Height / 2), Math.Max(Size.Width, Size.Height), Color);
+        Raylib.DrawCircle((int)(Position.X  + LocalPosition.X + Size.Width / 2 + LocalSize.Width / 2), (int)(Position.Y + LocalPosition.Y + Size.Height / 2 + LocalSize.Height / 2), Math.Max(Size.Width + LocalSize.Width, Size.Height + LocalSize.Height), Color);
         break;
     }
   }
+  
+  public MouseHitboxComponent Clone() => (MouseHitboxComponent)MemberwiseClone();
 }

@@ -1,4 +1,4 @@
-namespace StreamlineEngine.Engine.Pkg.Manager;
+namespace StreamlineEngine.Engine.Manager;
 
 public class DebugManager
 {
@@ -8,7 +8,7 @@ public class DebugManager
   public void PrintSeparator(ConsoleColor fgColor = ConsoleColor.Magenta, string message = "") {
     string space = " ";
     if (message is "") space = "";
-    string prepostfix = new string('=', (Console.WindowWidth - message.Length - space.Length * 2) / 2);
+    string prepostfix = new('=', (Console.WindowWidth - message.Length - space.Length * 2) / 2);
     
     Console.ForegroundColor = fgColor;
     Console.Write(prepostfix + space + message + space + prepostfix);

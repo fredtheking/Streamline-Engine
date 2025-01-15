@@ -1,3 +1,4 @@
+using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
@@ -12,7 +13,7 @@ public class StaticEntity : UuidIdentifier, IScript
   public string[] Scenes { get; private set; }
   public List<ComponentTemplate> Components { get; } = [];
   public List<IMaterial> Materials { get; } = [];
-  public List<Action> LateInitActions { get; } = [];
+  public List<(LateInitType, Action)> LateInitActions { get; } = [];
 
   public StaticEntity(MainContext context, string name, params Config.Scenes[] scenes)
   {
@@ -37,14 +38,20 @@ public class StaticEntity : UuidIdentifier, IScript
     if (!Materials.Contains(material)) Materials.Add(material);
   }
 
-  public void AddLateInit(Action action) =>
-    LateInitActions.Add(action);
+  public void AddLateInit(LateInitType type, Action action) =>
+    LateInitActions.Add((type, action));
+
+  public void LocalLateInit(dynamic component, bool pos = true, bool size = true)
+  {
+    if (pos) AddLateInit(LateInitType.Component, () => component.LocalPosition = new PositionComponent(0));
+    if (size) AddLateInit(LateInitType.Component, () => component.LocalSize = new SizeComponent(0));
+  }
   
   public void Init(MainContext context)
   {
     Materials.ForEach(m => m.Init(context));
     Components.ForEach(c => c.Init(context));
-    LateInitActions.ForEach(a => a());
+    LateInitActions.OrderBy(p => p.Item1).ToList().ForEach(p => p.Item2());
   }
 
   public void Enter(MainContext context)
