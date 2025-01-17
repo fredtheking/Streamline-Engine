@@ -1,8 +1,10 @@
 using System.Numerics;
 using Raylib_cs;
-using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.FolderItem;
+using StreamlineEngine.Engine.Material;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;
@@ -31,18 +33,18 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   
   public override void Init(MainContext context)
   {
-    StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
-    Position = staticEntity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
-    Size = staticEntity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
-    Border = staticEntity.Component<BorderComponent>() ?? new BorderComponent(0);
+    Item item = context.Managers.Item.GetByComponent(this);
+    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
+    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Border = item.Component<BorderComponent>() ?? new BorderComponent(0);
     
-    if (staticEntity.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Critical("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
-    staticEntity.AddMaterial(Resource);
+    if (item.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Critical("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
+    item.AddMaterial(Resource);
 
-    FillComponent? filler = staticEntity.Component<FillComponent>();
+    FillComponent? filler = item.Component<FillComponent>();
     if (filler is not null) Warning("Image and Fill component are located in the same entity. Be careful with declaring them!");
     
-    staticEntity.LocalLateInit(this);
+    item.LocalLateInit(this);
   }
 
   public override void Draw(MainContext context)

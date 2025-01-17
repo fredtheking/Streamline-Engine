@@ -1,7 +1,8 @@
 using System.Numerics;
-using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.FolderItem;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -27,12 +28,12 @@ public class PositionComponent : ComponentTemplate, ICloneable<PositionComponent
   public override void Init(MainContext context)
   {
     if (!InitWait) return;
-    StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
+
+    X = MainContext.Const.Position.X;
+    Y = MainContext.Const.Position.Y;
     
-    X = Defaults.Position.X;
-    Y = Defaults.Position.Y;
-    
-    SizeComponent? size = staticEntity.Component<SizeComponent>();
+    Item item = context.Managers.Item.GetByComponent(this);
+    SizeComponent? size = item.Component<SizeComponent>();
     if (size is null) return;
     
     size.Init(context);

@@ -1,7 +1,8 @@
 using System.Numerics;
-using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.FolderItem;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -27,9 +28,9 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
   public override void Init(MainContext context)
   {
     if (!InitWait) return;
-    StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
+    Item item = context.Managers.Item.GetByComponent(this);
 
-    ImageComponent? image = staticEntity.Component<ImageComponent>();
+    ImageComponent? image = item.Component<ImageComponent>();
     if (image is not null)
     {
       Information("Found image component! Using image size.", true);
@@ -39,8 +40,8 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
     else
     {
       Error("Entity has no size component. Initialising default size.", true);
-      Width = Defaults.Size.X;
-      Height = Defaults.Size.Y;
+      Width = MainContext.Const.Size.X;
+      Height = MainContext.Const.Size.Y;
     }
   }
   

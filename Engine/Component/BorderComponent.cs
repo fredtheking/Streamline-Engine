@@ -1,6 +1,7 @@
 using Raylib_cs;
-using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.FolderItem;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -37,12 +38,12 @@ public class BorderComponent : ComponentTemplate
 
   public override void Init(MainContext context)
   {
-    StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
-    Position = staticEntity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
-    Size = staticEntity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
-    Figure = staticEntity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
+    Item item = context.Managers.Item.GetByComponent(this);
+    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
+    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Figure = item.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
     
-    staticEntity.LocalLateInit(this);
+    item.LocalLateInit(this);
   }
 
   public override void Draw(MainContext context)
@@ -53,7 +54,7 @@ public class BorderComponent : ComponentTemplate
         Raylib.DrawRectangleLinesEx(new Rectangle(Position.Vec2 + LocalPosition.Vec2, Size.Vec2 + LocalSize.Vec2), Thickness, Color);
         break;
       case FigureType.Rounded:
-        Raylib.DrawRectangleRoundedLinesEx(new Rectangle(Position.Vec2 + LocalPosition.Vec2, Size.Vec2 + LocalSize.Vec2), Figure.Roundness, Defaults.RoundedSegments, Thickness, Color);
+        Raylib.DrawRectangleRoundedLinesEx(new Rectangle(Position.Vec2 + LocalPosition.Vec2, Size.Vec2 + LocalSize.Vec2), Figure.Roundness, MainContext.Const.RoundedSegments, Thickness, Color);
         break;
       case FigureType.Circle:
         Raylib.DrawEllipseLines((int)(Position.X + LocalPosition.X + Size.Width / 2 + LocalSize.Width / 2), (int)(Position.Y + LocalPosition.Y + Size.Height / 2 + LocalSize.Height / 2), Size.Width + LocalSize.Width, Size.Height + LocalSize.Height, Color);

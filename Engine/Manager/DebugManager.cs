@@ -1,3 +1,6 @@
+using System.Reflection;
+using StreamlineEngine.Engine.Etc;
+
 namespace StreamlineEngine.Engine.Manager;
 
 public class DebugManager
@@ -17,6 +20,14 @@ public class DebugManager
   }
   
   public void PrintSeparator(string message) => PrintSeparator(ConsoleColor.Magenta, message);
+
+  public void TriggerConsts()
+  {
+    foreach (var invoker in typeof(Config.Defaults).GetFields(BindingFlags.CreateInstance).Select(f => f.GetValue(null)).ToList())
+    {
+      object dummy = invoker!;
+    }
+  }
   
   public void Toggle() {
     TurnedOn = !TurnedOn;

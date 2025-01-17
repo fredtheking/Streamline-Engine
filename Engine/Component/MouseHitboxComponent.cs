@@ -1,8 +1,9 @@
 using System.Numerics;
 using Raylib_cs;
-using StreamlineEngine.Engine.EntityMaterial;
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.FolderItem;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;
@@ -23,17 +24,17 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public bool[] Hold { get; private set; } = [false, false, false];
   public bool[] Drag { get; private set; } = [false, false, false];
   
-  public MouseHitboxComponent() { Color = Defaults.DebugHitboxColor; }
+  public MouseHitboxComponent() { Color = MainContext.Const.DebugHitboxColor; }
   public MouseHitboxComponent(Color debugColor) { Color = debugColor; }
 
   public override void Init(MainContext context)
   {
-    StaticEntity staticEntity = context.Managers.Entity.GetByComponent(this);
-    Position = staticEntity.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
-    Size = staticEntity.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
-    Figure = staticEntity.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
-    Border = Figure.Type == FigureType.Rounded ? staticEntity.Component<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
-    staticEntity.LocalLateInit(this);
+    Item item = context.Managers.Item.GetByComponent(this);
+    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
+    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Figure = item.Component<FigureComponent>() ?? Error(new FigureComponent(), "Entity has no figure component. Initialising default figure.");
+    Border = Figure.Type == FigureType.Rounded ? item.Component<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
+    item.LocalLateInit(this);
   }
 
   private bool DecideHover()

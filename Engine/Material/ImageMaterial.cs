@@ -1,10 +1,10 @@
 using System.Numerics;
 using Raylib_cs;
-using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
+
 //porno gay porno pidor porno porno 
 //easter egg by: Mr_CorteZzik
-namespace StreamlineEngine.Engine.EntityMaterial;
+namespace StreamlineEngine.Engine.Material;
 
 public class ImageMaterial : MaterialTemplate<string?, Texture2D?>
 {
@@ -14,10 +14,6 @@ public class ImageMaterial : MaterialTemplate<string?, Texture2D?>
   public ImageMaterial(string filename)
   {
     Filename = Config.ResourcesPath + filename;
-    
-    Texture2D texture = Raylib.LoadTexture(Filename);
-    Size = new Vector2(texture.Width, texture.Height);
-    Raylib.UnloadTexture(texture);
   }
 
   public ImageMaterial(Image image)
@@ -30,6 +26,13 @@ public class ImageMaterial : MaterialTemplate<string?, Texture2D?>
   {
     Material = texture;
     Size = new Vector2(texture.Width, texture.Height);
+  }
+
+  public override void Init(MainContext context)
+  {
+    Texture2D texture = Raylib.LoadTexture(Filename);
+    Size = new Vector2(texture.Width, texture.Height);
+    Raylib.UnloadTexture(texture);
   }
 
   public override bool Ready() => Material is not null && Raylib.IsTextureValid((Texture2D)Material!);

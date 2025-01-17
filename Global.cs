@@ -13,10 +13,10 @@ public class Global : IScript
   public void Update(MainContext context)
   {
     #if DEBUG
-    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F1)) 
-      context.Managers.Scene.Previous(context);
-    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F2)) 
-      context.Managers.Scene.Next(context);
+    //if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F1)) 
+    //  context.Managers.Scene.Previous(context);
+    //if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F2)) 
+    //  context.Managers.Scene.Next(context);
     if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F3)) 
       context.Managers.Debug.Toggle();
     #endif

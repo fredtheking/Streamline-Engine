@@ -1,8 +1,6 @@
 using Raylib_cs;
-using StreamlineEngine.Engine.EntityMaterial;
 using StreamlineEngine.Engine.Etc;
-using StreamlineEngine.Engine.Pkg.Etc;
-using StreamlineEngine.Engine.Pkg.Manager;
+using StreamlineEngine.Engine.Manager;
 
 namespace StreamlineEngine.Engine;
 
@@ -10,6 +8,8 @@ public class MainContext
 {
   public Managers Managers { get; } = new();
   public Global Global { get; } = new();
+  public static RootFolder Root { get; } = new("root", Config.Scenes);
+  public static Config.Defaults Const { get; } = new();
   
   public void Run()
   {
@@ -25,11 +25,13 @@ public class MainContext
     Raylib.InitAudioDevice();
     Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting entities and materials initialisation...");
     Registration.EntitiesInitChanges(this);
-    Managers.Entity.RegisterFromStruct(this);
     Registration.MaterialsInitChanges(this);
+    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Config.Defaults).TypeHandle);
+    Managers.Resource.RegisterFromStruct(this);
+    Managers.Item.RegisterFromStruct(this);
+    Managers.Folder.RegisterFromStruct(this);
     Managers.Debug.PrintSeparator(ConsoleColor.Yellow);
-    foreach (StaticEntity entity in Managers.Entity.All.Values)
-      entity.Init(this);
+    Root.Init(this);
     Global.Init(this);
     Managers.Debug.PrintSeparator(ConsoleColor.Green, "Initialisation fully ended! Enjoy! :D");
   }
@@ -41,7 +43,7 @@ public class MainContext
       Raylib.BeginDrawing();
       Raylib.ClearBackground(Config.WindowBackgroundColor);
       
-      if (Managers.Scene.Changed) MainLoop.Enter(this);
+      if (Root.Changed) MainLoop.Enter(this);
       MainLoop.Update(this);
       MainLoop.Draw(this);
       
@@ -52,7 +54,7 @@ public class MainContext
   private void Close()
   {
     Managers.Debug.PrintSeparator(ConsoleColor.Blue, "Terminating program and unloading resources...");
-    Managers.Scene.Current!.Leave(this);
+    Root.Leave(this);
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
     Managers.Debug.PrintSeparator(ConsoleColor.Green, "Too-da-loo, kangaroo!");

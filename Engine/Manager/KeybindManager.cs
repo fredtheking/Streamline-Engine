@@ -1,6 +1,6 @@
 using Raylib_cs;
 
-namespace StreamlineEngine.Engine.Pkg.Manager;
+namespace StreamlineEngine.Engine.Manager;
 
 public class KeybindManager
 {
