@@ -1,15 +1,14 @@
 using Raylib_cs;
-using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Folder;
 using StreamlineEngine.Engine.Manager;
 
-namespace StreamlineEngine.Engine;
+namespace StreamlineEngine.Engine.Etc;
 
-public class MainContext
+public class Context
 {
   public Managers Managers { get; } = new();
   public Global Global { get; } = new();
-  public static RootFolder Root { get; } = new("root", Config.Scenes);
-  public static Config.Defaults Const { get; } = new();
+  public FolderRoot Root { get; } = new(Config.Scenes);
   
   public void Run()
   {
@@ -23,16 +22,14 @@ public class MainContext
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitle);
     Raylib.InitAudioDevice();
-    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting entities and materials initialisation...");
-    Registration.EntitiesInitChanges(this);
+    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting root initialisation...");
     Registration.MaterialsInitChanges(this);
-    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Config.Defaults).TypeHandle);
+    Registration.ItemsInitChanges(this);
+    Registration.FoldersInitChanges(this);
     Managers.Resource.RegisterFromStruct(this);
-    Managers.Item.RegisterFromStruct(this);
-    Managers.Folder.RegisterFromStruct(this);
-    Managers.Debug.PrintSeparator(ConsoleColor.Yellow);
-    Root.Init(this);
-    Global.Init(this);
+    Managers.Item.RegisterFromStruct();
+    Managers.Folder.RegisterFromStruct();
+    Looper.Init(this);
     Managers.Debug.PrintSeparator(ConsoleColor.Green, "Initialisation fully ended! Enjoy! :D");
   }
 
@@ -43,9 +40,8 @@ public class MainContext
       Raylib.BeginDrawing();
       Raylib.ClearBackground(Config.WindowBackgroundColor);
       
-      if (Root.Changed) MainLoop.Enter(this);
-      MainLoop.Update(this);
-      MainLoop.Draw(this);
+      Looper.Update(this);
+      Looper.Draw(this);
       
       Raylib.EndDrawing();
     }

@@ -2,13 +2,14 @@ using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.Folder;
 
 namespace StreamlineEngine.Engine.FolderItem;
 
 public class Item : UuidIdentifier, IScript, ICloneable<Item>
 {
   public string Name { get; private set; }
-  public List<Folder> Parent { get; private set; } = [];
+  public List<FolderNode> Parent { get; private set; } = [];
   public bool Active { get; set; } = true;
   public List<ComponentTemplate> Components { get; } = [];
   public List<IMaterial> Materials { get; } = [];
@@ -40,18 +41,13 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
 
   public void AddComponent(params List<ComponentTemplate> component)
   {
-    foreach (ComponentTemplate c in component)
-    {
-      if (!Components.Contains(c)) Components.Add(c);
-    }
+    foreach (var c in component.Where(c => !Components.Contains(c)))
+      Components.Add(c);
   }
   
-  public void AddMaterial(params List<IMaterial> material)
+  public void AddMaterial(Context context, params List<IMaterial> material)
   {
-    foreach (IMaterial m in material)
-    {
-      if (!Materials.Contains(m)) Materials.Add(m);
-    }
+    foreach (var m in material.Where(m => !Materials.Contains(m))) Materials.Add(m);
   }
 
   public void AddLateInit(LateInitType type, Action action) =>
@@ -63,28 +59,28 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     if (size) AddLateInit(LateInitType.Component, () => component.LocalSize = new SizeComponent(0));
   }
   
-  public void Init(MainContext context)
+  public void Init(Context context)
   {
     foreach (ComponentTemplate c in Components) c.Init(context);
     foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2();
   }
 
-  public void Enter(MainContext context)
+  public void Enter(Context context)
   {
     foreach (IMaterial m in Materials) m.Enter(context);
     foreach (ComponentTemplate c in Components) c.Enter(context);
   }
   
-  public void Leave(MainContext context)
+  public void Leave(Context context)
   {
     foreach (IMaterial m in Materials) m.Leave(context);
     foreach (ComponentTemplate c in Components) c.Leave(context);
   }
-  public void Update(MainContext context)
+  public void Update(Context context)
   {
     foreach (ComponentTemplate c in Components) c.Update(context);
   }
-  public void Draw(MainContext context)
+  public void Draw(Context context)
   {
     foreach (ComponentTemplate component in Components)
       component.Draw(context);

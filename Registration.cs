@@ -1,10 +1,10 @@
 using Raylib_cs;
-using StreamlineEngine.Custom;
-using StreamlineEngine.Engine;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Folder;
 using StreamlineEngine.Engine.FolderItem;
 using StreamlineEngine.Engine.Material;
+using Color = Raylib_cs.Color;
 
 namespace StreamlineEngine;
 
@@ -18,29 +18,37 @@ public static class Registration
   public struct Items
   {
     public static Item Item = new("HelloItem",
+      new SizeComponent(800),
       new PositionComponent(),
-      new SizeComponent(),
       new FigureComponent(FigureType.Rectangle, .2f),
+      //new FillComponent(Color.White),
       new ImageComponent(Materials.ImageMaterial),
-      new MouseHitboxComponent(),
       new BorderComponent(4f, Color.Red),
-      new CustomScriptComponent(new PressChange())
+      new MouseHitboxComponent()
+      //new CustomScriptComponent(new PressChange())
     );
   }
   
   public struct Folders
   {
-    public static Folder Folder = new("HelloFolder", Items.Item);
+    public static FolderNode FolderItem = new("HelloFolder", FolderNodeType.Item, Items.Item);
+    public static FolderNode FolderItem2 = new("Hello2Folder", FolderNodeType.Item);
     
-    public static Folder FirstScene = new("FirstScene", Folder);
+    public static FolderNode FirstScene = new("FirstScene", FolderNodeType.Scene, FolderItem);
+    public static FolderNode SecondScene = new("SecondScene", FolderNodeType.Scene, FolderItem2);
   }
   
-  public static void EntitiesInitChanges(MainContext context)
+  public static void MaterialsInitChanges(Context context)
   {
-    Items.Item.AddLateInit(LateInitType.Entity, () => Items.Item.Component<BorderComponent>()!.LocalPosition.Add(0));
+    Materials.ImageMaterial.AddFilter(TextureFilter.Trilinear);
   }
-
-  public static void MaterialsInitChanges(MainContext context)
+  
+  public static void ItemsInitChanges(Context context)
+  {
+    //Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<BorderComponent>()!.LocalPosition.Add(10));
+  }
+  
+  public static void FoldersInitChanges(Context context)
   {
     
   }

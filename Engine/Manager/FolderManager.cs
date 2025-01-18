@@ -1,23 +1,20 @@
+using StreamlineEngine.Engine.Etc.Interfaces;
+using StreamlineEngine.Engine.Folder;
 using StreamlineEngine.Engine.FolderItem;
 
 namespace StreamlineEngine.Engine.Manager;
 
 public class FolderManager
 {
-  public List<Folder> All { get; } = [];
+  public List<IFolder<dynamic>> All { get; } = [];
   
-  public Folder GetByParentFolder(Folder folder) => All.First(f => f.Parent!.Contains(folder));
-  public Folder GetByChildrenItem(Item item) => All.First(f => f.Children!.Contains(item));
-  public Folder GetByChildrenFolder(Folder folder) => All.First(f => f.Children!.Contains(folder));
-  public Folder GetByName(string name) => All.First(f => f.Name == name);
-  public Folder GetByUuid(string uuid) => All.First(f => f.Uuid == uuid);
+  public FolderNode GetByParentFolder(FolderNode folderItem) => (FolderNode)All.First(f => f.Parent!.Contains(folderItem));
+  public FolderNode GetByChildrenItem(Item item) => (FolderNode)All.First(f => f.Children!.Contains(item));
+  public FolderNode GetByChildrenFolder(FolderNode folderItem) => (FolderNode)All.First(f => f.Children!.Contains(folderItem));
+  public FolderNode GetByName(string name) => (FolderNode)All.First(f => f.Name == name);
   
-  public void RegisterFromStruct(MainContext context)
+  public void RegisterFromStruct()
   {
-    foreach (var folder in typeof(Registration.Folders).GetFields().Select(f => f.GetValue(null)).OfType<Folder>().ToArray())
-    {
-      All.Add(folder);
-      folder.Init(context);
-    }
+    foreach (var folder in typeof(Registration.Folders).GetFields().Select(f => f.GetValue(null)).OfType<FolderNode>().ToArray()) All.Add(folder);
   }
 }

@@ -25,7 +25,7 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
   public void Add(float w, float h) { Width += w; Height += h; }
   public void Add(float wh) { Width += wh; Height += wh; }
 
-  public override void Init(MainContext context)
+  public override void Init(Context context)
   {
     if (!InitWait) return;
     Item item = context.Managers.Item.GetByComponent(this);
@@ -40,8 +40,8 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
     else
     {
       Error("Entity has no size component. Initialising default size.", true);
-      Width = MainContext.Const.Size.X;
-      Height = MainContext.Const.Size.Y;
+      Width = Defaults.Size.X;
+      Height = Defaults.Size.Y;
     }
   }
   

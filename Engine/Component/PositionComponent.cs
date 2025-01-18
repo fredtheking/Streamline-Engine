@@ -25,12 +25,12 @@ public class PositionComponent : ComponentTemplate, ICloneable<PositionComponent
   public void Add(float x, float y) { X += x; Y += y; }
   public void Add(float xy) { X += xy; Y += xy; }
 
-  public override void Init(MainContext context)
+  public override void Init(Context context)
   {
     if (!InitWait) return;
 
-    X = MainContext.Const.Position.X;
-    Y = MainContext.Const.Position.Y;
+    X = Defaults.Position.X;
+    Y = Defaults.Position.Y;
     
     Item item = context.Managers.Item.GetByComponent(this);
     SizeComponent? size = item.Component<SizeComponent>();

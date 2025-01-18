@@ -1,3 +1,4 @@
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
@@ -9,15 +10,15 @@ public class CustomScriptComponent : ComponentTemplate
   
   public CustomScriptComponent(dynamic script) => Script = script;
 
-  public override void Init(MainContext context) =>
+  public override void Init(Context context) =>
     Script.Init(context);
   
-  public override void Enter(MainContext context) =>
+  public override void Enter(Context context) =>
     Script.Enter(context);
   
-  public override void Update(MainContext context) =>
+  public override void Update(Context context) =>
     Script.Update(context);
   
-  public override void Draw(MainContext context) =>
+  public override void Draw(Context context) =>
     Script.Draw(context);
 }

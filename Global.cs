@@ -1,28 +1,29 @@
 using Raylib_cs;
 using StreamlineEngine.Engine;
+using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 
 namespace StreamlineEngine;
 
 public class Global : IScript
 {
-  public void Init(MainContext context) { }
-  public void Enter(MainContext context) { }
-  public void Leave(MainContext context) { }
+  public void Init(Context context) { }
+  public void Enter(Context context) { }
+  public void Leave(Context context) { }
 
-  public void Update(MainContext context)
+  public void Update(Context context)
   {
     #if DEBUG
-    //if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F1)) 
-    //  context.Managers.Scene.Previous(context);
-    //if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F2)) 
-    //  context.Managers.Scene.Next(context);
+    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F1)) 
+      context.Root.Previous(context);
+    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F2)) 
+      context.Root.Next(context);
     if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F3)) 
       context.Managers.Debug.Toggle();
     #endif
   }
 
-  public void Draw(MainContext context)
+  public void Draw(Context context)
   {
     Raylib.DrawFPS(10, 10);
   }

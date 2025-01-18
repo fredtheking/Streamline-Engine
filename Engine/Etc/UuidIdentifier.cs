@@ -9,7 +9,7 @@ public class UuidIdentifier
   public UuidIdentifier()
   {
     Uuid = Guid.NewGuid().ToString();
-    ShortUuid = Uuid[new Range(0, MainContext.Const.ShortUuidLength)] + ".." + Uuid[new Range(Uuid.Length - MainContext.Const.ShortUuidLength, Uuid.Length)];
+    ShortUuid = Uuid[new Range(0, Defaults.ShortUuidLength)] + ".." + Uuid[new Range(Uuid.Length - Defaults.ShortUuidLength, Uuid.Length)];
   }
 
   private void Print(string prefix, ConsoleColor? backColor, ConsoleColor foreColor, string message, bool once)

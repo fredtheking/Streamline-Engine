@@ -11,12 +11,8 @@ public class ItemManager
   public Item GetByName(string name) => All.First(i => i.Name == name);
   public Item GetByUuid(string uuid) => All.First(i => i.Uuid == uuid);
 
-  public void RegisterFromStruct(MainContext context)
+  public void RegisterFromStruct()
   {
-    foreach (var item in typeof(Registration.Items).GetFields().Select(f => f.GetValue(null)).OfType<Item>().ToArray())
-    {
-      All.Add(item);
-      item.Init(context);
-    }
+    foreach (var item in typeof(Registration.Items).GetFields().Select(f => f.GetValue(null)).OfType<Item>().ToArray()) All.Add(item);
   }
 }

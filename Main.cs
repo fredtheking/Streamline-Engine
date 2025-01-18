@@ -1,3 +1,4 @@
-﻿using StreamlineEngine.Engine;
-MainContext game = new();
+﻿using StreamlineEngine.Engine.Etc;
+
+Context game = new();
 game.Run();

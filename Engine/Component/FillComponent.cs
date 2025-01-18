@@ -21,7 +21,7 @@ public class FillComponent : ComponentTemplate, ICloneable<FillComponent>
   public FillComponent(Color color) { Color = color; }
   public FillComponent() { Color = Color.White; }
 
-  public override void Init(MainContext context)
+  public override void Init(Context context)
   {
     Item item = context.Managers.Item.GetByComponent(this);
     Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
@@ -31,7 +31,7 @@ public class FillComponent : ComponentTemplate, ICloneable<FillComponent>
     item.LocalLateInit(this);
   }
 
-  public override void Draw(MainContext context)
+  public override void Draw(Context context)
   {
     switch (Figure.Type)
     {
@@ -39,7 +39,7 @@ public class FillComponent : ComponentTemplate, ICloneable<FillComponent>
         Raylib.DrawRectangleV(Position.Vec2 + LocalPosition.Vec2, Size.Vec2 + LocalSize.Vec2, Color);
         break;
       case FigureType.Rounded:
-        Raylib.DrawRectangleRounded(new Rectangle(Position.Vec2 + LocalPosition.Vec2, Size.Vec2 + LocalSize.Vec2), Figure.Roundness, MainContext.Const.RoundedSegments, Color);
+        Raylib.DrawRectangleRounded(new Rectangle(Position.Vec2 + LocalPosition.Vec2, Size.Vec2 + LocalSize.Vec2), Figure.Roundness, Defaults.RoundedSegments, Color);
         break;
       case FigureType.Circle:
         Raylib.DrawEllipse((int)(Position.X + LocalPosition.X + Size.Width / 2 + LocalSize.Width / 2), (int)(Position.Y + LocalPosition.Y + Size.Height / 2 + LocalSize.Height / 2), Size.Width + LocalSize.Width, Size.Height + LocalSize.Height, Color);

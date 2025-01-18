@@ -23,12 +23,15 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public bool[] Release { get; private set; } = [false, false, false];
   public bool[] Hold { get; private set; } = [false, false, false];
   public bool[] Drag { get; private set; } = [false, false, false];
-  
-  public MouseHitboxComponent() { Color = MainContext.Const.DebugHitboxColor; }
+  private bool ColorInit;
+
+  public MouseHitboxComponent() { ColorInit = true; }
   public MouseHitboxComponent(Color debugColor) { Color = debugColor; }
 
-  public override void Init(MainContext context)
+  public override void Init(Context context)
   {
+    if (ColorInit) Color = Defaults.DebugHitboxColor;
+    
     Item item = context.Managers.Item.GetByComponent(this);
     Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
     Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
@@ -53,7 +56,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     return false;
   }
 
-  public override void Update(MainContext context)
+  public override void Update(Context context)
   {
     for (int i = 0; i < Hover.Length; i++)
     {
@@ -69,7 +72,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     }
   }
 
-  public override void Draw(MainContext context)
+  public override void Draw(Context context)
   {
     if (!context.Managers.Debug.TurnedOn) return;
 
