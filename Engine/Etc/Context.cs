@@ -22,13 +22,14 @@ public class Context
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitle);
     Raylib.InitAudioDevice();
-    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting root initialisation...");
+    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting importing game assets...");
     Registration.MaterialsInitChanges(this);
     Registration.ItemsInitChanges(this);
     Registration.FoldersInitChanges(this);
     Managers.Resource.RegisterFromStruct(this);
     Managers.Item.RegisterFromStruct();
     Managers.Folder.RegisterFromStruct();
+    Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Structs import done! Starting root initialisation...");
     Looper.Init(this);
     Managers.Debug.PrintSeparator(ConsoleColor.Green, "Initialisation fully ended! Enjoy! :D");
   }

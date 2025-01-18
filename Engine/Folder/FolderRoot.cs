@@ -48,7 +48,9 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
       Error("Expected a FolderNode of type Scene, got: " + folder.Type);
       return;
     }
-    context.Managers.Debug.PrintSeparator(ConsoleColor.Blue, $"Leaving from '{context.Root.Children.FirstOrDefault(c => c is { Active: true, Type: FolderNodeType.Scene })?.Name ?? "INITIALISATION"}' scene...");
+
+    string? oldSceneName = context.Root.Children.FirstOrDefault(c => c is { Active: true, Type: FolderNodeType.Scene })?.Name;
+    if (oldSceneName is not null) context.Managers.Debug.PrintSeparator(ConsoleColor.Blue, $"Leaving from '{oldSceneName}' scene...");
     
     foreach (FolderNode node in Children.Where(c => c.Type == FolderNodeType.Scene))
       node.Active = false;
@@ -59,7 +61,7 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
     Looper.Enter(context);
     SortedChildren = SortedChildren.Concat(Children.Where(c => c.Type != FolderNodeType.Scene)).ToArray();
       
-    context.Managers.Debug.PrintSeparator(ConsoleColor.Green, $"Successfully entered '{context.Root.Children.First(c => c is { Active: true, Type: FolderNodeType.Scene }).Name}' scene!");
+    if (oldSceneName is not null) context.Managers.Debug.PrintSeparator(ConsoleColor.Green, $"Successfully entered '{context.Root.Children.First(c => c is { Active: true, Type: FolderNodeType.Scene }).Name}' scene!");
   }
 
   public void Next(Context context)
