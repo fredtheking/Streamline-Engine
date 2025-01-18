@@ -12,6 +12,7 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
   public bool Active { get; set; }
   public List<object>? Parent { get; set; } = null;
   public List<FolderNode> Children { get; set; }
+  public FolderNode[] SortedChildren { get; set; } = [];
 
   public void Init(Context context)
   {
@@ -20,23 +21,23 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
   }
   public void Enter(Context context)
   {
-    foreach (FolderNode node in Children)
+    foreach (FolderNode node in SortedChildren)
       node.Enter(context);
   }
   public void Leave(Context context)
   {
-    foreach (FolderNode node in Children)
+    foreach (FolderNode node in SortedChildren)
       node.Leave(context);
   }
   public void Update(Context context)
   {
-    foreach (FolderNode node in Children)
+    foreach (FolderNode node in SortedChildren)
       node.Update(context);
   }
 
   public void Draw(Context context)
   {
-    foreach (FolderNode node in Children)
+    foreach (FolderNode node in SortedChildren)
       node.Draw(context);
   }
 
@@ -52,10 +53,12 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
     foreach (FolderNode node in Children.Where(c => c.Type == FolderNodeType.Scene))
       node.Active = false;
     folder.Active = true;
-
-    Looper.Leave(context);
-    Looper.Enter(context);
     
+    Looper.Leave(context);
+    SortedChildren = Children.Where(c => c is { Type: FolderNodeType.Scene, Active: true }).ToArray();
+    Looper.Enter(context);
+    SortedChildren = SortedChildren.Concat(Children.Where(c => c.Type != FolderNodeType.Scene)).ToArray();
+      
     context.Managers.Debug.PrintSeparator(ConsoleColor.Green, $"Successfully entered '{context.Root.Children.First(c => c is { Active: true, Type: FolderNodeType.Scene }).Name}' scene!");
   }
 
