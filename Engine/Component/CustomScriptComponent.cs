@@ -16,6 +16,9 @@ public class CustomScriptComponent : ComponentTemplate
   public override void Enter(Context context) =>
     Script.Enter(context);
   
+  public override void Leave(Context context) =>
+    Script.Leave(context);
+  
   public override void Update(Context context) =>
     Script.Update(context);
   

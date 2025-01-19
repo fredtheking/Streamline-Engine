@@ -1,4 +1,5 @@
 using Raylib_cs;
+using StreamlineEngine.Custom;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Folder;
@@ -25,8 +26,8 @@ public static class Registration
       new ImageComponent(Materials.ImageMaterial),
       new BorderComponent(8f, Color.Blue),
       new BorderComponent(4f, Color.Red),
-      new MouseHitboxComponent()
-      //new CustomScriptComponent(new PressChange())
+      new MouseHitboxComponent(),
+      new CustomScriptComponent(new PressChange())
     );
   }
   
