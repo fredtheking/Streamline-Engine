@@ -68,7 +68,7 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
   {
     if (Children.Count(c => c.Type == FolderNodeType.Scene) == 1)
     {
-      context.Managers.Debug.PrintSeparator(ConsoleColor.Red, "Only one scene, can't go forward!");
+      Error("Only one scene, can't go forward!");
       return;
     }
     int index = (Children.IndexOf(Children.FirstOrDefault(c => c is { Type: FolderNodeType.Scene, Active: true })!) + 1) % Children.Count;
@@ -79,7 +79,7 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
   {
     if (Children.Count(c => c.Type == FolderNodeType.Scene) == 1)
     {
-      context.Managers.Debug.PrintSeparator(ConsoleColor.Red, "Only one scene, can't go back!");
+      Error("Only one scene, can't go back!");
       return;
     }
     int index = (Children.LastIndexOf(Children.LastOrDefault(c => c is { Type: FolderNodeType.Scene, Active: true })!) - 1 + Children.Count) % Children.Count;

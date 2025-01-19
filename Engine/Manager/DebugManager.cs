@@ -21,6 +21,27 @@ public class DebugManager
   
   public void PrintSeparator(string message) => PrintSeparator(ConsoleColor.Magenta, message);
   
+  private void Print(string prefix, ConsoleColor? backColor, ConsoleColor foreColor, string message)
+  {
+    if (backColor is not null) Console.BackgroundColor = (ConsoleColor)backColor;
+    Console.ForegroundColor = foreColor;
+    Console.Write($"{prefix.ToUpper()}: {message}");
+    Console.ResetColor();
+    Console.WriteLine();
+  }
+  
+  public void Information(string message) =>
+    Print("info", null, ConsoleColor.White, message);
+ 
+  public void Warning(string message) =>
+    Print("warn", null, ConsoleColor.Yellow, message);
+ 
+  public void Error(string message) =>
+    Print("error", null, ConsoleColor.Red, message);
+ 
+  public void Critical(string message) =>
+    Print("crit", ConsoleColor.Red, ConsoleColor.Black, message);
+  
   public void Toggle() {
     TurnedOn = !TurnedOn;
     Changed = true;

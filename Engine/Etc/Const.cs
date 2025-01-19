@@ -3,7 +3,7 @@ using Raylib_cs;
 
 namespace StreamlineEngine.Engine.Etc;
 
-public enum LateInitType { Material, Component, Item }
+public enum LateInitType { Component, Item }
 public enum FigureType { Rectangle, Rounded, Circle }
 public enum DebuggerType { Floating, Side }
 public enum FolderNodeType { Scene, Node, Item }

@@ -23,6 +23,7 @@ public static class Registration
       new FigureComponent(FigureType.Rectangle, .2f),
       //new FillComponent(Color.White),
       new ImageComponent(Materials.ImageMaterial),
+      new BorderComponent(8f, Color.Blue),
       new BorderComponent(4f, Color.Red),
       new MouseHitboxComponent()
       //new CustomScriptComponent(new PressChange())
@@ -40,12 +41,13 @@ public static class Registration
   
   public static void MaterialsInitChanges(Context context)
   {
-    Materials.ImageMaterial.AddFilter(TextureFilter.Trilinear);
+    Materials.ImageMaterial.AddFilter(TextureFilter.Bilinear);
   }
   
   public static void ItemsInitChanges(Context context)
   {
-    //Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<BorderComponent>()!.LocalPosition.Add(10));
+    //Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<FillComponent>()!.LocalPosition.Add(-4));
+    //Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<FillComponent>()!.LocalSize.Add(8));
   }
   
   public static void FoldersInitChanges(Context context)
