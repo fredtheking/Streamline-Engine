@@ -8,7 +8,7 @@ public class Context
 {
   public Managers Managers { get; } = new();
   public Global Global { get; } = new();
-  public FolderRoot Root { get; } = new(Config.Scenes);
+  public FolderRoot Root { get; } = new(Config.RootFolders);
   
   public void Run()
   {

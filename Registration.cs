@@ -19,23 +19,34 @@ public static class Registration
   public struct Items
   {
     public static Item Item = new("HelloItem",
-      new SizeComponent(800),
+      new SizeComponent(200),
       new PositionComponent(),
-      new FigureComponent(FigureType.Rectangle, .2f),
-      //new FillComponent(Color.White),
-      new ImageComponent(Materials.ImageMaterial),
-      new BorderComponent(8f, Color.Blue),
-      new BorderComponent(4f, Color.Red),
-      new MouseHitboxComponent(),
-      new CustomScriptComponent(new PressChange())
+      new FigureComponent(FigureType.Rounded, .2f),
+      new FillComponent(Color.White),
+      new BorderComponent(4f, Color.Red)
+    );
+    public static Item Item2 = new("HelloItem",
+      new SizeComponent(200),
+      new PositionComponent(),
+      new FigureComponent(FigureType.Rounded, .2f),
+      new FillComponent(Color.LightGray),
+      new BorderComponent(4f, Color.Blue)
+    );
+
+    public static Item Item3 = new("GlobalThingo",
+      new SizeComponent(100),
+      new PositionComponent(100),
+      new FigureComponent(FigureType.Rectangle),
+      new ImageComponent(Materials.ImageMaterial)
     );
   }
   
   public struct Folders
   {
     public static FolderNode FolderItem = new("HelloFolder", FolderNodeType.Item, Items.Item);
-    public static FolderNode FolderItem2 = new("Hello2Folder", FolderNodeType.Item);
+    public static FolderNode FolderItem2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2);
     
+    public static FolderNode GlobalNode = new("GlobalNode", FolderNodeType.Item, Items.Item3);
     public static FolderNode FirstScene = new("FirstScene", FolderNodeType.Scene, FolderItem);
     public static FolderNode SecondScene = new("SecondScene", FolderNodeType.Scene, FolderItem2);
   }

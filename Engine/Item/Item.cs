@@ -25,7 +25,7 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   {
     foreach (ComponentTemplate c in Components)
     {
-      if (c is T) return (T)c;
+      if (c is T template) return template;
     }
     return null;
   }
@@ -34,18 +34,17 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   {
     foreach (IMaterial c in Materials)
     {
-      if (c is T) return (T)c;
+      if (c is T template) return template;
     }
     return null;
   }
 
   public void AddComponent(params List<ComponentTemplate> component)
   {
-    foreach (var c in component.Where(c => !Components.Contains(c)))
-      Components.Add(c);
+    foreach (var c in component.Where(c => !Components.Contains(c))) Components.Add(c);
   }
   
-  public void AddMaterial(Context context, params List<IMaterial> material)
+  public void AddMaterial(params List<IMaterial> material)
   {
     foreach (var m in material.Where(m => !Materials.Contains(m))) Materials.Add(m);
   }

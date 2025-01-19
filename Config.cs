@@ -8,10 +8,11 @@ namespace StreamlineEngine;
 
 public struct Config
 {
-  public static readonly FolderNode[] Scenes =
+  public static readonly FolderNode[] RootFolders =
   [
     Registration.Folders.FirstScene,
-    Registration.Folders.SecondScene
+    Registration.Folders.SecondScene,
+    Registration.Folders.GlobalNode
   ];
 
   public static readonly FolderNode StartScene = Registration.Folders.FirstScene;

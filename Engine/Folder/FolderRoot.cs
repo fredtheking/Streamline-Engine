@@ -56,10 +56,10 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
       node.Active = false;
     folder.Active = true;
     
-    Looper.Leave(context);
     SortedChildren = Children.Where(c => c is { Type: FolderNodeType.Scene, Active: true }).ToArray();
-    Looper.Enter(context);
+    Looper.Leave(context);
     SortedChildren = SortedChildren.Concat(Children.Where(c => c.Type != FolderNodeType.Scene)).ToArray();
+    Looper.Enter(context);
       
     if (oldSceneName is not null) context.Managers.Debug.PrintSeparator(ConsoleColor.Green, $"Successfully entered '{context.Root.Children.First(c => c is { Active: true, Type: FolderNodeType.Scene }).Name}' scene!");
   }

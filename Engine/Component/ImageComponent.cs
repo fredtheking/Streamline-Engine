@@ -36,15 +36,15 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   {
     if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
     Item item = context.Managers.Item.GetByComponent(this);
-    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Entity has no position component. Initialising default position.");
-    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Entity has no size component. Initialising default size.");
+    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
+    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
     Border = item.Component<BorderComponent>() ?? new BorderComponent(0);
     
     if (item.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Critical("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
-    item.AddMaterial(context, Resource);
+    item.AddMaterial(Resource);
 
     FillComponent? filler = item.Component<FillComponent>();
-    if (filler is not null) Warning("Image and Fill component are located in the same entity. Be careful with declaring them!");
+    if (filler is not null) Information("Image and Fill component are located in the same item. Be careful with declaring them!");
     
     item.LocalLateInit(this);
   }
