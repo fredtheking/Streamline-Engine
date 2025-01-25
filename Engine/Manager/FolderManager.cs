@@ -1,6 +1,5 @@
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Folder;
-using StreamlineEngine.Engine.FolderItem;
 
 namespace StreamlineEngine.Engine.Manager;
 
@@ -9,7 +8,7 @@ public class FolderManager
   public List<IFolder<dynamic>> All { get; } = [];
   
   public FolderNode GetByParentFolder(FolderNode folderItem) => (FolderNode)All.First(f => f.Parent!.Contains(folderItem));
-  public FolderNode GetByChildrenItem(Item item) => (FolderNode)All.First(f => f.Children!.Contains(item));
+  public FolderNode GetByChildrenItem(Item.Item item) => (FolderNode)All.First(f => f.Children!.Contains(item));
   public FolderNode GetByChildrenFolder(FolderNode folderItem) => (FolderNode)All.First(f => f.Children!.Contains(folderItem));
   public FolderNode GetByName(string name) => (FolderNode)All.First(f => f.Name == name);
   

@@ -8,7 +8,9 @@ public static class Looper
   {
     context.Root.Init(context);
     context.Global.Init(context);
+    #if !RESOURCES
     context.Root.Change(context, Config.StartScene);
+    #endif
   }
   
   public static void Enter(Context context)

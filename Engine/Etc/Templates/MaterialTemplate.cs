@@ -1,6 +1,5 @@
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
-using StreamlineEngine.Engine.FolderItem;
 
 namespace StreamlineEngine.Engine.Pkg.Etc.Templates;
 

@@ -13,9 +13,9 @@ public class ImageMaterial : MaterialTemplate<int?, Texture2D?>
   public Shader? Shader { get; protected set; } = null;
   public TextureFilter? Filter { get; protected set; } = TextureFilter.Point;
 
-  public ImageMaterial(int id)
+  public ImageMaterial(int resourceId)
   {
-    Id = id;
+    Id = resourceId;
   }
 
   public ImageMaterial(Image image)

@@ -4,7 +4,7 @@ using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Folder;
 
-namespace StreamlineEngine.Engine.FolderItem;
+namespace StreamlineEngine.Engine.Item;
 
 public class Item : UuidIdentifier, IScript, ICloneable<Item>
 {

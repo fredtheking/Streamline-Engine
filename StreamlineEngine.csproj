@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="Resources\**" Condition="'$(Configuration)' == 'Resources'" CopyToOutputDirectory="PreserveNewest"/>
-      <Content Include="Generated\*.serp" OutputPath="../" Condition="'$(Configuration)' != 'Resources'" CopyToOutputDirectory="PreserveNewest"/>
+      <Content Include="Resources\**" Condition="'$(Configuration)' == 'Resources'" CopyToOutputDirectory="Always"/>
+      <Content Include="Generated\*.serp" OutputPath="../" Condition="'$(Configuration)' != 'Resources'" CopyToOutputDirectory="Always"/>
     </ItemGroup>
 
     <ItemGroup>

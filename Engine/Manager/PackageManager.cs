@@ -17,6 +17,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     using (var fileStream = new FileStream(enumGeneratedExportPath + outputFilename + OutputExtension, FileMode.Create))
     using (var enumWriter = new StreamWriter(enumGeneratedExportPath + enumFilename + ".cs"))
     {
+      enumWriter.WriteLine("namespace StreamlineEngine.Generated;");
       enumWriter.WriteLine($"public enum {Path.GetFileName(enumFilename)}");
       enumWriter.WriteLine("{");
       

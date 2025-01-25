@@ -1,5 +1,3 @@
-using StreamlineEngine.Engine.FolderItem;
-
 namespace StreamlineEngine.Engine.Etc.Interfaces;
 
 public interface IFolder<TChildren>

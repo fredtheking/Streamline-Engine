@@ -1,6 +1,5 @@
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
-using StreamlineEngine.Engine.FolderItem;
 using StreamlineEngine.Engine.Manager;
 
 namespace StreamlineEngine.Engine.Folder;
@@ -51,7 +50,9 @@ public class Root : UuidIdentifier, IFolder<FolderNode>
       return;
     }
 
-    string? oldSceneName = context.Root.Children.FirstOrDefault(c => c is { Active: true, Type: FolderNodeType.Scene })?.Name;
+    string? oldSceneName = null;
+    if (Children.Count(c => c is {Type: FolderNodeType.Scene, Active: true}) == 1)
+      oldSceneName = context.Root.Children.FirstOrDefault(c => c is { Active: true, Type: FolderNodeType.Scene })?.Name;
     if (oldSceneName is not null) context.Managers.Debug.PrintSeparator(ConsoleColor.Blue, $"Leaving from '{oldSceneName}' scene...");
     
     foreach (FolderNode node in Children.Where(c => c.Type == FolderNodeType.Scene))

@@ -3,7 +3,6 @@ using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
-using StreamlineEngine.Engine.FolderItem;
 using StreamlineEngine.Engine.Material;
 using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
@@ -35,12 +34,12 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   public override void Init(Context context)
   {
     if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
-    Item item = context.Managers.Item.GetByComponent(this);
+    Item.Item item = context.Managers.Item.GetByComponent(this);
     Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
     Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
     Border = item.Component<BorderComponent>() ?? new BorderComponent(0);
     
-    if (item.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Critical("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
+    if (item.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Error("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
     item.AddMaterial(Resource);
 
     FillComponent? filler = item.Component<FillComponent>();
