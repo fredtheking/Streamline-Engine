@@ -5,12 +5,13 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release;Resources</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="Resources\**">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+      <Content Include="Resources\**" Condition="'$(Configuration)' == 'Resources'" CopyToOutputDirectory="PreserveNewest"/>
+      <Content Include="Generated\*.serp" OutputPath="../" Condition="'$(Configuration)' != 'Resources'" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
     <ItemGroup>

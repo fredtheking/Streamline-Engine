@@ -8,19 +8,23 @@ public class Context
 {
   public Managers Managers { get; } = new();
   public Global Global { get; } = new();
-  public FolderRoot Root { get; } = new(Config.RootFolders);
+  public Root Root { get; } = new(Config.RootFolders);
   
   public void Run()
   {
-    Init();
-    Loop();
-    Close();
+    #if RESOURCES
+      Managers.Package.Pack(Config.ResourcesPackDictionary);
+    #else
+      Init();
+      Loop();
+      Close();
+    #endif
   }
   
   private void Init()
   {
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
-    Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitle);
+    Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitleInit);
     Raylib.InitAudioDevice();
     Managers.Debug.PrintSeparator(ConsoleColor.Yellow, "Window and audio created. Starting importing game assets...");
     Registration.MaterialsInitChanges(this);

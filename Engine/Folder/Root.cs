@@ -5,14 +5,16 @@ using StreamlineEngine.Engine.Manager;
 
 namespace StreamlineEngine.Engine.Folder;
 
-public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
+public class Root : UuidIdentifier, IFolder<FolderNode>
 {
   private List<dynamic>? _children;
   public string Name { get; set; }
   public bool Active { get; set; }
   public List<object>? Parent { get; set; } = null;
   public List<FolderNode> Children { get; set; }
-  public FolderNode[] SortedChildren { get; set; } = [];
+  public FolderNode CurrentScene { get; private set; }
+  public FolderNode[] ActiveChildren { get; private set; } = [];
+  public FolderNode[] Scenes { get; private set; } = [];
 
   public void Init(Context context)
   {
@@ -21,23 +23,23 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
   }
   public void Enter(Context context)
   {
-    foreach (FolderNode node in SortedChildren)
+    foreach (FolderNode node in ActiveChildren)
       node.Enter(context);
   }
   public void Leave(Context context)
   {
-    foreach (FolderNode node in SortedChildren)
+    foreach (FolderNode node in ActiveChildren)
       node.Leave(context);
   }
   public void Update(Context context)
   {
-    foreach (FolderNode node in SortedChildren)
+    foreach (FolderNode node in ActiveChildren)
       node.Update(context);
   }
 
   public void Draw(Context context)
   {
-    foreach (FolderNode node in SortedChildren)
+    foreach (FolderNode node in ActiveChildren)
       node.Draw(context);
   }
 
@@ -54,11 +56,13 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
     
     foreach (FolderNode node in Children.Where(c => c.Type == FolderNodeType.Scene))
       node.Active = false;
-    folder.Active = true;
+    CurrentScene = folder;
+    CurrentScene.Active = true;
     
-    SortedChildren = Children.Where(c => c is { Type: FolderNodeType.Scene, Active: true }).ToArray();
+    Scenes = Children.Where(c => c.Type == FolderNodeType.Scene).ToArray();
+    ActiveChildren = Children.Where(c => c is { Type: FolderNodeType.Scene, Active: true }).ToArray();
     Looper.Leave(context);
-    SortedChildren = SortedChildren.Concat(Children.Where(c => c.Type != FolderNodeType.Scene)).ToArray();
+    ActiveChildren = ActiveChildren.Concat(Children.Where(c => c.Type != FolderNodeType.Scene)).ToArray();
     Looper.Enter(context);
       
     if (oldSceneName is not null) context.Managers.Debug.PrintSeparator(ConsoleColor.Green, $"Successfully entered '{context.Root.Children.First(c => c is { Active: true, Type: FolderNodeType.Scene }).Name}' scene!");
@@ -71,7 +75,8 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
       Error("Only one scene, can't go forward!");
       return;
     }
-    int index = (Children.IndexOf(Children.FirstOrDefault(c => c is { Type: FolderNodeType.Scene, Active: true })!) + 1) % Children.Count;
+    FolderNode[] Scenes = Children.Where(c => c is {Type: FolderNodeType.Scene}).ToArray(); 
+    int index = (Scenes.ToList().FindIndex(c => c == CurrentScene) + 1) % Scenes.Length;
     Change(context, Children[index]);
   }
 
@@ -82,11 +87,13 @@ public class FolderRoot : UuidIdentifier, IFolder<FolderNode>
       Error("Only one scene, can't go back!");
       return;
     }
-    int index = (Children.LastIndexOf(Children.LastOrDefault(c => c is { Type: FolderNodeType.Scene, Active: true })!) - 1 + Children.Count) % Children.Count;
+
+    FolderNode[] Scenes = Children.Where(c => c is {Type: FolderNodeType.Scene}).ToArray(); 
+    int index = (Scenes.ToList().FindIndex(c => c == CurrentScene) - 1 + Scenes.Length) % Scenes.Length;
     Change(context, Children[index]);
   }
 
-  public FolderRoot(params FolderNode[] children) {
+  public Root(params FolderNode[] children) {
     Name = "Root";
     Children = children.ToList();
   }

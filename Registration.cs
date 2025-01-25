@@ -13,7 +13,7 @@ public static class Registration
 {
   public struct Materials
   {
-    public static ImageMaterial ImageMaterial = new("Image/test.png");
+    public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Test);
   }
   
   public struct Items
@@ -25,7 +25,7 @@ public static class Registration
       new FillComponent(Color.White),
       new BorderComponent(4f, Color.Red)
     );
-    public static Item Item2 = new("HelloItem",
+    public static Item Item2 = new("Hello2Item",
       new SizeComponent(200),
       new PositionComponent(),
       new FigureComponent(FigureType.Rounded, .2f),
@@ -58,12 +58,21 @@ public static class Registration
   
   public static void ItemsInitChanges(Context context)
   {
-    //Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<FillComponent>()!.LocalPosition.Add(-4));
-    //Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<FillComponent>()!.LocalSize.Add(8));
+    Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<PositionComponent>()!.Add(-20));
+    Items.Item2.AddLateInit(LateInitType.Item, () => Items.Item2.Component<PositionComponent>()!.Add(20));
   }
   
   public static void FoldersInitChanges(Context context)
   {
     
+  }
+
+  public static Dictionary<string, string> PackResources()
+  {
+    Dictionary<string, string> resources = new();
+    
+    resources.Add("Test", "Image/test.png");
+    
+    return resources;
   }
 }

@@ -6,7 +6,7 @@ namespace StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 public class MaterialTemplate<TFilename, TMaterial> : UuidIdentifier, IMaterial
 {
-  public TFilename? Filename { get; protected set; }
+  public TFilename? Id { get; protected set; }
   public TMaterial? Material { get; protected set; }
 
   public virtual bool Ready() => Critical(false, "One of material's 'Ready' functions is not implemented! Returning only false.", true);
