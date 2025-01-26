@@ -2,7 +2,7 @@ using StreamlineEngine.Engine.Etc.Interfaces;
 
 namespace StreamlineEngine.Engine.Etc.Templates;
 
-public class ScriptTemplate : IScript
+public class CustomItemBehaviorTemplate : IScript
 {
   public Item.Item Parent { get; set; }
   

@@ -30,12 +30,12 @@ public static class Registration
       new FillComponent(Color.White),
       new BorderComponent(4f, Color.Red),
       new MouseHitboxComponent(),
-      new CustomScriptComponent(new PressChange())
+      new ScriptComponent(new PressChange())
     );
     public static Item Item2 = new("Hello2Item",
       new SizeComponent(200),
       new PositionComponent(),
-      new FigureComponent(FigureType.Rounded, .2f),
+      new FigureComponent(FigureType.Rectangle, .2f),
       new ImageComponent(Materials.AvatarMaterial),
       new BorderComponent(4f, Color.Blue)
     );

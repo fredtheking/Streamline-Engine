@@ -6,14 +6,14 @@ using StreamlineEngine.Engine.Item;
 
 namespace StreamlineEngine.Custom;
 
-public class PressChange : ScriptTemplate
+public class PressChange : CustomItemBehaviorTemplate
 {
-  private Color[] colors;
-  private Color[] borderColors;
-  private Color[] fillColors;
-  private bool selected;
+  Color[] colors;
+  Color[] borderColors;
+  Color[] fillColors;
+  bool selected;
 
-  public void Init(Context context)
+  public override void Init(Context context)
   {
     colors = [Defaults.DebugHitboxColor, new(0, 0, 255, 75)];
     borderColors = [Color.Red, Color.Blue];

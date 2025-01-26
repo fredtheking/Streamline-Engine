@@ -4,11 +4,11 @@ using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;
 
-public class CustomScriptComponent : ComponentTemplate
+public class ScriptComponent : ComponentTemplate
 {
   public dynamic Script { get; private set; }
   
-  public CustomScriptComponent(dynamic script) => Script = script;
+  public ScriptComponent(dynamic script) => Script = script;
 
   public override void Init(Context context)
   {
