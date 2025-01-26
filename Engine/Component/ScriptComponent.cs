@@ -1,14 +1,13 @@
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Templates;
-using StreamlineEngine.Engine.Pkg.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Component;
 
 public class ScriptComponent : ComponentTemplate
 {
-  public dynamic Script { get; private set; }
+  public CustomItemBehaviorTemplate Script { get; }
   
-  public ScriptComponent(dynamic script) => Script = script;
+  public ScriptComponent(CustomItemBehaviorTemplate script) => Script = script;
 
   public override void Init(Context context)
   {

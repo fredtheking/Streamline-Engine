@@ -1,5 +1,3 @@
-using StreamlineEngine.Engine.Etc.Interfaces;
-
 namespace StreamlineEngine.Engine.Etc;
 
 public static class Looper

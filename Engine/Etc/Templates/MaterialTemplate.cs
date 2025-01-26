@@ -1,7 +1,6 @@
-using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 
-namespace StreamlineEngine.Engine.Pkg.Etc.Templates;
+namespace StreamlineEngine.Engine.Etc.Templates;
 
 public class MaterialTemplate<TFilename, TMaterial> : UuidIdentifier, IMaterial
 {

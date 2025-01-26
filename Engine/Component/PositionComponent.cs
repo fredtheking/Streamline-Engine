@@ -2,6 +2,7 @@ using System.Numerics;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -31,7 +32,7 @@ public class PositionComponent : ComponentTemplate, ICloneable<PositionComponent
     X = Defaults.Position.X;
     Y = Defaults.Position.Y;
     
-    Item.Item item = context.Managers.Item.GetByComponent(this);
+    Item item = context.Managers.Item.GetByComponent(this);
     SizeComponent? size = item.Component<SizeComponent>();
     if (size is null) return;
     

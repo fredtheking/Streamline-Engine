@@ -1,7 +1,7 @@
 using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
-using StreamlineEngine.Engine.Pkg.Etc.Templates;
+using StreamlineEngine.Engine.Etc.Templates;
 
 //porno gay porno pidor porno porno 
 //easter egg by: Mr_CorteZzik

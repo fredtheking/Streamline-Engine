@@ -4,12 +4,12 @@ using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Folder;
 
-namespace StreamlineEngine.Engine.Item;
+namespace StreamlineEngine.Engine.Object;
 
 public class Item : UuidIdentifier, IScript, ICloneable<Item>
 {
   public string Name { get; private set; }
-  public List<FolderNode> Parent { get; private set; } = [];
+  public List<Node.Folder> Parent { get; private set; } = [];
   public bool Active { get; set; } = true;
   public List<ComponentTemplate> Components { get; } = [];
   public List<IMaterial> Materials { get; } = [];

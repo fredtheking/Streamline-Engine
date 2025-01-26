@@ -3,9 +3,12 @@ using StreamlineEngine.Custom;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Folder;
-using StreamlineEngine.Engine.Item;
 using StreamlineEngine.Engine.Material;
+using StreamlineEngine.Engine.Node;
+using StreamlineEngine.Engine.Object;
+#if !RESOURCES
 using StreamlineEngine.Generated;
+#endif
 using Color = Raylib_cs.Color;
 
 namespace StreamlineEngine;
@@ -16,7 +19,7 @@ public static class Registration
   {
     #if !RESOURCES
     public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
-    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Avatar);
+    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
     #endif
   }
   
@@ -52,12 +55,12 @@ public static class Registration
   public struct Folders
   {
     #if !RESOURCES
-    public static FolderNode FolderItem = new("HelloFolder", FolderNodeType.Item, Items.Item);
-    public static FolderNode FolderItem2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2);
+    public static Folder Item = new("HelloFolder", FolderNodeType.Item, Items.Item);
+    public static Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2);
     
-    public static FolderNode GlobalNode = new("GlobalNode", FolderNodeType.Item, Items.Item3);
-    public static FolderNode FirstScene = new("FirstScene", FolderNodeType.Scene, FolderItem);
-    public static FolderNode SecondScene = new("SecondScene", FolderNodeType.Scene, FolderItem2);
+    public static Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3);
+    public static Folder FirstScene = new("FirstScene", FolderNodeType.Scene, Item);
+    public static Folder SecondScene = new("SecondScene", FolderNodeType.Scene, Item2);
     #endif
   }
   
@@ -89,6 +92,7 @@ public static class Registration
     resources.Add("Test", "Image/test.png");
     resources.Add("Avatar", "Image/avatar.png");
     resources.Add("Bg", "Image/bg.png");
+    resources.Add("Lion", "Image/lion.jpg");
 
     return resources;
   }

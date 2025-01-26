@@ -19,5 +19,9 @@
       <PackageReference Include="Raylib-cs" Version="7.0.0"/>
       <PackageReference Include="rlImgui-cs" Version="3.0.0"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Generated\" />
+    </ItemGroup>
     
 </Project>

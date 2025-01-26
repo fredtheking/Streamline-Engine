@@ -2,12 +2,6 @@ using Raylib_cs;
 
 namespace StreamlineEngine.Engine.Manager;
 
-public enum ResourceType
-{
-    ImagePng,
-    WaveMp3
-}
-
 public class PackageManager(string outputFilename, string enumFilename, string enumGeneratedExportPath = "../../../")
 {
   const string OutputExtension = ".serp";
@@ -31,11 +25,11 @@ public class PackageManager(string outputFilename, string enumFilename, string e
         byte[] idBytes = BitConverter.GetBytes(resourceID);
         fileStream.Write(idBytes, 0, idBytes.Length);
         
-        byte[] typeBytes = BitConverter.GetBytes((int)resourceType);
-        fileStream.Write(typeBytes, 0, typeBytes.Length);
-
         byte[] sizeBytes = BitConverter.GetBytes(resourceData.Length);
         fileStream.Write(sizeBytes, 0, sizeBytes.Length);
+        
+        byte[] typeBytes = BitConverter.GetBytes((int)resourceType);
+        fileStream.Write(typeBytes, 0, typeBytes.Length);
 
         fileStream.Write(resourceData, 0, resourceData.Length);
 
@@ -59,25 +53,26 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     using (var fileStream = new FileStream(resourcesFilename, FileMode.Open))
     {
       byte[] idBytes = new byte[4];
-      byte[] typeBytes = new byte[4];
       byte[] sizeBytes = new byte[4];
+      byte[] typeBytes = new byte[4];
       while (fileStream.Read(idBytes, 0, 4) > 0)
       {
         int currentResourceID = BitConverter.ToInt32(idBytes, 0);
+        
+        fileStream.ReadExactly(sizeBytes, 0, 4);
+        int sizeLength = BitConverter.ToInt32(sizeBytes, 0);
         
         if (currentResourceID == resourceID)
         {
           fileStream.ReadExactly(typeBytes, 0, 4);
           ResourceType resourceType = (ResourceType)BitConverter.ToInt32(typeBytes, 0);
           
-          fileStream.ReadExactly(sizeBytes, 0, 4);
-          int resourceSize = BitConverter.ToInt32(sizeBytes, 0);
-          byte[] resourceData = new byte[resourceSize];
-          fileStream.ReadExactly(resourceData, 0, resourceSize);
+          byte[] resourceData = new byte[sizeLength];
+          fileStream.ReadExactly(resourceData, 0, sizeLength);
 
           return LoadResourceByType<T>(resourceData, resourceType);
         }
-        fileStream.Seek(4 + sizeBytes.Length, SeekOrigin.Current);
+        fileStream.Seek(4 + sizeLength, SeekOrigin.Current);
       }
     }
     throw new InvalidOperationException("Resource not found");
@@ -114,6 +109,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     return Path.GetExtension(fileName).ToLower() switch
     {
       ".png" => ResourceType.ImagePng,
+      ".jpg" => ResourceType.ImageJpg,
       ".mp3" => ResourceType.WaveMp3,
       _ => throw new InvalidOperationException("Invalid file extension")
     };
@@ -124,8 +120,16 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     return resourceType switch
     {
       ResourceType.ImagePng => ".png",
+      ResourceType.ImageJpg => ".jpg",
       ResourceType.WaveMp3 => ".mp3",
       _ => throw new InvalidOperationException("Invalid resource type")
     };
   }
+}
+
+public enum ResourceType
+{
+  ImagePng,
+  ImageJpg,
+  WaveMp3,
 }

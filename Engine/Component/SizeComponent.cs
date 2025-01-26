@@ -2,6 +2,7 @@ using System.Numerics;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -27,7 +28,7 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
   public override void Init(Context context)
   {
     if (!InitWait) return;
-    Item.Item item = context.Managers.Item.GetByComponent(this);
+    Item item = context.Managers.Item.GetByComponent(this);
 
     ImageComponent? image = item.Component<ImageComponent>();
     if (image is not null)

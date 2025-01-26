@@ -1,6 +1,7 @@
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -37,7 +38,7 @@ public class BorderComponent : ComponentTemplate
 
   public override void Init(Context context)
   {
-    Item.Item item = context.Managers.Item.GetByComponent(this);
+    Item item = context.Managers.Item.GetByComponent(this);
     Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
     Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
     Figure = item.Component<FigureComponent>() ?? Error(new FigureComponent(), "Item has no figure component. Initialising default figure.");

@@ -3,7 +3,7 @@ using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
-using StreamlineEngine.Engine.Pkg.Etc.Templates;
+using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -16,7 +16,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public FigureComponent Figure { get; set; }
   public BorderComponent Border { get; set; }
   public Color Color { get; set; }
-  public bool Hover { get; private set; } = false;
+  public bool Hover { get; private set; }
   public bool[] Click { get; private set; } = [false, false, false];
   public bool[] Press { get; private set; } = [false, false, false];
   public bool[] Release { get; private set; } = [false, false, false];
@@ -31,7 +31,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   {
     if (ColorInit) Color = Defaults.DebugHitboxColor;
     
-    Item.Item item = context.Managers.Item.GetByComponent(this);
+    Item item = context.Managers.Item.GetByComponent(this);
     Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
     Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
     Figure = item.Component<FigureComponent>() ?? Error(new FigureComponent(), "Item has no figure component. Initialising default figure.");
@@ -57,16 +57,16 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
 
   public override void Update(Context context)
   {
+    Hover = DecideHover();
     for (int i = 0; i < Click.Length; i++)
     {
-      Hover = DecideHover();
       Click[i] = Raylib.IsMouseButtonPressed((MouseButton)i);
       Press[i] = Click[i] && Hover;
       Release[i] = Raylib.IsMouseButtonReleased((MouseButton)i);
       Hold[i] = Raylib.IsMouseButtonPressed((MouseButton)i);
-      if (!Drag[i] & Click[i] & Hover) 
+      if (!Drag[i] & Press[i]) 
         Drag[i] = true;
-      if (Drag[i] & !Hold[i]) 
+      if (Drag[i] & Release[i]) 
         Drag[i] = false;
     }
   }

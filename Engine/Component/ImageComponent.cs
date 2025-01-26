@@ -4,7 +4,7 @@ using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Material;
-using StreamlineEngine.Engine.Pkg.Etc.Templates;
+using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Component;
 
@@ -34,7 +34,7 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   public override void Init(Context context)
   {
     if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
-    Item.Item item = context.Managers.Item.GetByComponent(this);
+    Item item = context.Managers.Item.GetByComponent(this);
     Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
     Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
     Border = item.Component<BorderComponent>() ?? new BorderComponent(0);

@@ -1,9 +1,9 @@
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 
-namespace StreamlineEngine.Engine.Folder;
+namespace StreamlineEngine.Engine.Node;
 
-public class FolderNode : UuidIdentifier, IFolder<object>, IScript
+public class Folder : UuidIdentifier, IFolder<object>, IScript
 {
   public string Name { get; set; }
   public bool Active { get; set; } = true;
@@ -11,7 +11,7 @@ public class FolderNode : UuidIdentifier, IFolder<object>, IScript
   public List<dynamic>? Parent { get; set; }
   public List<dynamic>? Children { get; set; }
   
-  public FolderNode(string name, FolderNodeType type, params dynamic[] children) {
+  public Folder(string name, FolderNodeType type, params dynamic[] children) {
     Name = name;
     Type = type;
     Children = children.ToList();
