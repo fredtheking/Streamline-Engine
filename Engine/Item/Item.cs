@@ -13,7 +13,8 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public bool Active { get; set; } = true;
   public List<ComponentTemplate> Components { get; } = [];
   public List<IMaterial> Materials { get; } = [];
-  public List<(LateInitType, Action)> LateInitActions { get; } = [];
+  public List<(InitType, Action)> LateInitActions { get; } = [];
+  public List<(InitType, Action)> EarlyInitActions { get; } = [];
 
   public Item(string name, params ComponentTemplate[] components)
   {
@@ -49,17 +50,21 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     foreach (var m in material.Where(m => !Materials.Contains(m))) Materials.Add(m);
   }
 
-  public void AddLateInit(LateInitType type, Action action) =>
+  public void AddLateInit(InitType type, Action action) =>
     LateInitActions.Add((type, action));
+  
+  public void AddEarlyInit(InitType type, Action action) =>
+    EarlyInitActions.Add((type, action));
 
   public void LocalLateInit(dynamic component, bool pos = true, bool size = true)
   {
-    if (pos) AddLateInit(LateInitType.Component, () => component.LocalPosition = new PositionComponent(0));
-    if (size) AddLateInit(LateInitType.Component, () => component.LocalSize = new SizeComponent(0));
+    if (pos) AddLateInit(InitType.Component, () => component.LocalPosition = new PositionComponent(0));
+    if (size) AddLateInit(InitType.Component, () => component.LocalSize = new SizeComponent(0));
   }
   
   public void Init(Context context)
   {
+    foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2();
     foreach (ComponentTemplate c in Components) c.Init(context);
     foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2();
   }

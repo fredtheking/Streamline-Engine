@@ -10,8 +10,11 @@ public class CustomScriptComponent : ComponentTemplate
   
   public CustomScriptComponent(dynamic script) => Script = script;
 
-  public override void Init(Context context) =>
+  public override void Init(Context context)
+  {
+    Script.Parent = context.Managers.Item.GetByComponent(this);
     Script.Init(context);
+  }
   
   public override void Enter(Context context) =>
     Script.Enter(context);
