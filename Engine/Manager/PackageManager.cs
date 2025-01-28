@@ -6,8 +6,11 @@ public class PackageManager(string outputFilename, string enumFilename, string e
 {
   const string OutputExtension = ".serp";
   
-  public void Pack(params Dictionary<string, string>[] resourceFiles)
+  public void Pack(Dictionary<string, string> resourceFiles)
   {
+    var folderPath = Path.GetDirectoryName(enumGeneratedExportPath);
+    if (!Directory.Exists(folderPath)) 
+      Directory.CreateDirectory(folderPath!);
     using (var fileStream = new FileStream(enumGeneratedExportPath + outputFilename + OutputExtension, FileMode.Create))
     using (var enumWriter = new StreamWriter(enumGeneratedExportPath + enumFilename + ".cs"))
     {
@@ -17,7 +20,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
       
       int resourceID = 0;
 
-      foreach (var resourceFile in resourceFiles.SelectMany(dict => dict))
+      foreach (var resourceFile in resourceFiles)
       {
         byte[] resourceData = File.ReadAllBytes(Config.ResourcesPath + resourceFile.Value);
         ResourceType resourceType = GetResourceType(Config.ResourcesPath + resourceFile.Value);
@@ -34,13 +37,19 @@ public class PackageManager(string outputFilename, string enumFilename, string e
         fileStream.Write(resourceData, 0, resourceData.Length);
 
         enumWriter.WriteLine($"  {resourceFile.Key} = {resourceID},");
+
+        string left = $"Packed resource with Name: '{resourceFile.Key}', Type:' {resourceType}', ID:{resourceID}";
+        string right = $"{resourceID + 1}/{resourceFiles.Count}";
+        string space = new string(' ', Console.WindowWidth - left.Length - right.Length);
+        Console.WriteLine(left + space + right);
         resourceID++;
       }
 
       enumWriter.WriteLine("}");
     }
 
-    Console.WriteLine("Packing completed successfully!");
+    Console.WriteLine("\nPacking completed successfully! Press any key to continue.");
+    Console.ReadKey();
   }
   
   public T Unpack<T>(int resourceID)

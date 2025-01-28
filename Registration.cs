@@ -2,7 +2,6 @@ using Raylib_cs;
 using StreamlineEngine.Custom;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
-using StreamlineEngine.Engine.Folder;
 using StreamlineEngine.Engine.Material;
 using StreamlineEngine.Engine.Node;
 using StreamlineEngine.Engine.Object;
@@ -74,8 +73,8 @@ public static class Registration
   public static void ItemsInitChanges(Context context)
   {
     #if !RESOURCES
-    //Items.Item.AddLateInit(LateInitType.Item, () => Items.Item.Component<PositionComponent>()!.Add(-70));
-    //Items.Item2.AddLateInit(LateInitType.Item, () => Items.Item2.Component<PositionComponent>()!.Add(20));
+    Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>()!.Add(-70));
+    Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>()!.Position.Add(40));
     #endif
   }
   

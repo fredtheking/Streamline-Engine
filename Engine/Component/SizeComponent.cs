@@ -27,21 +27,24 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
 
   public override void Init(Context context)
   {
-    if (!InitWait) return;
-    Item item = context.Managers.Item.GetByComponent(this);
+    InitOnce(() =>
+    {
+      if (!InitWait) return;
+      Item item = context.Managers.Item.GetByComponent(this);
 
-    ImageComponent? image = item.Component<ImageComponent>();
-    if (image is not null)
-    {
-      Information("Found image component! Using image size.", true);
-      Width = image.Resource.Size.X;
-      Height = image.Resource.Size.Y;
-    }
-    else
-    {
-      Width = Defaults.Size.X;
-      Height = Defaults.Size.Y;
-    }
+      ImageComponent? image = item.Component<ImageComponent>();
+      if (image is not null)
+      {
+        Information(context, "Found image component! Using image size.", true);
+        Width = image.Resource.Size.X;
+        Height = image.Resource.Size.Y;
+      }
+      else
+      {
+        Width = Defaults.Size.X;
+        Height = Defaults.Size.Y;
+      }
+    });
   }
   
   public SizeComponent Clone() => (SizeComponent)MemberwiseClone();

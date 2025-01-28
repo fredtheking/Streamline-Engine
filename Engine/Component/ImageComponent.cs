@@ -16,6 +16,9 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   public SizeComponent Size { get; set; }
   public BorderComponent Border { get; set; }
   public ImageMaterial Resource { get; set; }
+  /// <summary>
+  /// By default, crop is {0, 0, width, height} (full image, no crop)
+  /// </summary>
   public Rectangle Crop { get; set; }
   private bool CropInit { get; set; }
 
@@ -33,19 +36,22 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   
   public override void Init(Context context)
   {
-    if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
-    Item item = context.Managers.Item.GetByComponent(this);
-    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
-    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
-    Border = item.Component<BorderComponent>() ?? new BorderComponent(0);
+    InitOnce(() =>
+    {
+      if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
+      Item item = context.Managers.Item.GetByComponent(this);
+      Position = item.Component<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = item.Component<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Border = item.Component<BorderComponent>() ?? new BorderComponent(0);
     
-    if (item.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Error("Image component support only 'Rectangle' figure type! Image rendering might look weird.");
-    item.AddMaterial(Resource);
+      if (item.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Image rendering might look weird.");
+      item.AddMaterial(Resource);
 
-    FillComponent? filler = item.Component<FillComponent>();
-    if (filler is not null) Information("Image and Fill component are located in the same item. Be careful with declaring them!");
+      FillComponent? filler = item.Component<FillComponent>();
+      if (filler is not null) Information(context, "Image and Fill component are located in the same item. Be careful with declaring them!");
     
-    item.LocalLateInit(this);
+      item.LocalLatePosSizeInit(this);
+    });
   }
 
   public override void Draw(Context context)

@@ -1,3 +1,6 @@
+using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Templates;
+
 namespace StreamlineEngine.Engine.Manager;
 
 public class DebugManager
@@ -5,10 +8,10 @@ public class DebugManager
   public bool TurnedOn { get; set; } = Config.DebugMode;
   public bool Changed { get; set; } = true;
   
-  public void PrintSeparator(ConsoleColor fgColor = ConsoleColor.Magenta, string message = "") {
+  public void Separator(ConsoleColor fgColor = ConsoleColor.Magenta, string message = "", char sign = '=') {
     string space = " ";
     if (message is "") space = "";
-    string prepostfix = new('=', (Console.WindowWidth - message.Length - space.Length * 2) / 2);
+    string prepostfix = new(sign, (Console.WindowWidth - message.Length - space.Length * 2) / 2);
     
     Console.ForegroundColor = fgColor;
     Console.Write(prepostfix + space + message + space + prepostfix);
@@ -16,13 +19,13 @@ public class DebugManager
     Console.WriteLine();
   }
   
-  public void PrintSeparator(string message) => PrintSeparator(ConsoleColor.Magenta, message);
+  public void Separator(string message, char sign = '=') => Separator(ConsoleColor.Magenta, message, sign);
   
-  private void Print(string prefix, ConsoleColor? backColor, ConsoleColor foreColor, string message)
+  public void Print(string prefix, ConsoleColor? backColor, ConsoleColor foreColor, string message, UuidIdentifier? component = null)
   {
     if (backColor is not null) Console.BackgroundColor = (ConsoleColor)backColor;
     Console.ForegroundColor = foreColor;
-    Console.Write($"{prefix.ToUpper()}: {message}");
+    Console.Write($"{prefix.ToUpper()}{(component is not null ? $" [{component.ShortUuid}]": "")}: {message}");
     Console.ResetColor();
     Console.WriteLine();
   }

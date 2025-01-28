@@ -17,11 +17,33 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public BorderComponent Border { get; set; }
   public Color Color { get; set; }
   public bool Hover { get; private set; }
+  /// <summary>
+  /// Returns true when hovering over hitbox with your mouse
+  /// </summary>
   public bool[] Click { get; private set; } = [false, false, false];
+  /// <summary>
+  /// Returns true when clicking with mouse button (ANY click detected)
+  /// </summary>
   public bool[] Press { get; private set; } = [false, false, false];
+  /// <summary>
+  /// Returns true when clicking with mouse button (ONLY on the hitbox)
+  /// </summary>
   public bool[] Release { get; private set; } = [false, false, false];
+  /// <summary>
+  /// Returns true when releasing mouse button
+  /// </summary>
+  public bool[] Down { get; private set; } = [false, false, false];
+  /// <summary>
+  /// Returns true when mouse button is down (ANY hold detected)
+  /// </summary>
   public bool[] Hold { get; private set; } = [false, false, false];
+  /// <summary>
+  /// Returns true when mouse button is down (ONLY on the hitbox)
+  /// </summary>
   public bool[] Drag { get; private set; } = [false, false, false];
+  /// <summary>
+  /// Returns true when mouse button is dragged (Hold starting in hitbox only, can be released outside hitbox)
+  /// </summary>
   private bool ColorInit;
 
   public MouseHitboxComponent() { ColorInit = true; }
@@ -29,14 +51,28 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
 
   public override void Init(Context context)
   {
-    if (ColorInit) Color = Defaults.DebugHitboxColor;
+    InitOnce(() =>
+    {
+      if (ColorInit) Color = Defaults.DebugHitboxColor;
     
-    Item item = context.Managers.Item.GetByComponent(this);
-    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
-    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
-    Figure = item.Component<FigureComponent>() ?? Error(new FigureComponent(), "Item has no figure component. Initialising default figure.");
-    Border = Figure.Type == FigureType.Rounded ? item.Component<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
-    item.LocalLateInit(this);
+      Item item = context.Managers.Item.GetByComponent(this);
+      Position = item.Component<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = item.Component<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Figure = item.Component<FigureComponent>() ?? Error(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
+      Border = Figure.Type == FigureType.Rounded ? item.Component<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
+      item.LocalLatePosSizeInit(this);
+
+      switch (Figure.Type)
+      {
+        case FigureType.Rounded:
+          Warning(context, "Hitbox on rounded figure works as same as rectangle ones. Be careful with corners!");
+          break;
+        case FigureType.Circle:
+          if (Math.Abs(Size.Width - Size.Height) > 0)
+            Error(context, "Item's size is not square. Hitbox is now stretched to circle. Be careful!");
+          break;
+      }
+    });
   }
 
   private bool DecideHover()
@@ -46,13 +82,22 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
       case FigureType.Rectangle:
         return Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), new Rectangle(Position.Vec2, Size.Vec2));
       case FigureType.Rounded:
-        return Warning(Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), new Rectangle(Position.Vec2 - new Vector2(Border.Thickness), Size.Vec2 + new Vector2(Border.Thickness * 2))), "Hitbox on rounded figure works as same as rectangle ones. Be careful with corners!", true);
+        return Raylib.CheckCollisionPointRec(Raylib.GetMousePosition(), new Rectangle(Position.Vec2 - new Vector2(Border.Thickness), Size.Vec2 + new Vector2(Border.Thickness * 2)));
       case FigureType.Circle:
-        if (Math.Abs(Size.Width - Size.Height) > 0)
-          Error("Item's size is not square. Hitbox is now stretched to circle. Be careful!", true);
         return Raylib.CheckCollisionPointCircle(Raylib.GetMousePosition(), new Vector2(Position.X + LocalPosition.X + Size.Width / 2 + LocalSize.Width / 2, Position.Y + LocalPosition.Y + Size.Height / 2 + LocalSize.Height / 2), Math.Max(Size.Width + LocalSize.Width, Size.Height + LocalSize.Height));
     }
     return false;
+  }
+
+  public override void Enter(Context context)
+  {
+    Hover = false;
+    Click = [false, false, false];
+    Press = [false, false, false];
+    Release = [false, false, false];
+    Down = [false, false, false];
+    Hold = [false, false, false];
+    Drag = [false, false, false];
   }
 
   public override void Update(Context context)
@@ -63,11 +108,10 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
       Click[i] = Raylib.IsMouseButtonPressed((MouseButton)i);
       Press[i] = Click[i] && Hover;
       Release[i] = Raylib.IsMouseButtonReleased((MouseButton)i);
-      Hold[i] = Raylib.IsMouseButtonPressed((MouseButton)i);
-      if (!Drag[i] & Press[i]) 
-        Drag[i] = true;
-      if (Drag[i] & Release[i]) 
-        Drag[i] = false;
+      Down[i] = Raylib.IsMouseButtonDown((MouseButton)i);
+      Hold[i] = Down[i] && Hover;
+      if (!Drag[i] & Press[i]) Drag[i] = true;
+      if (Drag[i] & !Hold[i]) Drag[i] = false;
     }
   }
 

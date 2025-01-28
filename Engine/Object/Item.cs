@@ -2,7 +2,6 @@ using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
-using StreamlineEngine.Engine.Folder;
 
 namespace StreamlineEngine.Engine.Object;
 
@@ -13,8 +12,8 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public bool Active { get; set; } = true;
   public List<ComponentTemplate> Components { get; } = [];
   public List<IMaterial> Materials { get; } = [];
-  public List<(InitType, Action)> LateInitActions { get; } = [];
-  public List<(InitType, Action)> EarlyInitActions { get; } = [];
+  public List<(InitType, Action<Item>)> LateInitActions { get; } = [];
+  public List<(InitType, Action<Item>)> EarlyInitActions { get; } = [];
 
   public Item(string name, params ComponentTemplate[] components)
   {
@@ -24,19 +23,15 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   
   public T? Component<T>() where T : ComponentTemplate
   {
-    foreach (ComponentTemplate c in Components)
-    {
+    foreach (ComponentTemplate c in Components) 
       if (c is T template) return template;
-    }
     return null;
   }
   
   public T? Material<T>() where T : class, IMaterial
   {
     foreach (IMaterial c in Materials)
-    {
       if (c is T template) return template;
-    }
     return null;
   }
 
@@ -50,23 +45,23 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     foreach (var m in material.Where(m => !Materials.Contains(m))) Materials.Add(m);
   }
 
-  public void AddLateInit(InitType type, Action action) =>
+  public void AddLateInit(InitType type, Action<Item> action) =>
     LateInitActions.Add((type, action));
   
-  public void AddEarlyInit(InitType type, Action action) =>
+  public void AddEarlyInit(InitType type, Action<Item> action) =>
     EarlyInitActions.Add((type, action));
 
-  public void LocalLateInit(dynamic component, bool pos = true, bool size = true)
+  public void LocalLatePosSizeInit(dynamic component, bool pos = true, bool size = true)
   {
-    if (pos) AddLateInit(InitType.Component, () => component.LocalPosition = new PositionComponent(0));
-    if (size) AddLateInit(InitType.Component, () => component.LocalSize = new SizeComponent(0));
+    if (pos) AddLateInit(InitType.Component, (obj) => component.LocalPosition = new PositionComponent(0));
+    if (size) AddLateInit(InitType.Component, (obj) => component.LocalSize = new SizeComponent(0));
   }
   
   public void Init(Context context)
   {
-    foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2();
+    foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
     foreach (ComponentTemplate c in Components) c.Init(context);
-    foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2();
+    foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
   }
 
   public void Enter(Context context)

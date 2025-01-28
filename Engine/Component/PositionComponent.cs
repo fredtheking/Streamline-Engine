@@ -27,19 +27,22 @@ public class PositionComponent : ComponentTemplate, ICloneable<PositionComponent
 
   public override void Init(Context context)
   {
-    if (!InitWait) return;
+    InitOnce(() =>
+    {
+      if (!InitWait) return;
 
-    X = Defaults.Position.X;
-    Y = Defaults.Position.Y;
+      X = Defaults.Position.X;
+      Y = Defaults.Position.Y;
     
-    Item item = context.Managers.Item.GetByComponent(this);
-    SizeComponent? size = item.Component<SizeComponent>();
-    if (size is null) return;
+      Item item = context.Managers.Item.GetByComponent(this);
+      SizeComponent? size = item.Component<SizeComponent>();
+      if (size is null) return;
     
-    size.Init(context);
-    Information("Found size component! Using size to center position.");
-    X -= size.Width / 2;
-    Y -= size.Height / 2;
+      size.Init(context);
+      Information(context, "Found size component! Using size to center position.");
+      X -= size.Width / 2;
+      Y -= size.Height / 2;
+    });
   }
   
   public PositionComponent Clone() => (PositionComponent)MemberwiseClone();

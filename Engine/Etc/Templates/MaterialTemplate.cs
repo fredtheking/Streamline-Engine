@@ -1,3 +1,4 @@
+using StreamlineEngine.Engine.Etc.Exceptions;
 using StreamlineEngine.Engine.Etc.Interfaces;
 
 namespace StreamlineEngine.Engine.Etc.Templates;
@@ -6,8 +7,7 @@ public class MaterialTemplate<TFilename, TMaterial> : UuidIdentifier, IMaterial
 {
   public TFilename? Id { get; protected set; }
   public TMaterial? Material { get; protected set; }
-
-  public virtual bool Ready() => Critical(false, "One of material's 'Ready' functions is not implemented! Returning only false.", true);
+  public virtual bool Ready() => throw new NotOverriddenException("'Ready' function is not overridden!");
   
   public virtual void Init(Context context) { }
   public virtual void Enter(Context context) { }

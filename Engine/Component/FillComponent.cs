@@ -22,12 +22,15 @@ public class FillComponent : ComponentTemplate, ICloneable<FillComponent>
 
   public override void Init(Context context)
   {
-    Item item = context.Managers.Item.GetByComponent(this);
-    Position = item.Component<PositionComponent>() ?? Error(new PositionComponent(), "Item has no position component. Initialising default position.");
-    Size = item.Component<SizeComponent>() ?? Error(new SizeComponent(), "Item has no size component. Initialising default size.");
-    Figure = item.Component<FigureComponent>() ?? Error(new FigureComponent(), "Item has no figure component. Initialising default figure.");
+    InitOnce(() =>
+    {
+      Item item = context.Managers.Item.GetByComponent(this);
+      Position = item.Component<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = item.Component<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Figure = item.Component<FigureComponent>() ?? Error(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
 
-    item.LocalLateInit(this);
+      item.LocalLatePosSizeInit(this);
+    });
   }
 
   public override void Draw(Context context)

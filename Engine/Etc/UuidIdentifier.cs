@@ -2,7 +2,7 @@ namespace StreamlineEngine.Engine.Etc;
 
 public class UuidIdentifier
 {
-  protected List<string> OnceSaid { get; } = [];
+  private List<string> OnceSaid { get; } = [];
   public string Uuid { get; protected set; }
   public string ShortUuid { get; protected set; }
 
@@ -12,48 +12,43 @@ public class UuidIdentifier
     ShortUuid = Uuid[new Range(0, Defaults.ShortUuidLength)] + ".." + Uuid[new Range(Uuid.Length - Defaults.ShortUuidLength, Uuid.Length)];
   }
 
-  private void Print(string prefix, ConsoleColor? backColor, ConsoleColor foreColor, string message, bool once)
+  private void Print(Context context, string prefix, ConsoleColor? backColor, ConsoleColor foreColor, string message, bool once)
   {
     if (!OnceSaid.Contains(message))
-    {
-      if (backColor is not null) Console.BackgroundColor = (ConsoleColor)backColor;
-      Console.ForegroundColor = foreColor;
-      Console.Write($"{prefix.ToUpper()} '{ShortUuid}': " + message);
-      Console.ResetColor();
-      Console.WriteLine();
-    }
+      context.Managers.Debug.Print(prefix, backColor, foreColor, message, this);
     if (once && !OnceSaid.Contains(message)) OnceSaid.Add(message);
   }
 
-  protected T Information<T>(T @return, string message, bool once = false)
+  protected T Information<T>(Context context, T @return, string message, bool once = false)
   {
-    Print("info", null, ConsoleColor.White, message, once);
+    Information(context, message, once);
     return @return;
   }
-  protected void Information(string message, bool once = false) =>
-    Print("info", null, ConsoleColor.White, message, once);
+
+  protected void Information(Context context, string message, bool once = false) =>
+    Print(context, "info", null, ConsoleColor.White, message, once);
   
-  protected T Warning<T>(T @return, string message, bool once = false)
+  protected T Warning<T>(Context context, T @return, string message, bool once = false)
   {
-    Print("warn", null, ConsoleColor.Yellow, message, once);
+    Warning(context, message, once);
     return @return;
   }
-  protected void Warning(string message, bool once = false) =>
-    Print("warn", null, ConsoleColor.Yellow, message, once);
+  protected void Warning(Context context, string message, bool once = false) =>
+    Print(context, "warn", null, ConsoleColor.Yellow, message, once);
   
-  protected T Error<T>(T @return, string message, bool once = false)
+  protected T Error<T>(Context context, T @return, string message, bool once = false)
   {
-    Print("error", null, ConsoleColor.Red, message, once);
+    Error(context, message, once);
     return @return;
   }
-  protected void Error(string message, bool once = false) =>
-    Print("error", null, ConsoleColor.Red, message, once);
+  protected void Error(Context context, string message, bool once = false) =>
+    Print(context, "error", null, ConsoleColor.Red, message, once);
   
-  protected T Critical<T>(T @return, string message, bool once = false)
+  protected T Critical<T>(Context context, T @return, string message, bool once = false)
   {
-    Print("crit", ConsoleColor.Red, ConsoleColor.Black, message, once);
+    Critical(context, message, once);
     return @return;
   }
-  protected void Critical(string message, bool once = false) =>
-    Print("crit", ConsoleColor.Red, ConsoleColor.Black, message, once);
+  protected void Critical(Context context, string message, bool once = false) =>
+    Print(context, "crit", ConsoleColor.Red, ConsoleColor.Black, message, once);
 }
