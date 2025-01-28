@@ -18,7 +18,7 @@ public static class Registration
   {
     #if !RESOURCES
     public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
-    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
+    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion2356);
     #endif
   }
   
@@ -86,7 +86,7 @@ public static class Registration
 
   public static Dictionary<string, string> PackResources()
   {
-    Dictionary<string, string> resources = new();
+    Dictionary<string, string> resources = [];
     
     resources.Add("Test", "Image/test.png");
     resources.Add("Avatar", "Image/avatar.png");

@@ -18,14 +18,14 @@ public class PackageManager(string outputFilename, string enumFilename, string e
       enumWriter.WriteLine($"public enum {Path.GetFileName(enumFilename)}");
       enumWriter.WriteLine("{");
       
-      int resourceID = 0;
+      int resourceId = 0;
 
       foreach (var resourceFile in resourceFiles)
       {
         byte[] resourceData = File.ReadAllBytes(Config.ResourcesPath + resourceFile.Value);
         ResourceType resourceType = GetResourceType(Config.ResourcesPath + resourceFile.Value);
 
-        byte[] idBytes = BitConverter.GetBytes(resourceID);
+        byte[] idBytes = BitConverter.GetBytes(resourceId);
         fileStream.Write(idBytes, 0, idBytes.Length);
         
         byte[] sizeBytes = BitConverter.GetBytes(resourceData.Length);
@@ -36,20 +36,16 @@ public class PackageManager(string outputFilename, string enumFilename, string e
 
         fileStream.Write(resourceData, 0, resourceData.Length);
 
-        enumWriter.WriteLine($"  {resourceFile.Key} = {resourceID},");
-
-        string left = $"Packed resource with Name: '{resourceFile.Key}', Type:' {resourceType}', ID:{resourceID}";
-        string right = $"{resourceID + 1}/{resourceFiles.Count}";
-        string space = new string(' ', Console.WindowWidth - left.Length - right.Length);
-        Console.WriteLine(left + space + right);
-        resourceID++;
+        enumWriter.WriteLine($"  {resourceFile.Key} = {resourceId},");
+        string left = $"Packed resource '{resourceFile.Key}',     Type: '{resourceType}',     ID: {resourceId}";
+        string right = $"{resourceId + 1}/{resourceFiles.Count}";
+        string rightSpace = new string(' ', Console.WindowWidth - left.Length - right.Length);
+        Console.WriteLine(left + rightSpace + right);
+        resourceId++;
       }
 
       enumWriter.WriteLine("}");
     }
-
-    Console.WriteLine("\nPacking completed successfully! Press any key to continue.");
-    Console.ReadKey();
   }
   
   public T Unpack<T>(int resourceID)
