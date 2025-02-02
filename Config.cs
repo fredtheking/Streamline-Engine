@@ -19,7 +19,7 @@ public struct Config
   #if !RESOURCES
     public static readonly Folder StartScene = Registration.Folders.FirstScene;
   #else
-    public static readonly Dictionary<string, string> ResourcesPackDictionary = PackageManager.GetJsonToPackAsDict();
+    public static readonly Dictionary<string, string> ResourcesPackDictionary = PackageManager.GetJsonToPackAsDict("ResourcesDict.json");
   #endif
   
   public const string ResourcesPackageName = "resources";

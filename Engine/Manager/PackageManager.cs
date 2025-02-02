@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Raylib_cs;
 
 namespace StreamlineEngine.Engine.Manager;
@@ -83,9 +84,12 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     throw new InvalidOperationException("Resource not found");
   }
 
-  public static Dictionary<string, string> GetJsonToPackAsDict()
+  public static Dictionary<string, string> GetJsonToPackAsDict(string filename)
   {
-    return new();
+    string json = File.ReadAllText(filename);
+    Dictionary<string, string>? dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+    if (dict == null) throw new NullReferenceException("Resources JSON is empty!");
+    return dict;
   }
   
   private T LoadResourceByType<T>(byte[] resourceData, ResourceType resourceType)
