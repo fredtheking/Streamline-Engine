@@ -3,7 +3,7 @@ using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Templates;
 
-namespace StreamlineEngine.Custom;
+namespace StreamlineEngine.CustomBehavior;
 
 public class PressChange : CustomItemBehaviorTemplate
 {

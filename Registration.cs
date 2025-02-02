@@ -1,5 +1,5 @@
 using Raylib_cs;
-using StreamlineEngine.Custom;
+using StreamlineEngine.CustomBehavior;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Material;
