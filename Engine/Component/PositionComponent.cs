@@ -35,7 +35,7 @@ public class PositionComponent : ComponentTemplate, ICloneable<PositionComponent
       Y = Defaults.Position.Y;
     
       Item item = context.Managers.Item.GetByComponent(this);
-      SizeComponent? size = item.Component<SizeComponent>();
+      SizeComponent? size = item.ComponentTry<SizeComponent>();
       if (size is null) return;
     
       size.Init(context);

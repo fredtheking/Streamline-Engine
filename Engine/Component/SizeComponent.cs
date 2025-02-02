@@ -32,7 +32,7 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
       if (!InitWait) return;
       Item item = context.Managers.Item.GetByComponent(this);
 
-      ImageComponent? image = item.Component<ImageComponent>();
+      ImageComponent? image = item.ComponentTry<ImageComponent>();
       if (image is not null)
       {
         Information(context, "Found image component! Using image size.", true);

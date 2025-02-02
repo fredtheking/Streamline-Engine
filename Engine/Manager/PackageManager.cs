@@ -82,6 +82,11 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     }
     throw new InvalidOperationException("Resource not found");
   }
+
+  public static Dictionary<string, string> GetJsonToPackAsDict()
+  {
+    return new();
+  }
   
   private T LoadResourceByType<T>(byte[] resourceData, ResourceType resourceType)
   {

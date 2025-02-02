@@ -9,13 +9,14 @@ namespace StreamlineEngine.Engine.Material;
 
 public class ImageMaterial : MaterialTemplate<int?, Texture2D?>
 {
-  public Vector2 Size { get; protected set; }
-  public Shader? Shader { get; protected set; } = null;
-  public TextureFilter? Filter { get; protected set; } = TextureFilter.Point;
+  public Vector2 Size { get; private set; }
+  public Shader? Shader { get; private set; } = null;
+  private TextureFilter Filter { get; set; } = TextureFilter.Point;
 
-  public ImageMaterial(int resourceId)
+  public ImageMaterial(int resourceId, bool loadOnNeedOnly = false)
   {
     Id = resourceId;
+    LoadOnNeed = loadOnNeedOnly;
   }
 
   public ImageMaterial(Image image)
@@ -31,6 +32,7 @@ public class ImageMaterial : MaterialTemplate<int?, Texture2D?>
   }
 
   public void AddFilter(TextureFilter filter) => Filter = filter;
+  public void AddShader(Shader shader) => Shader = shader;
 
   public override void Init(Context context)
   {
@@ -41,16 +43,14 @@ public class ImageMaterial : MaterialTemplate<int?, Texture2D?>
 
   public override bool Ready() => Material is not null && Raylib.IsTextureValid((Texture2D)Material!);
 
-  public override void Enter(Context context)
+  public override void Load(Context context)
   {
-    if (Id is null || Ready()) return;
     Material = context.Managers.Package.Unpack<Texture2D>((int)Id!);
-    if (Filter is not null) Raylib.SetTextureFilter((Texture2D)Material, (TextureFilter)Filter); 
+    Raylib.SetTextureFilter((Texture2D)Material, Filter); 
   }
 
-  public override void Leave(Context context)
+  public override void Unload(Context context)
   {
-    if (Id is null || !Ready()) return;
     Raylib.UnloadTexture((Texture2D)Material!);
     Material = null;
   }

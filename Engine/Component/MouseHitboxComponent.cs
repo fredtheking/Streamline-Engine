@@ -56,10 +56,10 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
       if (ColorInit) Color = Defaults.DebugHitboxColor;
     
       Item item = context.Managers.Item.GetByComponent(this);
-      Position = item.Component<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = item.Component<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      Figure = item.Component<FigureComponent>() ?? Error(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
-      Border = Figure.Type == FigureType.Rounded ? item.Component<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
+      Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Figure = item.ComponentTry<FigureComponent>() ?? Error(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
+      Border = Figure.Type == FigureType.Rounded ? item.ComponentTry<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
       item.LocalLatePosSizeInit(this);
 
       switch (Figure.Type)
@@ -111,7 +111,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
       Down[i] = Raylib.IsMouseButtonDown((MouseButton)i);
       Hold[i] = Down[i] && Hover;
       if (!Drag[i] & Click[i]) Drag[i] = true;
-      if (Drag[i] & !Hold[i]) Drag[i] = false;
+      if (Drag[i] & !Down[i]) Drag[i] = false;
     }
   }
 

@@ -6,7 +6,7 @@ namespace StreamlineEngine.Engine.Etc.Templates;
 public class CustomItemBehaviorTemplate : IScript
 {
   public Item Parent { get; set; }
-  
+
   public virtual void Init(Context context) { }
   public virtual void Enter(Context context) { }
   public virtual void Leave(Context context) { }

@@ -40,15 +40,14 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
     {
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
       Item item = context.Managers.Item.GetByComponent(this);
-      Position = item.Component<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = item.Component<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      Border = item.Component<BorderComponent>() ?? new BorderComponent(0);
+      Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Border = item.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
     
-      if (item.Component<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Image rendering might look weird.");
+      if (item.ComponentTry<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Image rendering might look weird.");
       item.AddMaterial(Resource);
-
-      FillComponent? filler = item.Component<FillComponent>();
-      if (filler is not null) Information(context, "Image and Fill component are located in the same item. Be careful with declaring them!");
+      
+      if (item.ComponentTry<FillComponent>() is not null) Information(context, "Image and Fill component are located in the same item. Be careful with declaring them!");
     
       item.LocalLatePosSizeInit(this);
     });

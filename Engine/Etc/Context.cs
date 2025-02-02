@@ -1,14 +1,21 @@
-using Raylib_cs;
 using StreamlineEngine.Engine.Manager;
+#if !RESOURCES 
 using StreamlineEngine.Engine.Node;
+using Raylib_cs;
+#endif
 
 namespace StreamlineEngine.Engine.Etc;
 
+/// <summary>
+/// Main game class. Contain all game <c>context</c>.
+/// </summary>
 public class Context
 {
   public Managers Managers { get; } = new();
+  #if !RESOURCES
   public Global Global { get; } = new();
   public Root Root { get; } = new(Config.RootFolders);
+  #endif
   
   public void Run()
   {
@@ -20,7 +27,7 @@ public class Context
       Close();
     #endif
   }
-  
+  #if !RESOURCES
   private void Init()
   {
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
@@ -60,4 +67,5 @@ public class Context
     Raylib.CloseAudioDevice();
     Managers.Debug.Separator(ConsoleColor.Green, "Too-da-loo, kangaroo!");
   }
+  #endif
 }

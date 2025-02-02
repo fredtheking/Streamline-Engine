@@ -1,5 +1,6 @@
 namespace StreamlineEngine.Engine.Etc;
 
+#if !RESOURCES
 public static class Looper
 {
   public static void Init(Context context)
@@ -35,3 +36,4 @@ public static class Looper
     context.Global.Draw(context);
   }
 }
+#endif

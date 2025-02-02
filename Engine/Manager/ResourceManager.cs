@@ -8,7 +8,8 @@ public class ResourceManager
   public List<dynamic> All { get; } = [];
   
   public IMaterial GetByUuid(string uuid) => All.First(i => i.Uuid == uuid);
-
+  
+  #if !RESOURCES
   public void RegisterFromStruct(Context context)
   {
     foreach (var item in typeof(Registration.Materials).GetFields().Select(f => f.GetValue(null)).OfType<IMaterial>().ToArray())
@@ -17,4 +18,5 @@ public class ResourceManager
       All.Add(item);
     }
   }
+  #endif
 }

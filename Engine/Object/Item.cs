@@ -25,29 +25,51 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   /// First component found in item
   /// </summary>
   /// <typeparam name="T">Type of component</typeparam>
-  /// <returns></returns>
-  public T? Component<T>() where T : ComponentTemplate =>
+  public T Component<T>() where T : ComponentTemplate =>
+    (ComponentsList.First(obj => obj is T) as T)!;
+  /// <summary>
+  /// First component found in item (or <c>null</c>, if did not)
+  /// </summary>
+  /// <typeparam name="T">Type of component</typeparam>
+  public T? ComponentTry<T>() where T : ComponentTemplate =>
     ComponentsList.FirstOrDefault(obj => obj is T) as T;
   /// <summary>
   /// All components found in item
   /// </summary>
   /// <typeparam name="T">Type of component</typeparam>
-  /// <returns></returns>
-  public T[]? Components<T>() where T : ComponentTemplate =>
+  public T[] Components<T>() where T : ComponentTemplate =>
+    (ComponentsList.Where(obj => obj is T) as T[])!;
+  /// <summary>
+  /// All components found in item (or <c>null</c>, if did not)
+  /// </summary>
+  /// <typeparam name="T">Type of component</typeparam>
+  public T[]? ComponentsTry<T>() where T : ComponentTemplate =>
     ComponentsList.Where(obj => obj is T) as T[];
   /// <summary>
   /// First material found in item
   /// </summary>
-  /// <typeparam name="T">Type of component</typeparam>
+  /// <typeparam name="T">Type of material</typeparam>
   /// <returns></returns>
-  public T? Material<T>() where T : class, IMaterial =>
+  public T Material<T>() where T : class, IMaterial =>
+    (MaterialsList.First(mat => mat is T) as T)!;
+  /// <summary>
+  /// First material found in item (or <c>null</c>, if did not)
+  /// </summary>
+  /// <typeparam name="T">Type of material</typeparam>
+  public T? MaterialTry<T>() where T : class, IMaterial =>
     MaterialsList.FirstOrDefault(mat => mat is T) as T;
   /// <summary>
   /// All materials found in item
   /// </summary>
-  /// <typeparam name="T">Type of component</typeparam>
+  /// <typeparam name="T">Type of material</typeparam>
   /// <returns></returns> 
-  public T[]? Materials<T>() where T : class, IMaterial =>
+  public T[] Materials<T>() where T : class, IMaterial =>
+    (MaterialsList.Where(mat => mat is T) as T[])!;
+  /// <summary>
+  /// All materials found in item (or <c>null</c>, if did not)
+  /// </summary>
+  /// <typeparam name="T">Type of material</typeparam>
+  public T[]? MaterialsTry<T>() where T : class, IMaterial =>
     MaterialsList.Where(mat => mat is T) as T[];
 
   public void AddComponent(params List<ComponentTemplate> component)
@@ -60,16 +82,16 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     foreach (var m in material.Where(m => !MaterialsList.Contains(m))) MaterialsList.Add(m);
   }
 
-  public void AddLateInit(InitType type, Action<Item> action) =>
-    LateInitActions.Add((type, action));
-  
   public void AddEarlyInit(InitType type, Action<Item> action) =>
     EarlyInitActions.Add((type, action));
 
+  public void AddLateInit(InitType type, Action<Item> action) =>
+    LateInitActions.Add((type, action));
+
   public void LocalLatePosSizeInit(dynamic component, bool pos = true, bool size = true)
   {
-    if (pos) AddLateInit(InitType.Component, (obj) => component.LocalPosition = new PositionComponent(0));
-    if (size) AddLateInit(InitType.Component, (obj) => component.LocalSize = new SizeComponent(0));
+    if (pos) AddLateInit(InitType.Component, obj => component.LocalPosition = new PositionComponent(0));
+    if (size) AddLateInit(InitType.Component, obj => component.LocalSize = new SizeComponent(0));
   }
   
   public void Init(Context context)

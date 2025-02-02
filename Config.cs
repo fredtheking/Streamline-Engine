@@ -1,6 +1,6 @@
 using System.Numerics;
 using Raylib_cs;
-using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Manager;
 using StreamlineEngine.Engine.Node;
 
 namespace StreamlineEngine;
@@ -19,12 +19,12 @@ public struct Config
   #if !RESOURCES
     public static readonly Folder StartScene = Registration.Folders.FirstScene;
   #else
-    public static readonly Dictionary<string, string> ResourcesPackDictionary = Registration.PackResources();
+    public static readonly Dictionary<string, string> ResourcesPackDictionary = PackageManager.GetJsonToPackAsDict();
   #endif
   
   public const string ResourcesPackageName = "resources";
   public const string ResourcesPath = "Resources/";
-  public static readonly Vector2 WindowSize = new(1920, 1080);
+  public static readonly Vector2 WindowSize = new(1280, 720);
   public static readonly Color WindowBackgroundColor = Color.Black;
   public const string WindowTitleInit = "Streamline Engine";
   public const ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;

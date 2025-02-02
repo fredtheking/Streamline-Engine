@@ -13,8 +13,10 @@ public class FolderManager
   public Folder GetByChildrenFolder(Folder item) => (Folder)All.First(f => f.Children.Contains(item));
   public Folder GetByName(string name) => (Folder)All.First(f => f.Name == name);
   
+  #if !RESOURCES
   public void RegisterFromStruct()
   {
     foreach (var folder in typeof(Registration.Folders).GetFields().Select(f => f.GetValue(null)).OfType<Folder>().ToArray()) All.Add(folder);
   }
+  #endif
 }
