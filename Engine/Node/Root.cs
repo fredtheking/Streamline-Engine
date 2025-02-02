@@ -17,7 +17,10 @@ public class Root : UuidIdentifier, IFolder<Folder>
   public void Init(Context context)
   {
     foreach (Folder node in Children)
+    {
       node.Init(context);
+      node.Parent!.Add(this);
+    }
   }
   public void Enter(Context context)
   {

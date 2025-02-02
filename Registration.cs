@@ -17,8 +17,8 @@ public static class Registration
   public struct Materials
   {
     #if !RESOURCES
-    public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
-    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion2356);
+    public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Lion);
+    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Avatar);
     #endif
   }
   

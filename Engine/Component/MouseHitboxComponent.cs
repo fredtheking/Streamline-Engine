@@ -16,11 +16,10 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public FigureComponent Figure { get; set; }
   public BorderComponent Border { get; set; }
   public Color Color { get; set; }
-  public bool Hover { get; private set; }
   /// <summary>
   /// Returns true when hovering over hitbox with your mouse
   /// </summary>
-  public bool[] Click { get; private set; } = [false, false, false];
+  public bool Hover { get; private set; }
   /// <summary>
   /// Returns true when clicking with mouse button (ANY click detected)
   /// </summary>
@@ -28,22 +27,23 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   /// <summary>
   /// Returns true when clicking with mouse button (ONLY on the hitbox)
   /// </summary>
-  public bool[] Release { get; private set; } = [false, false, false];
+  public bool[] Click { get; private set; } = [false, false, false];
   /// <summary>
-  /// Returns true when releasing mouse button
+  /// Returns true when released mouse button
   /// </summary>
-  public bool[] Down { get; private set; } = [false, false, false];
+  public bool[] Release { get; private set; } = [false, false, false];
   /// <summary>
   /// Returns true when mouse button is down (ANY hold detected)
   /// </summary>
-  public bool[] Hold { get; private set; } = [false, false, false];
+  public bool[] Down { get; private set; } = [false, false, false];
   /// <summary>
   /// Returns true when mouse button is down (ONLY on the hitbox)
   /// </summary>
-  public bool[] Drag { get; private set; } = [false, false, false];
+  public bool[] Hold { get; private set; } = [false, false, false];
   /// <summary>
   /// Returns true when mouse button is dragged (Hold starting in hitbox only, can be released outside hitbox)
   /// </summary>
+  public bool[] Drag { get; private set; } = [false, false, false];
   private bool ColorInit;
 
   public MouseHitboxComponent() { ColorInit = true; }
@@ -92,8 +92,8 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public override void Enter(Context context)
   {
     Hover = false;
-    Click = [false, false, false];
     Press = [false, false, false];
+    Click = [false, false, false];
     Release = [false, false, false];
     Down = [false, false, false];
     Hold = [false, false, false];
@@ -103,14 +103,14 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public override void Update(Context context)
   {
     Hover = DecideHover();
-    for (int i = 0; i < Click.Length; i++)
+    for (int i = 0; i < Press.Length; i++)
     {
-      Click[i] = Raylib.IsMouseButtonPressed((MouseButton)i);
-      Press[i] = Click[i] && Hover;
+      Press[i] = Raylib.IsMouseButtonPressed((MouseButton)i);
+      Click[i] = Press[i] && Hover;
       Release[i] = Raylib.IsMouseButtonReleased((MouseButton)i);
       Down[i] = Raylib.IsMouseButtonDown((MouseButton)i);
       Hold[i] = Down[i] && Hover;
-      if (!Drag[i] & Press[i]) Drag[i] = true;
+      if (!Drag[i] & Click[i]) Drag[i] = true;
       if (Drag[i] & !Hold[i]) Drag[i] = false;
     }
   }

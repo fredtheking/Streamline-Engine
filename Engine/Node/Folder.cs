@@ -8,7 +8,7 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
   public string Name { get; set; }
   public bool Active { get; set; } = true;
   public FolderNodeType Type { get; set; }
-  public List<dynamic>? Parent { get; set; }
+  public List<dynamic>? Parent { get; set; } = [];
   public List<dynamic>? Children { get; set; }
   
   public Folder(string name, FolderNodeType type, params dynamic[] children) {
@@ -19,8 +19,11 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
 
   public void Init(Context context)
   {
-    foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
+    foreach (dynamic child in Children ?? [])
+    {
       child.Init(context);
+      child.Parent.Add(this);
+    }
   }
   public void Enter(Context context)
   {

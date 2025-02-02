@@ -7,7 +7,7 @@ public class ItemManager
 {
   public List<Item> All { get; } = [];
   
-  public Item GetByComponent(ComponentTemplate component) => All.First(i => i.Components.Contains(component));
+  public Item GetByComponent(ComponentTemplate component) => All.First(i => i.ComponentsList.Contains(component));
   public Item GetByName(string name) => All.First(i => i.Name == name);
   public Item GetByUuid(string uuid) => All.First(i => i.Uuid == uuid);
 

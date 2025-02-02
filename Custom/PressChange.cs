@@ -21,7 +21,7 @@ public class PressChange : CustomItemBehaviorTemplate
 
   public override void Update(Context context)
   {
-    Parent.Component<PositionComponent>()!.Set((float)Math.Sin(Raylib.GetTime())*100 + 500, (float)Math.Cos(Raylib.GetTime())*100 + 200);
+    Parent.Component<PositionComponent>()!.Set((float)Math.Sin(Raylib.GetTime())*200 + 500, (float)Math.Cos(Raylib.GetTime())*100 + 200);
     
     selected = Parent.Component<MouseHitboxComponent>()!.Hold[(int)MouseButton.Left];
     Parent.Component<MouseHitboxComponent>()!.Color = colors[selected ? 1 : 0];

@@ -10,8 +10,8 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public string Name { get; private set; }
   public List<Node.Folder> Parent { get; private set; } = [];
   public bool Active { get; set; } = true;
-  public List<ComponentTemplate> Components { get; } = [];
-  public List<IMaterial> Materials { get; } = [];
+  public List<ComponentTemplate> ComponentsList { get; } = [];
+  public List<IMaterial> MaterialsList { get; } = [];
   public List<(InitType, Action<Item>)> LateInitActions { get; } = [];
   public List<(InitType, Action<Item>)> EarlyInitActions { get; } = [];
 
@@ -21,28 +21,43 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     AddComponent(components.ToList());
   }
   
-  public T? Component<T>() where T : ComponentTemplate
-  {
-    foreach (ComponentTemplate c in Components) 
-      if (c is T template) return template;
-    return null;
-  }
-  
-  public T? Material<T>() where T : class, IMaterial
-  {
-    foreach (IMaterial c in Materials)
-      if (c is T template) return template;
-    return null;
-  }
+  /// <summary>
+  /// First component found in item
+  /// </summary>
+  /// <typeparam name="T">Type of component</typeparam>
+  /// <returns></returns>
+  public T? Component<T>() where T : ComponentTemplate =>
+    ComponentsList.FirstOrDefault(obj => obj is T) as T;
+  /// <summary>
+  /// All components found in item
+  /// </summary>
+  /// <typeparam name="T">Type of component</typeparam>
+  /// <returns></returns>
+  public T[]? Components<T>() where T : ComponentTemplate =>
+    ComponentsList.Where(obj => obj is T) as T[];
+  /// <summary>
+  /// First material found in item
+  /// </summary>
+  /// <typeparam name="T">Type of component</typeparam>
+  /// <returns></returns>
+  public T? Material<T>() where T : class, IMaterial =>
+    MaterialsList.FirstOrDefault(mat => mat is T) as T;
+  /// <summary>
+  /// All materials found in item
+  /// </summary>
+  /// <typeparam name="T">Type of component</typeparam>
+  /// <returns></returns> 
+  public T[]? Materials<T>() where T : class, IMaterial =>
+    MaterialsList.Where(mat => mat is T) as T[];
 
   public void AddComponent(params List<ComponentTemplate> component)
   {
-    foreach (var c in component.Where(c => !Components.Contains(c))) Components.Add(c);
+    foreach (var c in component.Where(c => !ComponentsList.Contains(c))) ComponentsList.Add(c);
   }
   
   public void AddMaterial(params List<IMaterial> material)
   {
-    foreach (var m in material.Where(m => !Materials.Contains(m))) Materials.Add(m);
+    foreach (var m in material.Where(m => !MaterialsList.Contains(m))) MaterialsList.Add(m);
   }
 
   public void AddLateInit(InitType type, Action<Item> action) =>
@@ -60,28 +75,28 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public void Init(Context context)
   {
     foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
-    foreach (ComponentTemplate c in Components) c.Init(context);
+    foreach (ComponentTemplate c in ComponentsList) c.Init(context);
     foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
   }
 
   public void Enter(Context context)
   {
-    foreach (IMaterial m in Materials) m.Enter(context);
-    foreach (ComponentTemplate c in Components) c.Enter(context);
+    foreach (IMaterial m in MaterialsList) m.Enter(context);
+    foreach (ComponentTemplate c in ComponentsList) c.Enter(context);
   }
   
   public void Leave(Context context)
   {
-    foreach (IMaterial m in Materials) m.Leave(context);
-    foreach (ComponentTemplate c in Components) c.Leave(context);
+    foreach (IMaterial m in MaterialsList) m.Leave(context);
+    foreach (ComponentTemplate c in ComponentsList) c.Leave(context);
   }
   public void Update(Context context)
   {
-    foreach (ComponentTemplate c in Components) c.Update(context);
+    foreach (ComponentTemplate c in ComponentsList) c.Update(context);
   }
   public void Draw(Context context)
   {
-    foreach (ComponentTemplate component in Components)
+    foreach (ComponentTemplate component in ComponentsList)
       component.Draw(context);
   }
   
