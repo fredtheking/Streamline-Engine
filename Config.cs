@@ -10,9 +10,9 @@ public struct Config
   public static readonly Folder[] RootFolders =
   [
     #if !RESOURCES
+    Registration.Folders.GlobalFolder,
     Registration.Folders.FirstScene,
     Registration.Folders.SecondScene,
-    Registration.Folders.GlobalFolder
     #endif
   ];
   
@@ -30,4 +30,8 @@ public struct Config
   public const ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;
 
   public const bool DebugMode = true;
+  public static readonly string[] ByePhrase = [
+    "Too-da-loo, kangaroo!",
+    "See you later, alligator!"
+  ];
 }

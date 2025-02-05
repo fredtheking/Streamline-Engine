@@ -65,7 +65,7 @@ public class Context
     Root.Leave(this);
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
-    Managers.Debug.Separator(ConsoleColor.Green, "Too-da-loo, kangaroo!");
+    Managers.Debug.Separator(ConsoleColor.Green, Config.ByePhrase[new Random().Next(Config.ByePhrase.Length)]);
   }
   #endif
 }

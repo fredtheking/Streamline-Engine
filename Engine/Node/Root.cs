@@ -72,24 +72,24 @@ public class Root : UuidIdentifier, IFolder<Folder>
 
   public void Next(Context context)
   {
-    if (Children.Count(c => c.Type == FolderNodeType.Scene) == 1)
+    if (Scenes.Length == 1)
     {
       Error(context, "Only one scene, can't go forward!");
       return;
     }
     int index = (Scenes.ToList().FindIndex(c => c == CurrentScene) + 1) % Scenes.Length;
-    Change(context, Children[index]);
+    Change(context, Scenes[index]);
   }
 
   public void Previous(Context context)
   {
-    if (Children.Count(c => c.Type == FolderNodeType.Scene) == 1)
+    if (Scenes.Length == 1)
     {
       Error(context, "Only one scene, can't go back!");
       return;
     }
     int index = (Scenes.ToList().FindIndex(c => c == CurrentScene) - 1 + Scenes.Length) % Scenes.Length;
-    Change(context, Children[index]);
+    Change(context, Scenes[index]);
   }
 
   public Root(params Folder[] children) {
