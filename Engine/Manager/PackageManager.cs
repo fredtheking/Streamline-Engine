@@ -1,10 +1,23 @@
 using System.Text.Json;
 using Raylib_cs;
+using StreamlineEngine.Engine.Etc.Classes;
 
 namespace StreamlineEngine.Engine.Manager;
 
+
+public enum ResourceType
+{
+  ImagePng,
+  ImageJpg,
+}
+
 public class PackageManager(string outputFilename, string enumFilename, string enumGeneratedExportPath = "../../../")
 {
+  private static readonly BiDictionary<string, ResourceType> ResourceMap = new()
+  {
+    { ".png", ResourceType.ImagePng },
+    { ".jpg", ResourceType.ImageJpg },
+  };
   const string OutputExtension = ".serp";
   
   public void Pack(Dictionary<string, string> resourceFiles)
@@ -38,7 +51,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
         fileStream.Write(resourceData, 0, resourceData.Length);
 
         enumWriter.WriteLine($"  {resourceFile.Key} = {resourceId},");
-        string left = $"Packed resource '{resourceFile.Key}',     Type: '{resourceType}',     ID: {resourceId}";
+        string left = $"Packed resource '{resourceFile.Key}',     Type: '{resourceType}',     Size: '~{resourceData.Length/1024}KB'     ID: {resourceId}";
         string right = $"{resourceId + 1}/{resourceFiles.Count}";
         string rightSpace = new string(' ', Console.WindowWidth - left.Length - right.Length);
         Console.WriteLine(left + rightSpace + right);
@@ -94,56 +107,28 @@ public class PackageManager(string outputFilename, string enumFilename, string e
   
   private T LoadResourceByType<T>(byte[] resourceData, ResourceType resourceType)
   {
-    string ext = GetExtensionByResourceType(resourceType);
+    string ext = GetExtension(resourceType);
+    if (typeof(T) == typeof(Image)) 
+      return (T)(object)Raylib.LoadImageFromMemory(ext, resourceData);
     if (typeof(T) == typeof(Texture2D))
     {
       Image image = Raylib.LoadImageFromMemory(ext, resourceData);
-      return (T)(object)Raylib.LoadTextureFromImage(image);
-    }
-    if (typeof(T) == typeof(Image))
-    {
-      Image image = Raylib.LoadImageFromMemory(ext, resourceData);
-      return (T)(object)image;
+      Texture2D texture = Raylib.LoadTextureFromImage(image);
+      Raylib.UnloadImage(image);
+      return (T)(object)texture;
     }
     if (typeof(T) == typeof(Wave))
-    {
-      Wave wave = Raylib.LoadWaveFromMemory(ext, resourceData);
-      return (T)(object)wave;
-    }
+      return (T)(object)Raylib.LoadWaveFromMemory(ext, resourceData);
     if (typeof(T) == typeof(Sound))
     {
       Wave wave = Raylib.LoadWaveFromMemory(ext, resourceData);
-      return (T)(object)Raylib.LoadSoundFromWave(wave);
+      Sound sound = Raylib.LoadSoundFromWave(wave);
+      Raylib.UnloadWave(wave);
+      return (T)(object)sound;
     }
     throw new InvalidOperationException("Invalid resource type");
   }
 
-  private ResourceType GetResourceType(string fileName)
-  {
-    return Path.GetExtension(fileName).ToLower() switch
-    {
-      ".png" => ResourceType.ImagePng,
-      ".jpg" => ResourceType.ImageJpg,
-      ".mp3" => ResourceType.WaveMp3,
-      _ => throw new InvalidOperationException("Invalid file extension")
-    };
-  }
-  
-  private string GetExtensionByResourceType(ResourceType resourceType)
-  {
-    return resourceType switch
-    {
-      ResourceType.ImagePng => ".png",
-      ResourceType.ImageJpg => ".jpg",
-      ResourceType.WaveMp3 => ".mp3",
-      _ => throw new InvalidOperationException("Invalid resource type")
-    };
-  }
-}
-
-public enum ResourceType
-{
-  ImagePng,
-  ImageJpg,
-  WaveMp3,
+  private ResourceType GetResourceType(string fileName) => ResourceMap[Path.GetExtension(fileName).ToLower()];
+  private string GetExtension(ResourceType resourceType) => ResourceMap[resourceType];
 }

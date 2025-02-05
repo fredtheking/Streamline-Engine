@@ -17,8 +17,8 @@ public static class Registration
 {
   public struct Materials
   {
-    public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Lion);
-    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Avatar);
+    public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
+    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
   }
   
   public struct Items
@@ -32,11 +32,13 @@ public static class Registration
       new MouseHitboxComponent(),
       new ScriptComponent(new PressChange())
     );
+
     public static Item Item2 = new("Hello2Item",
       new SizeComponent(200),
       new PositionComponent(),
       new FigureComponent(FigureType.Rectangle, .2f),
       new ImageComponent(Materials.AvatarMaterial),
+      new BorderComponent(8f, Color.Purple),
       new BorderComponent(4f, Color.Blue)
     );
 
@@ -66,7 +68,7 @@ public static class Registration
   public static void ItemsInitChanges(Context context)
   {
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>()!.Add(-70));
-    Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>()!.LocalPosition.Add(40));
+    //Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>()!.LocalPosition.Add(40));
   }
   
   public static void FoldersInitChanges(Context context)

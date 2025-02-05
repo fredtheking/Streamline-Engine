@@ -1,12 +1,11 @@
-using StreamlineEngine.Engine.Etc.Exceptions;
 using StreamlineEngine.Engine.Etc.Interfaces;
 
 namespace StreamlineEngine.Engine.Etc.Templates;
 
-public class MaterialTemplate<TFilename, TMaterial> : UuidIdentifier, IMaterial
+public class MaterialTemplate : UuidIdentifier
 {
-  public TFilename? Id { get; protected set; }
-  public TMaterial? Material { get; protected set; }
+  public int? Id { get; protected set; }
+  public dynamic? Material { get; protected set; }
   public bool LoadOnNeed { get; protected init; }
   public virtual bool Ready() => throw new NotOverriddenException("'Ready' function is not overridden!");
   

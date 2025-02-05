@@ -29,11 +29,6 @@ public class PressChange : CustomItemBehaviorTemplate
     Fill = Parent.Component<FillComponent>();
   }
 
-  public override void Enter(Context context)
-  {
-    
-  }
-
   public override void Update(Context context)
   {
     Position.Set((float)Math.Sin(Raylib.GetTime())*200 + 500, (float)Math.Cos(Raylib.GetTime())*100 + 200);

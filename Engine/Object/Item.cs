@@ -11,14 +11,14 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public List<Node.Folder> Parent { get; private set; } = [];
   public bool Active { get; set; } = true;
   public List<ComponentTemplate> ComponentsList { get; } = [];
-  public List<IMaterial> MaterialsList { get; } = [];
+  public List<MaterialTemplate> MaterialsList { get; } = [];
   public List<(InitType, Action<Item>)> LateInitActions { get; } = [];
   public List<(InitType, Action<Item>)> EarlyInitActions { get; } = [];
 
   public Item(string name, params ComponentTemplate[] components)
   {
     Name = name;
-    AddComponent(components.ToList());
+    AddComponents(components.ToList());
   }
   
   /// <summary>
@@ -50,37 +50,41 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   /// </summary>
   /// <typeparam name="T">Type of material</typeparam>
   /// <returns></returns>
-  public T Material<T>() where T : class, IMaterial =>
+  public T Material<T>() where T : MaterialTemplate =>
     (MaterialsList.First(mat => mat is T) as T)!;
   /// <summary>
   /// First material found in item (or <c>null</c>, if did not)
   /// </summary>
   /// <typeparam name="T">Type of material</typeparam>
-  public T? MaterialTry<T>() where T : class, IMaterial =>
+  public T? MaterialTry<T>() where T : MaterialTemplate =>
     MaterialsList.FirstOrDefault(mat => mat is T) as T;
   /// <summary>
   /// All materials found in item
   /// </summary>
   /// <typeparam name="T">Type of material</typeparam>
   /// <returns></returns> 
-  public T[] Materials<T>() where T : class, IMaterial =>
+  public T[] Materials<T>() where T : MaterialTemplate =>
     (MaterialsList.Where(mat => mat is T) as T[])!;
   /// <summary>
   /// All materials found in item (or <c>null</c>, if did not)
   /// </summary>
   /// <typeparam name="T">Type of material</typeparam>
-  public T[]? MaterialsTry<T>() where T : class, IMaterial =>
+  public T[]? MaterialsTry<T>() where T : MaterialTemplate =>
     MaterialsList.Where(mat => mat is T) as T[];
 
-  public void AddComponent(params List<ComponentTemplate> component)
-  {
-    foreach (var c in component.Where(c => !ComponentsList.Contains(c))) ComponentsList.Add(c);
-  }
-  
-  public void AddMaterial(params List<IMaterial> material)
-  {
-    foreach (var m in material.Where(m => !MaterialsList.Contains(m))) MaterialsList.Add(m);
-  }
+  public void AddComponents(params List<ComponentTemplate> component) => 
+    component.ForEach(c => ComponentsList.Add(c));
+  public void RemoveExactComponents(params List<ComponentTemplate> component) => 
+    component.ForEach(c => ComponentsList.Remove(c));
+  public void RemoveAllComponents<T>() where T : ComponentTemplate => 
+    ComponentsList.Where(obj => obj is T).ToList().ForEach(obj => ComponentsList.Remove(obj));
+
+  public void AddMaterials(params List<MaterialTemplate> material) => 
+    material.ForEach(m => MaterialsList.Add(m));
+  public void RemoveExactMaterials(params List<MaterialTemplate> material) => 
+    material.ForEach(m => MaterialsList.Remove(m));
+  public void RemoveAllMaterials<T>() where T : MaterialTemplate => 
+    MaterialsList.Where(obj => obj is T).ToList().ForEach(obj => MaterialsList.Remove(obj));
 
   public void AddEarlyInit(InitType type, Action<Item> action) =>
     EarlyInitActions.Add((type, action));
@@ -103,13 +107,13 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
 
   public void Enter(Context context)
   {
-    foreach (IMaterial m in MaterialsList) m.Enter(context);
+    foreach (MaterialTemplate m in MaterialsList) m.Enter(context);
     foreach (ComponentTemplate c in ComponentsList) c.Enter(context);
   }
   
   public void Leave(Context context)
   {
-    foreach (IMaterial m in MaterialsList) m.Leave(context);
+    foreach (MaterialTemplate m in MaterialsList) m.Leave(context);
     foreach (ComponentTemplate c in ComponentsList) c.Leave(context);
   }
   public void Update(Context context)

@@ -7,7 +7,7 @@ using StreamlineEngine.Engine.Etc.Templates;
 //easter egg by: Mr_CorteZzik
 namespace StreamlineEngine.Engine.Material;
 
-public class ImageMaterial : MaterialTemplate<int?, Texture2D?>
+public class ImageMaterial : MaterialTemplate
 {
   public Vector2 Size { get; private set; }
   public Shader? Shader { get; private set; } = null;
@@ -51,7 +51,7 @@ public class ImageMaterial : MaterialTemplate<int?, Texture2D?>
 
   public override void Unload(Context context)
   {
-    Raylib.UnloadTexture((Texture2D)Material!);
+    Raylib.UnloadTexture(Material);
     Material = null;
   }
 }

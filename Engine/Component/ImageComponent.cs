@@ -45,7 +45,7 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
       Border = item.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
     
       if (item.ComponentTry<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Image rendering might look weird.");
-      item.AddMaterial(Resource);
+      item.AddMaterials(Resource);
       
       if (item.ComponentTry<FillComponent>() is not null) Information(context, "Image and Fill component are located in the same item. Be careful with declaring them!");
     
