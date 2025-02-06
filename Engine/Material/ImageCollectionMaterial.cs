@@ -1,6 +1,7 @@
 using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Material;
@@ -16,6 +17,12 @@ public class ImageCollectionMaterial : MaterialTemplate
   public ImageCollectionMaterial(int[] resourceIds, bool loadOnNeedOnly = false)
   {
     Id = resourceIds;
+    LoadOnNeed = loadOnNeedOnly;
+  }
+  
+  public ImageCollectionMaterial(Range resourceIds, bool loadOnNeedOnly = false)
+  {
+    Id = Extra.RangeToArray(resourceIds);
     LoadOnNeed = loadOnNeedOnly;
   }
 

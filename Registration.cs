@@ -6,6 +6,7 @@ using StreamlineEngine.Engine.Material;
 using StreamlineEngine.Engine.Node;
 using StreamlineEngine.Engine.Object;
 #if !RESOURCES
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Generated;
 #endif
 using Color = Raylib_cs.Color;
@@ -19,7 +20,7 @@ public static class Registration
   {
     public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
     public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
-    public static ImageCollectionMaterial Collection = new([(int)ResourcesIDs.Lion, (int)ResourcesIDs.Lion, (int)ResourcesIDs.Lion]);
+    public static ImageCollectionMaterial Collection = new(Extra.EnumToRange(ResourcesIDs.Test, ResourcesIDs.Lion));
   }
   
   public struct Items
