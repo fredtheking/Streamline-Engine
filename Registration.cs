@@ -19,7 +19,7 @@ public static class Registration
   {
     public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
     public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
-    public static ImageCollectionMaterial Collection = new([(int)ResourcesIDs.Test, (int)ResourcesIDs.Avatar, (int)ResourcesIDs.Bg, (int)ResourcesIDs.Lion]);
+    public static ImageCollectionMaterial Collection = new([(int)ResourcesIDs.Lion, (int)ResourcesIDs.Lion, (int)ResourcesIDs.Lion]);
   }
   
   public struct Items

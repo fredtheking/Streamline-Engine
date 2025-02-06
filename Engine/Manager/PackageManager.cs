@@ -4,7 +4,6 @@ using StreamlineEngine.Engine.Etc.Classes;
 
 namespace StreamlineEngine.Engine.Manager;
 
-
 public enum ResourceType
 {
   ImagePng,
@@ -12,7 +11,7 @@ public enum ResourceType
   SoundMp3,
 }
 
-public class PackageManager(string outputFilename, string enumFilename, string enumGeneratedExportPath = "../../../")
+public class PackageManager
 {
   private static readonly BiDictionary<string, ResourceType> ResourceMap = new()
   {
@@ -20,20 +19,52 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     { ".jpg", ResourceType.ImageJpg },
     { ".mp3", ResourceType.SoundMp3 },
   };
-  const string OutputExtension = ".serp";
+  private const string OutputExtension = ".serp";
+  private const string IndexExtension = ".seri";
+  private const string ResourceName = Config.ResourcesPackageName;
+  private const string EnumName = "ResourcesIDs";
+  private const string ExportGeneratedPath = "../../../Generated/";
+  private long[] OffsetTable;
+
+  public PackageManager()
+  {
+    List<long> table = [];
+    
+    string indexFilename = "Generated/" + ResourceName + IndexExtension;
+    if (File.Exists(indexFilename))
+    {
+      using var indexStream = new FileStream(indexFilename, FileMode.Open);
+      byte[] countBytes = new byte[4];
+      indexStream.ReadExactly(countBytes, 0, countBytes.Length);
+      int count = BitConverter.ToInt32(countBytes, 0);
+      for (int i = 0; i < count; i++)
+      {
+        byte[] offsetBytes = new byte[8];
+        indexStream.ReadExactly(offsetBytes, 0, offsetBytes.Length);
+        table.Add(BitConverter.ToInt64(offsetBytes));
+      }
+    }
+
+    OffsetTable = table.ToArray();
+  }
   
   public void Pack(Dictionary<string, string> resourceFiles)
   {
-    var folderPath = Path.GetDirectoryName(enumGeneratedExportPath);
+    var folderPath = Path.GetDirectoryName(ExportGeneratedPath);
     if (!Directory.Exists(folderPath)) 
       Directory.CreateDirectory(folderPath!);
-    using (var fileStream = new FileStream(enumGeneratedExportPath + outputFilename + OutputExtension, FileMode.Create))
-    using (var enumWriter = new StreamWriter(enumGeneratedExportPath + enumFilename + ".cs"))
+
+    using (var fileStream = new FileStream(ExportGeneratedPath + ResourceName + OutputExtension, FileMode.Create))
+    using (var indexStream = new FileStream(ExportGeneratedPath + ResourceName + IndexExtension, FileMode.Create))
+    using (var enumWriter = new StreamWriter(ExportGeneratedPath + EnumName + ".cs"))
     {
+      indexStream.Write(BitConverter.GetBytes(resourceFiles.Count), 0, 4);
+      
       enumWriter.WriteLine("namespace StreamlineEngine.Generated;");
-      enumWriter.WriteLine($"public enum {Path.GetFileName(enumFilename)}");
+      enumWriter.WriteLine($"public enum {Path.GetFileName(EnumName)}");
       enumWriter.WriteLine("{");
       
+      long lastOffset = 0;
       int resourceId = 0;
       int maxSpace = resourceFiles.Keys.Max(k => k.Length) + 2;
 
@@ -42,77 +73,90 @@ public class PackageManager(string outputFilename, string enumFilename, string e
         byte[] resourceData = File.ReadAllBytes(Config.ResourcesPath + resourceFile.Value);
         ResourceType resourceType = ResourceMap[Path.GetExtension(resourceFile.Value).ToLower()];
         
-        byte[] idBytes = BitConverter.GetBytes(resourceId);
-        fileStream.Write(idBytes, 0, idBytes.Length);
-        
         byte[] sizeBytes = BitConverter.GetBytes(resourceData.Length);
         fileStream.Write(sizeBytes, 0, sizeBytes.Length);
         
         byte[] typeBytes = BitConverter.GetBytes((int)resourceType);
         fileStream.Write(typeBytes, 0, typeBytes.Length);
-
+        
+        byte[] offsetBytes = BitConverter.GetBytes(lastOffset);
+        indexStream.Write(offsetBytes, 0, offsetBytes.Length);
+        lastOffset += resourceData.Length + sizeBytes.Length + typeBytes.Length;
+        
         fileStream.Write(resourceData, 0, resourceData.Length);
-
-        enumWriter.WriteLine($"  {resourceFile.Key} = {resourceId},{new string(' ', maxSpace - resourceFile.Key.Length)}// {ResourceMap[resourceType]}");
-        string left = $"Packed resource '{resourceFile.Key}',     Type: '{resourceType}',     Size: '~{resourceData.Length/1024}KB'     ID: {resourceId}";
+        
+        enumWriter.WriteLine($"  {resourceFile.Key} = {resourceId},{new string(' ', maxSpace - resourceFile.Key.Length)}// {resourceType}");
+        string left = $"Packed resource '{resourceFile.Key}', Type: '{resourceType}', Size: '~{resourceData.Length / 1024}KB', ID: {resourceId}";
         string right = $"{resourceId + 1}/{resourceFiles.Count}";
         string rightSpace = new string(' ', Console.WindowWidth - left.Length - right.Length);
         Console.WriteLine(left + rightSpace + right);
         resourceId++;
       }
-
+      
       enumWriter.WriteLine("}");
     }
   }
   
   public T Unpack<T>(int resourceID)
   {
-    if (!Raylib.IsWindowReady()) throw new InvalidOperationException("Unpacking should be called after window initialization!");
+    string resourcesFilename = "Generated/" + ResourceName + OutputExtension;
+    if (!File.Exists(resourcesFilename))
+      throw new FileNotFoundException();
+    
+    if (resourceID >= OffsetTable.Length)
+      throw new IndexOutOfRangeException("Resource ID is out of range");
 
-    string resourcesFilename = "Generated/" + outputFilename + OutputExtension;
-    if (!File.Exists(resourcesFilename)) throw new FileNotFoundException();
-  
-    using (var fileStream = new FileStream(resourcesFilename, FileMode.Open))
-    {
-      byte[] idBytes = new byte[4];
-      byte[] sizeBytes = new byte[4];
-      byte[] typeBytes = new byte[4];
-      while (fileStream.Read(idBytes, 0, 4) > 0)
-      {
-        int currentResourceID = BitConverter.ToInt32(idBytes, 0);
-      
-        fileStream.ReadExactly(sizeBytes, 0, 4);
-        int sizeLength = BitConverter.ToInt32(sizeBytes, 0);
-      
-        if (currentResourceID == resourceID)
-        {
-          fileStream.ReadExactly(typeBytes, 0, 4);
-          ResourceType resourceType = (ResourceType)BitConverter.ToInt32(typeBytes, 0);
-        
-          byte[] resourceData = new byte[sizeLength];
-          fileStream.ReadExactly(resourceData, 0, sizeLength);
+    using var fileStream = new FileStream(resourcesFilename, FileMode.Open);
+    fileStream.Seek(OffsetTable[resourceID], SeekOrigin.Begin);
+    
+    byte[] readedBytes = new byte[8]; // 1-4 = size, 5-8 = type
 
-          return LoadResourceByType<T>(resourceData, resourceType);
-        }
-        fileStream.Seek(4 + sizeLength, SeekOrigin.Current);
-      }
-    }
-    throw new InvalidOperationException("Resource not found");
+    fileStream.ReadExactly(readedBytes, 0, 8);
+      
+    int sizeLength = BitConverter.ToInt32(readedBytes[..4], 0);
+    ResourceType resourceType = (ResourceType)BitConverter.ToInt32(readedBytes[4..], 0);
+      
+    byte[] resourceData = new byte[sizeLength];
+    fileStream.ReadExactly(resourceData, 0, sizeLength);
+    return LoadResourceByType<T>(resourceData, resourceType);
   }
   
   public T[] UnpackMany<T>(int[] resourceIDs)
   {
-    T[] resources = new T[resourceIDs.Length];
-    for (int i = 0; i < resourceIDs.Length; i++)
-      resources[i] = Unpack<T>(resourceIDs[i]);
-    return resources;
+    string resourcesFilename = "Generated/" + ResourceName + OutputExtension;
+    if (!File.Exists(resourcesFilename))
+      throw new FileNotFoundException();
+    
+    if (resourceIDs.Any(id => id >= OffsetTable.Length))
+      throw new IndexOutOfRangeException("At least one of Resource IDs is out of range");
+
+    List<T> resources = [];
+    using var fileStream = new FileStream(resourcesFilename, FileMode.Open);
+    foreach (int resourceID in resourceIDs)
+    {
+      fileStream.Seek(OffsetTable[resourceID], SeekOrigin.Begin);
+    
+      byte[] readedBytes = new byte[8]; // 1-4 = size, 5-8 = type
+
+      fileStream.ReadExactly(readedBytes, 0, 8);
+      
+      int sizeLength = BitConverter.ToInt32(readedBytes[..4], 0);
+      ResourceType resourceType = (ResourceType)BitConverter.ToInt32(readedBytes[4..], 0);
+      
+      byte[] resourceData = new byte[sizeLength];
+      fileStream.ReadExactly(resourceData, 0, sizeLength);
+      resources.Add(LoadResourceByType<T>(resourceData, resourceType));
+    }
+
+    return resources.ToArray();
   }
 
   public static Dictionary<string, string> GetJsonToPackAsDict(string filename)
   {
     string json = File.ReadAllText(filename);
     Dictionary<string, string>? dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-    if (dict == null) throw new NullReferenceException("Resources JSON is empty!");
+    if (dict == null)
+      throw new NullReferenceException("Resources JSON is empty!");
     return dict;
   }
   

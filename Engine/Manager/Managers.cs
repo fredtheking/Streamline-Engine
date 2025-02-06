@@ -7,5 +7,5 @@ public class Managers
   public DebugManager Debug { get; } = new();
   public ResourceManager Resource { get; } = new();
   public KeybindManager Keybind { get; } = new();
-  public PackageManager Package { get; } = new(Config.ResourcesPackageName, "ResourcesIDs", "../../../Generated/");
+  public PackageManager Package { get; } = new();
 }
