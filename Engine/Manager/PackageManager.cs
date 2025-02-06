@@ -9,6 +9,7 @@ public enum ResourceType
 {
   ImagePng,
   ImageJpg,
+  SoundMp3,
 }
 
 public class PackageManager(string outputFilename, string enumFilename, string enumGeneratedExportPath = "../../../")
@@ -17,6 +18,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
   {
     { ".png", ResourceType.ImagePng },
     { ".jpg", ResourceType.ImageJpg },
+    { ".mp3", ResourceType.SoundMp3 },
   };
   const string OutputExtension = ".serp";
   
@@ -33,12 +35,13 @@ public class PackageManager(string outputFilename, string enumFilename, string e
       enumWriter.WriteLine("{");
       
       int resourceId = 0;
+      int maxSpace = resourceFiles.Keys.Max(k => k.Length) + 2;
 
       foreach (var resourceFile in resourceFiles)
       {
         byte[] resourceData = File.ReadAllBytes(Config.ResourcesPath + resourceFile.Value);
-        ResourceType resourceType = GetResourceType(Config.ResourcesPath + resourceFile.Value);
-
+        ResourceType resourceType = ResourceMap[Path.GetExtension(resourceFile.Value).ToLower()];
+        
         byte[] idBytes = BitConverter.GetBytes(resourceId);
         fileStream.Write(idBytes, 0, idBytes.Length);
         
@@ -50,7 +53,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
 
         fileStream.Write(resourceData, 0, resourceData.Length);
 
-        enumWriter.WriteLine($"  {resourceFile.Key} = {resourceId},");
+        enumWriter.WriteLine($"  {resourceFile.Key} = {resourceId},{new string(' ', maxSpace - resourceFile.Key.Length)}// {ResourceMap[resourceType]}");
         string left = $"Packed resource '{resourceFile.Key}',     Type: '{resourceType}',     Size: '~{resourceData.Length/1024}KB'     ID: {resourceId}";
         string right = $"{resourceId + 1}/{resourceFiles.Count}";
         string rightSpace = new string(' ', Console.WindowWidth - left.Length - right.Length);
@@ -68,7 +71,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
 
     string resourcesFilename = "Generated/" + outputFilename + OutputExtension;
     if (!File.Exists(resourcesFilename)) throw new FileNotFoundException();
-    
+  
     using (var fileStream = new FileStream(resourcesFilename, FileMode.Open))
     {
       byte[] idBytes = new byte[4];
@@ -77,15 +80,15 @@ public class PackageManager(string outputFilename, string enumFilename, string e
       while (fileStream.Read(idBytes, 0, 4) > 0)
       {
         int currentResourceID = BitConverter.ToInt32(idBytes, 0);
-        
+      
         fileStream.ReadExactly(sizeBytes, 0, 4);
         int sizeLength = BitConverter.ToInt32(sizeBytes, 0);
-        
+      
         if (currentResourceID == resourceID)
         {
           fileStream.ReadExactly(typeBytes, 0, 4);
           ResourceType resourceType = (ResourceType)BitConverter.ToInt32(typeBytes, 0);
-          
+        
           byte[] resourceData = new byte[sizeLength];
           fileStream.ReadExactly(resourceData, 0, sizeLength);
 
@@ -95,6 +98,14 @@ public class PackageManager(string outputFilename, string enumFilename, string e
       }
     }
     throw new InvalidOperationException("Resource not found");
+  }
+  
+  public T[] UnpackMany<T>(int[] resourceIDs)
+  {
+    T[] resources = new T[resourceIDs.Length];
+    for (int i = 0; i < resourceIDs.Length; i++)
+      resources[i] = Unpack<T>(resourceIDs[i]);
+    return resources;
   }
 
   public static Dictionary<string, string> GetJsonToPackAsDict(string filename)
@@ -107,7 +118,7 @@ public class PackageManager(string outputFilename, string enumFilename, string e
   
   private T LoadResourceByType<T>(byte[] resourceData, ResourceType resourceType)
   {
-    string ext = GetExtension(resourceType);
+    string ext = ResourceMap[resourceType];
     if (typeof(T) == typeof(Image)) 
       return (T)(object)Raylib.LoadImageFromMemory(ext, resourceData);
     if (typeof(T) == typeof(Texture2D))
@@ -128,7 +139,4 @@ public class PackageManager(string outputFilename, string enumFilename, string e
     }
     throw new InvalidOperationException("Invalid resource type");
   }
-
-  private ResourceType GetResourceType(string fileName) => ResourceMap[Path.GetExtension(fileName).ToLower()];
-  private string GetExtension(ResourceType resourceType) => ResourceMap[resourceType];
 }

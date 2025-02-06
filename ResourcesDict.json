@@ -2,5 +2,6 @@
   "Test": "Image/test.png",
   "Avatar": "Image/avatar.png",
   "Bg": "Image/bg.png",
-  "Lion": "Image/lion.jpg"
+  "Lion": "Image/lion.jpg",
+  "Venjent": "Sound/venjent.mp3"
 }

@@ -19,6 +19,7 @@ public static class Registration
   {
     public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
     public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
+    public static ImageCollectionMaterial Collection = new([(int)ResourcesIDs.Test, (int)ResourcesIDs.Avatar, (int)ResourcesIDs.Bg, (int)ResourcesIDs.Lion]);
   }
   
   public struct Items
@@ -69,6 +70,7 @@ public static class Registration
   {
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>()!.Add(-70));
     //Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>()!.LocalPosition.Add(40));
+    Items.Item2.AddLateInit(InitType.Material, obj => obj.AddMaterials(Materials.Collection));
   }
   
   public static void FoldersInitChanges(Context context)

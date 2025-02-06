@@ -4,7 +4,7 @@ namespace StreamlineEngine.Engine.Etc.Templates;
 
 public class MaterialTemplate : UuidIdentifier
 {
-  public int? Id { get; protected set; }
+  public int Id { get; protected set; }
   public dynamic? Material { get; protected set; }
   public bool LoadOnNeed { get; protected init; }
   public virtual bool Ready() => throw new NotOverriddenException("'Ready' function is not overridden!");
@@ -15,13 +15,13 @@ public class MaterialTemplate : UuidIdentifier
 
   public virtual void Enter(Context context)
   {
-    if (Id is null || Ready() || LoadOnNeed) return;
+    if (Ready() || LoadOnNeed) return;
     Load(context);
   }
 
   public virtual void Leave(Context context)
   {
-    if (Id is null || !Ready()) return;
+    if (!Ready()) return;
     Unload(context);
   }
   public void Update(Context context) =>

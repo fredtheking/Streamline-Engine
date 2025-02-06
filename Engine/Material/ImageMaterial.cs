@@ -19,24 +19,12 @@ public class ImageMaterial : MaterialTemplate
     LoadOnNeed = loadOnNeedOnly;
   }
 
-  public ImageMaterial(Image image)
-  {
-    Material = Raylib.LoadTextureFromImage(image);
-    Size = new Vector2(image.Width, image.Height);
-  }
-  
-  public ImageMaterial(Texture2D texture)
-  {
-    Material = texture;
-    Size = new Vector2(texture.Width, texture.Height);
-  }
-
   public void AddFilter(TextureFilter filter) => Filter = filter;
   public void AddShader(Shader shader) => Shader = shader;
 
   public override void Init(Context context)
   {
-    Texture2D texture = context.Managers.Package.Unpack<Texture2D>((int)Id!);
+    Texture2D texture = context.Managers.Package.Unpack<Texture2D>(Id);
     Size = new Vector2(texture.Width, texture.Height);
     Raylib.UnloadTexture(texture);
   }
@@ -45,7 +33,7 @@ public class ImageMaterial : MaterialTemplate
 
   public override void Load(Context context)
   {
-    Material = context.Managers.Package.Unpack<Texture2D>((int)Id!);
+    Material = context.Managers.Package.Unpack<Texture2D>(Id);
     Raylib.SetTextureFilter((Texture2D)Material, Filter); 
   }
 
