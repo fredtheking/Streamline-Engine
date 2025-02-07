@@ -11,11 +11,13 @@ namespace StreamlineEngine.Engine.Etc;
 /// </summary>
 public class Context
 {
-  public Managers Managers { get; } = new();
+  public Managers Managers { get; }
   #if !RESOURCES
   public Global Global { get; } = new();
   public Root Root { get; } = new(Config.RootFolders);
   #endif
+  
+  public Context() { Managers = new Managers(this); }
   
   public void Run()
   {

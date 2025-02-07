@@ -48,7 +48,8 @@ public static class Registration
       new SizeComponent(100),
       new PositionComponent(100),
       new FigureComponent(FigureType.Rectangle),
-      new ImageComponent(Materials.ImageMaterial)
+      new ImageComponent(Materials.ImageMaterial),
+      new ScriptComponent(new AutoSceneChanger())
     );
   }
   

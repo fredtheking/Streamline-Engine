@@ -3,7 +3,7 @@ using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Etc.Templates;
 
-public class CustomItemBehaviorTemplate : IScript
+public abstract class CustomItemBehaviorTemplate : IScript
 {
   public Item Parent { get; set; }
 
