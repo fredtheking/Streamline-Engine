@@ -10,7 +10,7 @@ public class Global : IScript
   public void Init(Context context) { }
   public void Enter(Context context) { }
   public void Leave(Context context) { }
-
+  public void EarlyUpdate(Context context) { }
   public void Update(Context context)
   {
     #if DEBUG
@@ -22,7 +22,8 @@ public class Global : IScript
       context.Managers.Debug.Toggle();
     #endif
   }
-
+  public void LateUpdate(Context context) { }
+  public void PreDraw(Context context) { }
   public void Draw(Context context)
   {
     Raylib.DrawFPS(10, 10);

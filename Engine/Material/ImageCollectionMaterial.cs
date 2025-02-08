@@ -8,22 +8,26 @@ namespace StreamlineEngine.Engine.Material;
 
 public class ImageCollectionMaterial : MaterialTemplate
 {
-  public int[] Id { get; private set; }
-  public Texture2D[]? Material { get; private set; }
+  public new int[] Id { get; private set; }
+  public new Texture2D[]? Material { get; private set; }
+  public Vector2 SharedSize { get; private set; }
   public Vector2[] Size { get; private set; }
+  public bool MultiSizeable { get; private set; }
   public Shader? Shader { get; private set; } = null;
   private TextureFilter Filter { get; set; } = TextureFilter.Point;
 
-  public ImageCollectionMaterial(int[] resourceIds, bool loadOnNeedOnly = false)
+  public ImageCollectionMaterial(int[] resourceIds, bool loadOnNeedOnly = false, bool multiSizeable = false)
   {
     Id = resourceIds;
     LoadOnNeed = loadOnNeedOnly;
+    MultiSizeable = multiSizeable;
   }
   
-  public ImageCollectionMaterial(Range resourceIds, bool loadOnNeedOnly = false)
+  public ImageCollectionMaterial(Range resourceIds, bool loadOnNeedOnly = false, bool multiSizeable = false)
   {
     Id = Extra.RangeToArray(resourceIds);
     LoadOnNeed = loadOnNeedOnly;
+    MultiSizeable = multiSizeable;
   }
 
   public void AddFilter(TextureFilter filter) => Filter = filter;
@@ -39,6 +43,7 @@ public class ImageCollectionMaterial : MaterialTemplate
       Raylib.UnloadTexture(texture);
     }
     Size = sizes.ToArray();
+    SharedSize = Size.All(s => s == Size[0]) ? Size[0] : !MultiSizeable ? Warning(context, Vector2.Zero, "Collection of images has different sizes. Total size is not initialised.") : Information(context, Vector2.Zero, "Collection is MultiSizeable. Total size is not initialised.");
   }
 
   public override bool Ready() => Material is not null && Material.All(m => Raylib.IsTextureValid(m));
@@ -54,4 +59,7 @@ public class ImageCollectionMaterial : MaterialTemplate
     Material!.ToList().ForEach(Raylib.UnloadTexture);
     Material = null;
   }
+  
+  public static ImageCollectionMaterial FromImageMaterial(ImageMaterial material, int repeat = 1) =>
+    new ImageCollectionMaterial(Enumerable.Repeat(material.Id, repeat).ToArray(), material.LoadOnNeed);
 }

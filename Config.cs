@@ -1,5 +1,6 @@
 using System.Numerics;
 using Raylib_cs;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Manager;
 using StreamlineEngine.Engine.Node;
 
@@ -18,10 +19,9 @@ public struct Config
   
   #if !RESOURCES
     public static readonly Folder StartScene = Registration.Folders.FirstScene;
-  #else
-    public static readonly Dictionary<string, string> ResourcesPackDictionary = PackageManager.GetJsonToPackAsDict("ResourcesDict.json");
   #endif
   
+  public const string ResourcesJsonFilename = "ResourcesDict.json";
   public const string ResourcesPackageName = "resources";
   public const string ResourcesPath = "Resources/";
   public static readonly Vector2 WindowSize = new(1920, 1080);

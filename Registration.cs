@@ -18,9 +18,9 @@ public static class Registration
 {
   public struct Materials
   {
-    public static ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
-    public static ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
-    public static ImageCollectionMaterial Collection = new(Extra.EnumToRange(ResourcesIDs.Test, ResourcesIDs.Lion));
+    public static readonly ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
+    public static readonly ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
+    public static readonly ImageCollectionMaterial Collection = new(ResourcesIDs.Jumpscare);
   }
   
   public struct Items
@@ -39,8 +39,7 @@ public static class Registration
       new SizeComponent(200),
       new PositionComponent(),
       new FigureComponent(FigureType.Rectangle, .2f),
-      new ImageComponent(Materials.AvatarMaterial),
-      new BorderComponent(8f, Color.Purple),
+      new AnimationComponent(Materials.Collection, AnimationChangingType.Selectable),
       new BorderComponent(4f, Color.Blue)
     );
 
@@ -72,7 +71,7 @@ public static class Registration
   {
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>()!.Add(-70));
     //Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>()!.LocalPosition.Add(40));
-    Items.Item2.AddLateInit(InitType.Material, obj => obj.AddMaterials(Materials.Collection));
+    //Items.Item2.AddLateInit(InitType.Material, obj => obj.AddMaterials(Materials.Collection));
   }
   
   public static void FoldersInitChanges(Context context)

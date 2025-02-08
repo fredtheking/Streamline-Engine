@@ -35,10 +35,25 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
     foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
       child.Leave(context);
   }
+  public void EarlyUpdate(Context context)
+  {
+    foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
+      child.EarlyUpdate(context);
+  }
   public void Update(Context context)
   {
     foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
       child.Update(context);
+  }
+  public void LateUpdate(Context context)
+  {
+    foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
+      child.LateUpdate(context);
+  }
+  public void PreDraw(Context context)
+  {
+    foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
+      child.PreDraw(context);
   }
   public void Draw(Context context)
   {

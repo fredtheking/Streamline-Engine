@@ -116,14 +116,25 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     foreach (MaterialTemplate m in MaterialsList) m.Leave(context);
     foreach (ComponentTemplate c in ComponentsList) c.Leave(context);
   }
+  public void EarlyUpdate(Context context)
+  {
+    foreach (ComponentTemplate c in ComponentsList) c.EarlyUpdate(context);
+  }
   public void Update(Context context)
   {
     foreach (ComponentTemplate c in ComponentsList) c.Update(context);
   }
+  public void LateUpdate(Context context)
+  {
+    foreach (ComponentTemplate c in ComponentsList) c.LateUpdate(context);
+  }
+  public void PreDraw(Context context)
+  {
+    foreach (ComponentTemplate c in ComponentsList) c.PreDraw(context);
+  }
   public void Draw(Context context)
   {
-    foreach (ComponentTemplate component in ComponentsList)
-      component.Draw(context);
+    foreach (ComponentTemplate c in ComponentsList) c.Draw(context);
   }
   
   public Item Clone() => (Item)MemberwiseClone();

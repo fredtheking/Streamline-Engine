@@ -1,7 +1,22 @@
 ﻿{
-  "Test": "Image/test.png",
-  "Avatar": "Image/avatar.png",
-  "Bg": "Image/bg.png",
-  "Lion": "Image/lion.jpg",
-  "Venjent": "Sound/venjent.mp3"
+  "Test": {
+    "type": "single",
+    "path": "Image/test.png"
+  },
+  "Bg": {
+    "type": "single",
+    "path": "Image/bg.png"
+  },
+  "Lion": {
+    "type": "single",
+    "path": "Image/lion.jpg"
+  },
+  "Avatar": {
+    "type": "single",
+    "path": "Image/avatar.png"
+  },
+  "Jumpscare": {
+    "type": "stack",
+    "path": "Image/anim/"
+  }
 }

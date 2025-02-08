@@ -4,7 +4,7 @@ using StreamlineEngine.Engine.Etc.Interfaces;
 namespace StreamlineEngine.Engine.Node;
 
 #if !RESOURCES
-public class Root : UuidIdentifier, IFolder<Folder>
+public class Root : UuidIdentifier, IFolder<Folder>, IScript
 {
   private List<dynamic>? _children;
   public string Name { get; set; }
@@ -33,12 +33,26 @@ public class Root : UuidIdentifier, IFolder<Folder>
     foreach (Folder node in ActiveChildren.Intersect(Scenes))
       node.Leave(context);
   }
+  public void EarlyUpdate(Context context)
+  {
+    foreach (Folder node in ActiveChildren)
+      node.EarlyUpdate(context);
+  }
   public void Update(Context context)
   {
     foreach (Folder node in ActiveChildren)
       node.Update(context);
   }
-
+  public void LateUpdate(Context context)
+  {
+    foreach (Folder node in ActiveChildren)
+      node.LateUpdate(context);
+  }
+  public void PreDraw(Context context)
+  {
+    foreach (Folder node in ActiveChildren)
+      node.PreDraw(context);
+  }
   public void Draw(Context context)
   {
     foreach (Folder node in ActiveChildren)

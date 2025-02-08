@@ -42,5 +42,8 @@ public class ImageMaterial : MaterialTemplate
     Raylib.UnloadTexture(Material);
     Material = null;
   }
+
+  public static ImageMaterial FromImageCollectionMaterial(ImageCollectionMaterial material, int index) =>
+    new ImageMaterial(material.Id[index], material.LoadOnNeed);
 }
 

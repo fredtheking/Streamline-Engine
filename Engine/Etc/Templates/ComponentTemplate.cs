@@ -15,6 +15,9 @@ public abstract class ComponentTemplate : UuidIdentifier, IScript
   public virtual void Init(Context context) { }
   public virtual void Enter(Context context) { }
   public virtual void Leave(Context context) { }
+  public virtual void EarlyUpdate(Context context) { }
   public virtual void Update(Context context) { }
+  public virtual void LateUpdate(Context context) { }
+  public virtual void PreDraw(Context context) { }
   public virtual void Draw(Context context) { }
 }

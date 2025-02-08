@@ -3,6 +3,7 @@ using Raylib_cs;
 
 namespace StreamlineEngine.Engine.Etc;
 
+public enum AnimationChangingType { Selectable, Delta, Frame, Random }
 public enum InitType { Component, Material, Item, Folder }
 public enum FigureType { Rectangle, Rounded, Circle }
 public enum DebuggerType { Floating, Side }

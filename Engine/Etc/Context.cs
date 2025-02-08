@@ -1,3 +1,4 @@
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Manager;
 #if !RESOURCES 
 using StreamlineEngine.Engine.Node;
@@ -22,7 +23,7 @@ public class Context
   public void Run()
   {
     #if RESOURCES
-      Managers.Package.Pack(Config.ResourcesPackDictionary);
+    Managers.Package.Pack(Extra.GetJsonToPackAsDict(Config.ResourcesJsonFilename));
     #else
       Init();
       Loop();
@@ -54,7 +55,10 @@ public class Context
       Raylib.BeginDrawing();
       Raylib.ClearBackground(Config.WindowBackgroundColor);
       
+      Looper.EarlyUpdate(this);
       Looper.Update(this);
+      Looper.LateUpdate(this);
+      Looper.PreDraw(this);
       Looper.Draw(this);
       
       Raylib.EndDrawing();

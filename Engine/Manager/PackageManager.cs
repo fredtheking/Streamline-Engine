@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Classes;
@@ -23,20 +24,30 @@ public class PackageManager
   private const string OutputExtension = ".serp";
   private const string IndexExtension = ".seri";
   private const string ResourceName = Config.ResourcesPackageName;
-  private const string EnumName = "ResourcesIDs";
+  private const string StructName = "ResourcesIDs";
   private const string ExportGeneratedPath = "../../../Generated/";
   private readonly long[] _offsetTable;
+  
+  #if RESOURCES
+  private long _lastOffset = 0;
+  private int _resourceId = 0;
+  #endif
 
   public PackageManager(Context context)
   {
     List<long> table = [];
+    #if !RESOURCES
     
     string indexFilename = "Generated/" + ResourceName + IndexExtension;
     if (File.Exists(indexFilename))
     {
       using var indexStream = new FileStream(indexFilename, FileMode.Open);
+      
+      indexStream.Position = indexStream.Length - 4;
       byte[] countBytes = new byte[4];
       indexStream.ReadExactly(countBytes, 0, countBytes.Length);
+      indexStream.Position = 0;
+      
       int count = BitConverter.ToInt32(countBytes, 0);
       for (int i = 0; i < count; i++)
       {
@@ -46,11 +57,13 @@ public class PackageManager
       }
     } 
     else context.Managers.Debug.Warning("No resource files / index file found. Ignore this warning if you dont plan on using external resources (such as textures, sounds, fonts and so on).");
-
+    
+    #endif
     _offsetTable = table.ToArray();
   }
   
-  public void Pack(Dictionary<string, string> resourceFiles)
+  #if RESOURCES
+  public void Pack(Dictionary<string, Dictionary<string, string>> resourceFiles)
   {
     var folderPath = Path.GetDirectoryName(ExportGeneratedPath);
     if (!Directory.Exists(folderPath)) 
@@ -58,43 +71,67 @@ public class PackageManager
 
     using (var fileStream = new FileStream(ExportGeneratedPath + ResourceName + OutputExtension, FileMode.Create))
     using (var indexStream = new FileStream(ExportGeneratedPath + ResourceName + IndexExtension, FileMode.Create))
-    using (var enumWriter = new StreamWriter(ExportGeneratedPath + EnumName + ".cs"))
+    using (var structWriter = new StreamWriter(ExportGeneratedPath + StructName + ".cs"))
     {
-      indexStream.Write(BitConverter.GetBytes(resourceFiles.Count), 0, 4);
+      structWriter.WriteLine("#if !RESOURCES\nnamespace StreamlineEngine.Generated;");
+      structWriter.WriteLine($"public struct {Path.GetFileName(StructName)}");
+      structWriter.WriteLine("{");
       
-      enumWriter.WriteLine("namespace StreamlineEngine.Generated;");
-      enumWriter.WriteLine($"public enum {Path.GetFileName(EnumName)}");
-      enumWriter.WriteLine("{");
+      Span<byte> header = stackalloc byte[8];
       
-      long lastOffset = 0;
-      int resourceId = 0;
-      int maxSpace = resourceFiles.Keys.Max(k => k.Length) + 2;
-
       foreach (var resourceFile in resourceFiles)
       {
-        byte[] resourceData = File.ReadAllBytes(Config.ResourcesPath + resourceFile.Value);
-        ResourceType resourceType = ResourceMap[Path.GetExtension(resourceFile.Value).ToLower()];
+        string packagingMethod = resourceFile.Value["type"];
         
-        Span<byte> header = stackalloc byte[8];
-        BitConverter.TryWriteBytes(header[..4], resourceData.Length);
-        BitConverter.TryWriteBytes(header[4..], (int)resourceType);
-        fileStream.Write(header);
-        fileStream.Write(resourceData);
+        ResourceType resourceType;
+        byte[] resourceData;
         
-        byte[] offsetBytes = BitConverter.GetBytes(lastOffset);
-        indexStream.Write(offsetBytes, 0, offsetBytes.Length);
-        lastOffset += resourceData.Length + 8;
-        
-        enumWriter.WriteLine($"  {resourceFile.Key} = {resourceId},{new string(' ', maxSpace - resourceFile.Key.Length)}// {resourceType}");
-        Console.Write($"Packed '{resourceFile.Key}', Type: {resourceType}, Size: ~{resourceData.Length / 1024}KB, ID: {resourceId}");
-        Console.CursorLeft = Console.WindowWidth - $"{resourceId + 1}/{resourceFiles.Count}".Length;
-        Console.WriteLine($"{resourceId + 1}/{resourceFiles.Count}");
-        resourceId++;
+        switch (packagingMethod)
+        {
+          case "single":
+            EncodeResource(header, fileStream, indexStream, resourceFile, "", out resourceType, out resourceData);
+            structWriter.WriteLine($"  public const int {resourceFile.Key} = {_resourceId-1};   // {resourceType}");
+            
+            Console.WriteLine($"Packed '{resourceFile.Key}', Filename: {resourceFile.Value["path"]}, Type: {resourceType}, Size: ~{resourceData.Length / 1024}KB, ID: {_resourceId-1}");
+            break;
+          case "stack":
+            string[] files = Directory.GetFiles(Config.ResourcesPath + resourceFile.Value["path"]).OrderBy(file => int.Parse(Regex.Match(file, @"\d+").Value)).ToArray();
+            int startId = _resourceId;
+            List<ResourceType> resourceTypes = [];
+            foreach (string file in files)
+            {
+              string filename = Path.GetFileName(file);
+              EncodeResource(header, fileStream, indexStream, resourceFile, filename, out resourceType, out resourceData);
+              resourceTypes.Add(resourceType);
+              
+              Console.WriteLine($"Packed '{resourceFile.Key}', Filename: {resourceFile.Value["path"] + filename}, Type: {resourceType}, Size: ~{resourceData.Length / 1024}KB, ID: {_resourceId-1}");
+            }
+            if (resourceTypes.Any(r => r != resourceTypes[0])) throw new InvalidOperationException("All resources must be of the same type");
+            structWriter.WriteLine($"  public static readonly Range {resourceFile.Key} = {startId}..{_resourceId-1};   // {resourceTypes[0]}");
+            break;
+        }
       }
-      
-      enumWriter.WriteLine("}");
+      structWriter.WriteLine("}\n#endif");
+      indexStream.Write(BitConverter.GetBytes(_resourceId));
     }
   }
+
+  private void EncodeResource(Span<byte> header, FileStream fileStream, FileStream indexStream, KeyValuePair<string, Dictionary<string, string>> resourceFile, string addPath, out ResourceType resourceType, out byte[] resourceData)
+  {
+    resourceType = ResourceMap[Path.GetExtension(resourceFile.Value["path"] + addPath).ToLower()];
+    resourceData = File.ReadAllBytes(Config.ResourcesPath + resourceFile.Value["path"] + addPath);
+
+    BitConverter.TryWriteBytes(header[..4], resourceData.Length);
+    BitConverter.TryWriteBytes(header[4..], (int)resourceType);
+    fileStream.Write(header);
+    fileStream.Write(resourceData);
+        
+    byte[] offsetBytes = BitConverter.GetBytes(_lastOffset);
+    indexStream.Write(offsetBytes, 0, offsetBytes.Length);
+    _lastOffset += resourceData.Length + 8;
+    _resourceId++;
+  }
+  #endif
   
   public T Unpack<T>(int resourceID)
   {
@@ -127,11 +164,10 @@ public class PackageManager
 
     if (resourceIDs.Any(id => id >= _offsetTable.Length))
       throw new IndexOutOfRangeException("At least one of Resource IDs is out of range");
-
-    // 1. Сортируем ресурсные ID
+    
     Array.Sort(resourceIDs);
 
-    List<T> resources = new();
+    List<T> resources = [];
     using var fileStream = new FileStream(resourcesFilename, FileMode.Open, FileAccess.Read);
 
     long lastOffset = -1;
@@ -159,16 +195,6 @@ public class PackageManager
     }
 
     return resources.ToArray();
-  }
-
-
-  public static Dictionary<string, string> GetJsonToPackAsDict(string filename)
-  {
-    string json = File.ReadAllText(filename);
-    Dictionary<string, string>? dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-    if (dict == null)
-      throw new NullReferenceException("Resources JSON is empty!");
-    return dict;
   }
   
   private T LoadResourceByType<T>(byte[] resourceData, ResourceType resourceType)
