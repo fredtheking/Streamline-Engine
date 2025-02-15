@@ -11,6 +11,11 @@ public static class Looper
     context.Root.Change(context, Config.StartScene);
     #endif
   }
+  public static void CheckInitCorrect(Context context)
+  {
+    context.Root.CheckInitCorrect(context);
+    context.Global.CheckInitCorrect(context);
+  }
   public static void Enter(Context context)
   {
     context.Root.Enter(context);

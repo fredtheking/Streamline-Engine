@@ -36,16 +36,18 @@ public class Context
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitleInit);
     Raylib.InitAudioDevice();
-    Managers.Debug.Separator(ConsoleColor.Yellow, "Window and audio created. Starting importing game assets...");
+    Raylib.SetTargetFPS(Config.FpsLock);
+    Managers.Debug.Separator(ConsoleColor.Yellow, "Window and audio initialised. Starting import and registration of game assets...");
     Registration.MaterialsInitChanges(this);
     Registration.ItemsInitChanges(this);
     Registration.FoldersInitChanges(this);
     Managers.Resource.RegisterFromStruct(this);
-    Managers.Item.RegisterFromStruct();
-    Managers.Folder.RegisterFromStruct();
+    Managers.Object.RegisterFromStruct();
+    Managers.Node.RegisterFromStruct();
     Managers.Debug.Separator(ConsoleColor.Yellow, "Structs import done! Starting root initialisation...");
     Looper.Init(this);
-    Managers.Debug.Separator(ConsoleColor.Green, "Initialisation fully ended! Enjoy! :D");
+    Looper.CheckInitCorrect(this);
+    Managers.Debug.Separator(ConsoleColor.Green, "Initialisation fully ended! " + Config.PostInitPhrases[new Random().Next(Config.ByePhrases.Length)]);
   }
 
   private void Loop()
@@ -71,7 +73,7 @@ public class Context
     Root.Leave(this);
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
-    Managers.Debug.Separator(ConsoleColor.Green, Config.ByePhrase[new Random().Next(Config.ByePhrase.Length)]);
+    Managers.Debug.Separator(ConsoleColor.Green, Config.ByePhrases[new Random().Next(Config.ByePhrases.Length)]);
   }
   #endif
 }

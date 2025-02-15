@@ -2,6 +2,7 @@ namespace StreamlineEngine.Engine.Etc;
 
 public class UuidIdentifier
 {
+  public bool Initialized { get; protected set; }
   private List<string> OnceSaid { get; } = [];
   public string Uuid { get; protected set; }
   public string ShortUuid { get; protected set; }
@@ -10,6 +11,13 @@ public class UuidIdentifier
   {
     Uuid = Guid.NewGuid().ToString();
     ShortUuid = Uuid[new Range(0, Defaults.ShortUuidLength)] + ".." + Uuid[new Range(Uuid.Length - Defaults.ShortUuidLength, Uuid.Length)];
+  }
+  
+  protected void InitOnce(Action action)
+  {
+    if (Initialized) return;
+    action();
+    Initialized = true;
   }
 
   private void Print(Context context, string prefix, ConsoleColor? backColor, ConsoleColor foreColor, string message, bool once)
@@ -26,7 +34,7 @@ public class UuidIdentifier
   }
 
   protected void Information(Context context, string message, bool once = false) =>
-    Print(context, "info", null, ConsoleColor.White, message, once);
+    Print(context, "info", null, ConsoleColor.Gray, message, once);
   
   protected T Warning<T>(Context context, T @return, string message, bool once = false)
   {

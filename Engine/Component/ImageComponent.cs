@@ -39,7 +39,7 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
     InitOnce(() =>
     {
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
-      Item item = context.Managers.Item.GetByComponent(this);
+      Item item = context.Managers.Object.GetByComponent(this);
       Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       Border = item.ComponentTry<BorderComponent>() ?? new BorderComponent(0);

@@ -55,7 +55,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     {
       if (ColorInit) Color = Defaults.DebugHitboxColor;
     
-      Item item = context.Managers.Item.GetByComponent(this);
+      Item item = context.Managers.Object.GetByComponent(this);
       Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       Figure = item.ComponentTry<FigureComponent>() ?? Error(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
@@ -65,7 +65,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
       switch (Figure.Type)
       {
         case FigureType.Rounded:
-          Warning(context, "Hitbox on rounded figure works as same as rectangle ones. Be careful with corners!");
+          Warning(context, "Hitbox on rounded figure works the same as rectangle ones. Be careful with corners!");
           break;
         case FigureType.Circle:
           if (Math.Abs(Size.Width - Size.Height) > 0)

@@ -17,11 +17,18 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
 
   public void Init(Context context)
   {
-    foreach (Folder node in Children)
+    InitOnce(() =>
     {
-      node.Init(context);
-      node.Parent!.Add(this);
-    }
+      foreach (Folder node in Children)
+      {
+        node.Init(context);
+        node.Parent!.Add(this);
+      }
+    });
+  }
+  public void CheckInitCorrect(Context context)
+  {
+    if (!Initialized) throw new NotInitialisedException();
   }
   public void Enter(Context context)
   {

@@ -43,7 +43,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     InitOnce(() =>
     {
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.SharedSize);
-      Item item = context.Managers.Item.GetByComponent(this);
+      Item item = context.Managers.Object.GetByComponent(this);
       Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       Border = item.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
@@ -55,6 +55,20 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     
       item.LocalLatePosSizeInit(this);
     });
+  }
+
+  public override void Update(Context context)
+  {
+    switch (Type)
+    {
+      case AnimationChangingType.Delta:
+        break;
+      case AnimationChangingType.Frame:
+        break;
+      case AnimationChangingType.Random:
+        Index = new Random().Next(Resource.Id.Length);
+        break;
+    }
   }
 
   public override void Draw(Context context)

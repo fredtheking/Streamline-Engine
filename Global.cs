@@ -8,6 +8,7 @@ namespace StreamlineEngine;
 public class Global : IScript
 {
   public void Init(Context context) { }
+  public void CheckInitCorrect(Context context) { }
   public void Enter(Context context) { }
   public void Leave(Context context) { }
   public void EarlyUpdate(Context context) { }

@@ -100,10 +100,15 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   
   public void Init(Context context)
   {
-    foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
-    foreach (ComponentTemplate c in ComponentsList) c.Init(context);
-    foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
+    InitOnce(() =>
+    {
+      foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
+      foreach (ComponentTemplate c in ComponentsList) c.Init(context);
+      foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
+    });
   }
+
+  public void CheckInitCorrect(Context context) { if (!Initialized) throw new NotInitialisedException(); }
 
   public void Enter(Context context)
   {

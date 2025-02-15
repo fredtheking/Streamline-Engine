@@ -21,6 +21,7 @@ public static class Registration
     public static readonly ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
     public static readonly ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
     public static readonly ImageCollectionMaterial Collection = new(ResourcesIDs.Jumpscare);
+    public static readonly ImageCollectionMaterial MethoidCollection = ImageCollectionMaterial.FromImageMaterial(AvatarMaterial, 3);
   }
   
   public struct Items
@@ -39,16 +40,21 @@ public static class Registration
       new SizeComponent(200),
       new PositionComponent(),
       new FigureComponent(FigureType.Rectangle, .2f),
-      new AnimationComponent(Materials.Collection, AnimationChangingType.Selectable),
+      new AnimationComponent(Materials.Collection, AnimationChangingType.Random),
       new BorderComponent(4f, Color.Blue)
     );
-
+    
+    public static StaticItem Item4 = new("GlobalThingo2",
+      new SizeComponent(100),
+      new ImageComponent(Materials.AvatarMaterial)
+    );
+    
     public static Item Item3 = new("GlobalThingo",
       new SizeComponent(100),
-      new PositionComponent(100),
-      new FigureComponent(FigureType.Rectangle),
+      new PositionComponent(50),
       new ImageComponent(Materials.ImageMaterial),
-      new ScriptComponent(new AutoSceneChanger())
+      new MouseHitboxComponent(),
+       new ScriptComponent(new AddPositionOnClick())
     );
   }
   
@@ -57,7 +63,7 @@ public static class Registration
     public static Folder Item = new("HelloFolder", FolderNodeType.Item, Items.Item);
     public static Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2);
     
-    public static Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3);
+    public static Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3, Items.Item4);
     public static Folder FirstScene = new("FirstScene", FolderNodeType.Scene, Item);
     public static Folder SecondScene = new("SecondScene", FolderNodeType.Scene, Item2);
   }
@@ -69,6 +75,9 @@ public static class Registration
   
   public static void ItemsInitChanges(Context context)
   {
+    Items.Item4.AddEarlyInit(InitType.Item, obj => obj.AddComponents(
+      new PositionComponent(Items.Item3.Component<PositionComponent>().X + 130, Items.Item3.Component<PositionComponent>().Y))
+    );
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>()!.Add(-70));
     //Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>()!.LocalPosition.Add(40));
     //Items.Item2.AddLateInit(InitType.Material, obj => obj.AddMaterials(Materials.Collection));

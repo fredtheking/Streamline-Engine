@@ -19,12 +19,16 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
 
   public void Init(Context context)
   {
-    foreach (dynamic child in Children ?? [])
+    InitOnce(() =>
     {
-      child.Init(context);
-      child.Parent.Add(this);
-    }
+      foreach (dynamic child in Children ?? [])
+      {
+        child.Init(context);
+        child.Parent.Add(this);
+      }
+    });
   }
+  public void CheckInitCorrect(Context context) { if (!Initialized) throw new NotInitialisedException(); }
   public void Enter(Context context)
   {
     foreach (dynamic child in Children?.Where(c => c.Active) ?? [])

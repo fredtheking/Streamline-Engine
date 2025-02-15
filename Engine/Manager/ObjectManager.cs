@@ -3,7 +3,7 @@ using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Manager;
 
-public class ItemManager
+public class ObjectManager
 {
   public List<Item> All { get; } = [];
   

@@ -24,7 +24,7 @@ public class FillComponent : ComponentTemplate, ICloneable<FillComponent>
   {
     InitOnce(() =>
     {
-      Item item = context.Managers.Item.GetByComponent(this);
+      Item item = context.Managers.Object.GetByComponent(this);
       Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       Figure = item.ComponentTry<FigureComponent>() ?? Error(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");

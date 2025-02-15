@@ -13,7 +13,7 @@ public class ScriptComponent : ComponentTemplate
   {
     InitOnce(() =>
     {
-      Script.Parent = context.Managers.Item.GetByComponent(this);
+      Script.Parent = context.Managers.Object.GetByComponent(this);
       Script.Init(context);
     });
   }
