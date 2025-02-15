@@ -25,7 +25,7 @@ public struct Config
   public const string ResourcesPackageName = "resources";
   public const string ResourcesPath = "Resources/";
   
-  public const int FpsLock = 5;
+  public const int FpsLock = 0;
   public static readonly Vector2 WindowSize = new(1920, 1080);
   public static readonly Color WindowBackgroundColor = Color.Black;
   public const string WindowTitleInit = "Streamline Engine";
