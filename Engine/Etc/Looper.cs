@@ -41,11 +41,6 @@ public static class Looper
     context.Root.LateUpdate(context);
     context.Global.LateUpdate(context);
   }
-  public static void PreDraw(Context context)
-  {
-    context.Root.PreDraw(context);
-    context.Global.PreDraw(context);
-  }
   public static void Draw(Context context)
   {
     context.Root.Draw(context);

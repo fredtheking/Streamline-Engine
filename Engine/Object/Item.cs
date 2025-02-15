@@ -2,22 +2,25 @@ using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
+using StreamlineEngine.Engine.Node;
 
 namespace StreamlineEngine.Engine.Object;
 
 public class Item : UuidIdentifier, IScript, ICloneable<Item>
 {
   public string Name { get; private set; }
-  public List<Node.Folder> Parent { get; private set; } = [];
+  public List<Folder> Parent { get; private set; } = [];
   public bool Active { get; set; } = true;
+  public ItemObjectType Type { get; set; }
   public List<ComponentTemplate> ComponentsList { get; } = [];
   public List<MaterialTemplate> MaterialsList { get; } = [];
   public List<(InitType, Action<Item>)> LateInitActions { get; } = [];
   public List<(InitType, Action<Item>)> EarlyInitActions { get; } = [];
 
-  public Item(string name, params ComponentTemplate[] components)
+  public Item(string name, ItemObjectType type, params ComponentTemplate[] components)
   {
     Name = name;
+    Type = type;
     AddComponents(components.ToList());
   }
   
@@ -105,6 +108,7 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
       foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
       foreach (ComponentTemplate c in ComponentsList) c.Init(context);
       foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
+      context.Managers.Render.All.Add(this, (Draw, ComponentTry<LayerComponent>()?.Layer ?? 0));
     });
   }
 

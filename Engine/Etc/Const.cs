@@ -8,6 +8,7 @@ public enum InitType { Component, Material, Item, Folder }
 public enum FigureType { Rectangle, Rounded, Circle }
 public enum DebuggerType { Floating, Side }
 public enum FolderNodeType { Scene, Node, Item }
+public enum ItemObjectType { Dynamic, Static }
 
 // DON'T CALL CONSTANTS IN CONSTRUCTORS OR ANY OTHER INIT-TYPED THINGS BECAUSE IT WILL RESET ALL OF VALUES TO INITIAL ONES, WHICH ARE ALWAYS 0!! REMEMBER IT!!1!
 public struct Defaults

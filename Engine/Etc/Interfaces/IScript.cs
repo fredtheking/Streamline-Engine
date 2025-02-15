@@ -9,6 +9,5 @@ public interface IScript
   void EarlyUpdate(Context context);
   void Update(Context context);
   void LateUpdate(Context context);
-  void PreDraw(Context context);
   void Draw(Context context);
 }

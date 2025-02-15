@@ -55,11 +55,6 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
     foreach (Folder node in ActiveChildren)
       node.LateUpdate(context);
   }
-  public void PreDraw(Context context)
-  {
-    foreach (Folder node in ActiveChildren)
-      node.PreDraw(context);
-  }
   public void Draw(Context context)
   {
     foreach (Folder node in ActiveChildren)

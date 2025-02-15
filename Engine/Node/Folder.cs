@@ -1,5 +1,6 @@
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
+using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Node;
 
@@ -42,26 +43,33 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
   public void EarlyUpdate(Context context)
   {
     foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
+    {
+      if (child is Item && child.Type == ItemObjectType.Static) continue;
       child.EarlyUpdate(context);
+    }
   }
   public void Update(Context context)
   {
     foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
+    {
+      if (child is Item && child.Type == ItemObjectType.Static) continue;
       child.Update(context);
+    }
   }
   public void LateUpdate(Context context)
   {
     foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
+    {
+      if (child is Item && child.Type == ItemObjectType.Static) continue;
       child.LateUpdate(context);
-  }
-  public void PreDraw(Context context)
-  {
-    foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
-      child.PreDraw(context);
+    }
   }
   public void Draw(Context context)
   {
     foreach (dynamic child in Children?.Where(c => c.Active) ?? [])
-      child.Draw(context);
+    {
+      if (child is Item) context.Managers.Render.CurrentFrame.Add(child);
+      else child.Draw(context);
+    }
   }
 }

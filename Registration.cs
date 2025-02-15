@@ -1,3 +1,4 @@
+using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.CustomBehavior;
 using StreamlineEngine.Engine.Component;
@@ -26,7 +27,7 @@ public static class Registration
   
   public struct Items
   {
-    public static Item Item = new("HelloItem",
+    public static Item Item = new("HelloItem", ItemObjectType.Dynamic,
       new SizeComponent(200),
       new PositionComponent(),
       new FigureComponent(FigureType.Rounded, .2f),
@@ -36,20 +37,29 @@ public static class Registration
       new ScriptComponent(new PressChange())
     );
 
-    public static Item Item2 = new("Hello2Item",
+    public static Item Item2 = new("Hello2Item", ItemObjectType.Dynamic,
       new SizeComponent(200),
       new PositionComponent(),
+      new LayerComponent(1),
       new FigureComponent(FigureType.Rectangle, .2f),
       new AnimationComponent(Materials.Collection, AnimationChangingType.Random),
       new BorderComponent(4f, Color.Blue)
     );
     
-    public static StaticItem Item4 = new("GlobalThingo2",
+    public static Item Item2Helper = new("Hello2Helper", ItemObjectType.Dynamic,
+      new SizeComponent(200),
+      new PositionComponent(),
+      new FigureComponent(FigureType.Rectangle, .2f),
+      new AnimationComponent(Materials.MethoidCollection, AnimationChangingType.Random),
+      new BorderComponent(4f, Color.Orange)
+    );
+    
+    public static Item Item4 = new("GlobalThingo2", ItemObjectType.Static,
       new SizeComponent(100),
       new ImageComponent(Materials.AvatarMaterial)
     );
     
-    public static Item Item3 = new("GlobalThingo",
+    public static Item Item3 = new("GlobalThingo", ItemObjectType.Dynamic,
       new SizeComponent(100),
       new PositionComponent(50),
       new ImageComponent(Materials.ImageMaterial),
@@ -61,7 +71,7 @@ public static class Registration
   public struct Folders
   {
     public static Folder Item = new("HelloFolder", FolderNodeType.Item, Items.Item);
-    public static Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2);
+    public static Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2, Items.Item2Helper);
     
     public static Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3, Items.Item4);
     public static Folder FirstScene = new("FirstScene", FolderNodeType.Scene, Item);
@@ -76,11 +86,10 @@ public static class Registration
   public static void ItemsInitChanges(Context context)
   {
     Items.Item4.AddEarlyInit(InitType.Item, obj => obj.AddComponents(
-      new PositionComponent(Items.Item3.Component<PositionComponent>().X + 130, Items.Item3.Component<PositionComponent>().Y))
-    );
-    Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>()!.Add(-70));
-    //Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>()!.LocalPosition.Add(40));
-    //Items.Item2.AddLateInit(InitType.Material, obj => obj.AddMaterials(Materials.Collection));
+      new PositionComponent(Items.Item3.Component<PositionComponent>().X + 130, Items.Item3.Component<PositionComponent>().Y)
+      ));
+    Items.Item2Helper.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Set(Items.Item2.Component<PositionComponent>().Vec2 + new Vector2(33)));
+    Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-70));
   }
   
   public static void FoldersInitChanges(Context context)

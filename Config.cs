@@ -35,11 +35,9 @@ public struct Config
   public static readonly string[] PostInitPhrases = [
     "Enjoy! :D",
     "Good to see you there!",
-    "Make yourself comfortable!",
     "All systems go! Time to roll.",
     "Ready for action!",
     "Code’s alive, time to thrive!",
-    "Warmed up and ready—let's roll!",
     "Mission start!"
   ];
   public static readonly string[] ByePhrases = [
@@ -50,7 +48,6 @@ public struct Config
     "See you soon, raccoon!",
     "Bye-bye, butterfly!",
     "Catch you later, navigator!",
-    "Hasta mañana, iguana!",
-    
+    "Hasta mañana, iguana!"
   ];
 }

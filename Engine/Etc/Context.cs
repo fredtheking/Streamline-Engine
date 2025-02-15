@@ -47,7 +47,7 @@ public class Context
     Managers.Debug.Separator(ConsoleColor.Yellow, "Structs import done! Starting root initialisation...");
     Looper.Init(this);
     Looper.CheckInitCorrect(this);
-    Managers.Debug.Separator(ConsoleColor.Green, "Initialisation fully ended! " + Config.PostInitPhrases[new Random().Next(Config.ByePhrases.Length)]);
+    Managers.Debug.Separator(ConsoleColor.Green, "Initialisation fully ended! " + Config.PostInitPhrases[new Random().Next(Config.PostInitPhrases.Length)]);
   }
 
   private void Loop()
@@ -60,8 +60,8 @@ public class Context
       Looper.EarlyUpdate(this);
       Looper.Update(this);
       Looper.LateUpdate(this);
-      Looper.PreDraw(this);
       Looper.Draw(this);
+      Managers.Render.Render(this);
       
       Raylib.EndDrawing();
     }
