@@ -5,7 +5,7 @@ namespace StreamlineEngine.Engine.Manager;
 
 public class DebugManager
 {
-  public bool TurnedOn { get; set; } = Config.DebugMode;
+  public bool TurnedOn { get; set; } = Config.DebugModeByDefault;
   public bool Changed { get; set; } = true;
   
   public void Separator(ConsoleColor fgColor = ConsoleColor.Magenta, string message = "", char sign = '=') {

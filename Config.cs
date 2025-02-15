@@ -31,7 +31,7 @@ public struct Config
   public const string WindowTitleInit = "Streamline Engine";
   public const ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;
 
-  public const bool DebugMode = true;
+  public const bool DebugModeByDefault = true;
   public static readonly string[] PostInitPhrases = [
     "Enjoy! :D",
     "Good to see you there!",
