@@ -41,8 +41,9 @@ public static class Registration
       new SizeComponent(200),
       new PositionComponent(),
       new LayerComponent(1),
+      new ScriptComponent(new BonnieScript()),
       new FigureComponent(FigureType.Rectangle, .2f),
-      new AnimationComponent(Materials.Collection, AnimationChangingType.Random),
+      new AnimationComponent(Materials.Collection, AnimationChangingType.Delta, 19),
       new BorderComponent(4f, Color.Blue)
     );
     

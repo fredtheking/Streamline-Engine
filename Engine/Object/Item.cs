@@ -1,5 +1,6 @@
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Node;
@@ -108,7 +109,8 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
       foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
       foreach (ComponentTemplate c in ComponentsList) c.Init(context);
       foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
-      context.Managers.Render.All.Add(this, (Draw, ComponentTry<LayerComponent>()?.Layer ?? 0));
+      
+      context.Managers.Render.All.Add(this, (Draw, ComponentTry<LayerComponent>()?.Layer ?? new RefObj<int>(0)));
     });
   }
 

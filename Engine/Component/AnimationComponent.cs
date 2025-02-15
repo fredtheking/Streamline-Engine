@@ -1,6 +1,7 @@
 using System.Numerics;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Material;
@@ -15,27 +16,59 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
   public SizeComponent LocalSize { get; set; }
   public SizeComponent Size { get; set; }
   public BorderComponent Border { get; set; }
-  public ImageCollectionMaterial Resource { get; set; }
-  public AnimationChangingType Type { get; set; }
+  public ImageCollectionMaterial Resource { get; init; }
+  public AnimationChangingType Type { get; init; }
+  public SeTimer? Timer { get; private set; }
+  private float? ElapsedTime { get; set; }
+  public float FrameTime { get; set; }
   public int Index { get; set; }
   /// <summary>
   /// By default, crop is {0, 0, width, height} (full image, no crop)
   /// </summary>
   public Rectangle Crop { get; set; }
   private bool CropInit { get; set; }
+  private bool FrameTimeInit { get; set; }
 
   public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type)
   {
     Resource = collection;
     Type = type;
+    FrameTimeInit = true;
     CropInit = true;
+    PostSetting();
+  }
+  
+  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, int fps)
+  {
+    Resource = collection;
+    Type = type;
+    FrameTime = 1f / fps;
+    CropInit = true;
+    PostSetting();
   }
   
   public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, Rectangle crop)
   {
     Resource = collection;
     Type = type;
+    FrameTimeInit = true;
     Crop = crop;
+    PostSetting();
+  }
+  
+  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, int fps, Rectangle crop)
+  {
+    Resource = collection;
+    Type = type;
+    FrameTime = 1f / fps;
+    Crop = crop;
+    PostSetting();
+  }
+
+  private void PostSetting()
+  {
+    Timer = Type is AnimationChangingType.Timer ? new SeTimer(FrameTime) : null;
+    ElapsedTime = Type is AnimationChangingType.Delta ? 0f : null;
   }
   
   public override void Init(Context context)
@@ -43,6 +76,8 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     InitOnce(() =>
     {
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.SharedSize);
+      if (FrameTimeInit) FrameTime = Defaults.FrameTime;
+      
       Item item = context.Managers.Object.GetByComponent(this);
       Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
@@ -57,13 +92,32 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     });
   }
 
+  public override void Enter(Context context)
+  {
+    if (Type is AnimationChangingType.Timer) Timer!.Activate();
+  }
+
+  public override void Leave(Context context)
+  {
+    if (Type is AnimationChangingType.Timer) Timer!.Reset();
+  }
+
   public override void Update(Context context)
   {
     switch (Type)
     {
       case AnimationChangingType.Delta:
+        ElapsedTime += Raylib.GetFrameTime();
+        while (ElapsedTime >= FrameTime)
+        {
+          Index = (Index + 1) % Resource.Id.Length;
+          ElapsedTime -= FrameTime;
+        }
+        context.Managers.Debug.Information($"{Index}, {ElapsedTime}, {Raylib.GetFrameTime()}");
         break;
-      case AnimationChangingType.Frame:
+      case AnimationChangingType.Timer:
+        Timer!.Update();
+        if (Timer.Target()) Index = (Index + 1) % Resource.Id.Length;
         break;
       case AnimationChangingType.Random:
         Index = new Random().Next(Resource.Id.Length);
