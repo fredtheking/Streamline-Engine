@@ -29,6 +29,7 @@ public class SeTimer
     StartTime = Raylib.GetTime();
   }
 
+  public void FactoryReset() { Stop(); Reset(); }
   public void Stop() => State = TimeState.Idle;
   public void Kill() => State = TimeState.Dead;
   public void Reset() => CurrentTime = 0;

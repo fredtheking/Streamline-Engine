@@ -19,8 +19,8 @@ public static class Registration
 {
   public struct Materials
   {
-    public static readonly ImageMaterial ImageMaterial = new((int)ResourcesIDs.Bg);
-    public static readonly ImageMaterial AvatarMaterial = new((int)ResourcesIDs.Lion);
+    public static readonly ImageMaterial ImageMaterial = new(ResourcesIDs.Bg);
+    public static readonly ImageMaterial AvatarMaterial = new(ResourcesIDs.Lion);
     public static readonly ImageCollectionMaterial Collection = new(ResourcesIDs.Jumpscare);
     public static readonly ImageCollectionMaterial MethoidCollection = ImageCollectionMaterial.FromImageMaterial(AvatarMaterial, 3);
   }

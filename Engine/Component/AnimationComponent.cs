@@ -99,7 +99,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
 
   public override void Leave(Context context)
   {
-    if (Type is AnimationChangingType.Timer) Timer!.Reset();
+    if (Type is AnimationChangingType.Timer) Timer!.FactoryReset();
   }
 
   public override void Update(Context context)
@@ -113,7 +113,6 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
           Index = (Index + 1) % Resource.Id.Length;
           ElapsedTime -= FrameTime;
         }
-        context.Managers.Debug.Information($"{Index}, {ElapsedTime}, {Raylib.GetFrameTime()}");
         break;
       case AnimationChangingType.Timer:
         Timer!.Update();
