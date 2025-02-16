@@ -29,6 +29,7 @@ public struct Config
   public static readonly Vector2 WindowSize = new(1280, 720);
   public static readonly Color WindowBackgroundColor = Color.Black;
   public const string WindowTitleInit = "Streamline Engine";
+  public const string Version = "PRE.WIP";
   public const ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;
 
   public const bool DebugModeByDefault = true;

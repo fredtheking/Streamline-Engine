@@ -1,3 +1,4 @@
+using rlImGui_cs;
 using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Manager;
 #if !RESOURCES 
@@ -15,6 +16,7 @@ public class Context
   public Managers Managers { get; }
   #if !RESOURCES
   public Global Global { get; } = new();
+  public ImGuiOverlay Debugger { get; } = new();
   public Root Root { get; } = new(Config.RootFolders);
   #endif
   
@@ -36,6 +38,7 @@ public class Context
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitleInit);
     Raylib.InitAudioDevice();
+    rlImGui.Setup(true);
     Raylib.SetTargetFPS(Config.FpsLock);
     Managers.Debug.Separator(ConsoleColor.Yellow, "Window and audio initialised. Starting import and registration of game assets...");
     Registration.MaterialsInitChanges(this);
@@ -55,6 +58,7 @@ public class Context
     while (!Raylib.WindowShouldClose())
     {
       Raylib.BeginDrawing();
+      rlImGui.Begin();
       Raylib.ClearBackground(Config.WindowBackgroundColor);
       
       Looper.EarlyUpdate(this);
@@ -62,7 +66,8 @@ public class Context
       Looper.LateUpdate(this);
       Looper.Draw(this);
       Managers.Render.Render(this);
-      
+
+      rlImGui.End();
       Raylib.EndDrawing();
     }
   }
@@ -71,6 +76,7 @@ public class Context
   {
     Managers.Debug.Separator(ConsoleColor.Blue, "Terminating program and unloading resources...");
     Root.Leave(this);
+    rlImGui.Shutdown();
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
     Managers.Debug.Separator(ConsoleColor.Green, Config.ByePhrases[new Random().Next(Config.ByePhrases.Length)]);
