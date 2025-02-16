@@ -23,6 +23,6 @@ public class BonnieScript : CustomItemBehaviorTemplate
   public override void Update(Context context)
   {
     //_position.Set(Raylib.GetMousePosition());
-    _layer.Layer.Value = _position.Y < _position2.Y - 100 ? 0 : 1;
+    //_layer.Layer.Value = _position.Y < _position2.Y - 100 ? 0 : 1;
   }
 }

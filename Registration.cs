@@ -42,10 +42,10 @@ public static class Registration
     public static Item Item2 = new("Hello2Item", ItemObjectType.Dynamic,
       new SizeComponent(200),
       new PositionComponent(),
-      new LayerComponent(1),
+      new LayerComponent(-1),
       new ScriptComponent(new BonnieScript()),
       new FigureComponent(FigureType.Rectangle, .2f),
-      new AnimationComponent(Materials.Collection, AnimationChangingType.Delta, 19),
+      new AnimationComponent(Materials.Collection, AnimationChangingType.Random, 19),
       new BorderComponent(4f, Color.Blue)
     );
     
@@ -72,12 +72,15 @@ public static class Registration
 
     public static Item ItemTextTest = new("TextTest", ItemObjectType.Dynamic,
       new SizeComponent(200, 100),
-      Item2Helper.Component<PositionComponent>(),
+      new PositionComponent(300, 100),
       new ScriptComponent(new TextResizingToMouse()),
-      new TextComponent("Hello, World! How are you doing? maybe you should be outside, touching grass?", Materials.FontConsolas, 20, Color.White, new 
+      new TextComponent("Hello, World! How are you doing?\nmaybe you should be outside, \ntouching grass?", Materials.FontConsolas, 20, Color.White, new 
           TextSettings.Builder()
         .DisableAutosize()
-        .WrapLines()
+        .SetAlignAxisX(TextSettings.TextAlign.Positive)
+        .SetAlignAxisY(TextSettings.TextAlign.Center)
+        .SetBetweenLetterSpacing(1)
+        .SetLineSpacing(-2)
         .Build()
       )
     );
@@ -105,7 +108,7 @@ public static class Registration
       ));
     Items.Item4.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>().LocalPosition.Add(new Vector2(130, 0)));
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-70));
-    Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-340, 0));
+    Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-20));
   }
   
   public static void FoldersInitChanges(Context context)

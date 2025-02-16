@@ -6,18 +6,20 @@ namespace StreamlineEngine.Engine.Etc.Builders;
 
 public class TextSettings
 {
+  public enum TextAlign { Negative, Center, Positive }
+  
   public bool Wrap;
-  public bool CenterOnX;
-  public bool CenterOnY;
+  public TextAlign AlignX;
+  public TextAlign AlignY;
   public bool Autosize = true;
-  public float LetterSpacing = 3;
+  public float BetweenLetterSpacing = 3;
   public float LineSpacing = 5;
 
   private TextSettings() { }
 
   public class Builder
   {
-    private readonly TextSettings _settings = new TextSettings();
+    private readonly TextSettings _settings = new();
   
     public Builder WrapLines()
     {
@@ -25,15 +27,15 @@ public class TextSettings
       return this;
     }
     
-    public Builder CenterOnX()
+    public Builder SetAlignAxisX(TextAlign align)
     {
-      _settings.CenterOnX = true;
+      _settings.AlignX = align;
       return this;
     }
 
-    public Builder CenterOnY()
+    public Builder SetAlignAxisY(TextAlign align)
     {
-      _settings.CenterOnY = true;
+      _settings.AlignY = align;
       return this;
     }
 
@@ -43,8 +45,8 @@ public class TextSettings
       return this;
     }
     
-    public Builder SetLetterSpacing(float space) {
-      _settings.LetterSpacing = space;
+    public Builder SetBetweenLetterSpacing(float space) {
+      _settings.BetweenLetterSpacing = space;
       return this;
     }
     

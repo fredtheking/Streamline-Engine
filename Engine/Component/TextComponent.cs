@@ -47,7 +47,7 @@ public class TextComponent : ComponentTemplate
   {
     bool notReady = !Resource.Ready();
     if (notReady) Resource.Load(context);
-    Vector2 measure = Raylib.MeasureTextEx(Resource.Material, msg, FontSize, Settings.LetterSpacing);
+    Vector2 measure = Raylib.MeasureTextEx(Resource.Material, msg, FontSize, Settings.BetweenLetterSpacing);
     if (notReady) Resource.Unload(context);
     return measure;
   }
@@ -69,6 +69,12 @@ public class TextComponent : ComponentTemplate
 
   public override void Update(Context context)
   {
+    if (!Settings.Wrap)
+    {
+      LinedText = Text.Value.Split('\n');
+      return;
+    }
+    
     string[] words = Text.Value.Split(' ');
     
     List<string> lines = [];
@@ -76,14 +82,13 @@ public class TextComponent : ComponentTemplate
     
     foreach (string word in words)
     {
-      string temp = currentLine + word + " ";
-      if (MeasureText(context, temp[..^1]).X >= Size.Width + LocalSize.Width)
+      string temp = currentLine + word;
+      if (MeasureText(context, temp).X >= Size.Width + LocalSize.Width - LocalPosition.X)
       {
-        if (currentLine != "") currentLine = currentLine[..^1];
         lines.Add(currentLine);
         currentLine = word + " ";
       }
-      else currentLine = temp;
+      else currentLine = temp + " ";
     }
     lines.Add(currentLine);
     
@@ -94,9 +99,36 @@ public class TextComponent : ComponentTemplate
   public override void Draw(Context context)
   {
     float offsetY = 0;
+    
+    float totalTextHeight = LinedText.Length * (OneSymbolSize.Y + Settings.LineSpacing) - Settings.LineSpacing;
+    float offsetX = 0;
+    float offsetYAdjustment = 0;
+    
+    if (Settings.AlignX == TextSettings.TextAlign.Center)
+    {
+      float totalTextWidth = 0;
+      foreach (string line in LinedText) 
+        totalTextWidth = Math.Max(totalTextWidth, MeasureText(context, line).X);
+      offsetX = (Size.Width + LocalSize.Width - totalTextWidth) / 2;
+    }
+    else if (Settings.AlignX == TextSettings.TextAlign.Positive)
+    {
+      float totalTextWidth = 0;
+      foreach (string line in LinedText) 
+        totalTextWidth = Math.Max(totalTextWidth, MeasureText(context, line).X);
+      offsetX = Size.Width + LocalSize.Width - totalTextWidth;
+    }
+
+    // Центрирование по оси Y
+    if (Settings.AlignY == TextSettings.TextAlign.Center) 
+      offsetYAdjustment = (Size.Height + LocalSize.Height - totalTextHeight) / 2;
+    else if (Settings.AlignY == TextSettings.TextAlign.Positive) 
+      offsetYAdjustment = Size.Height + LocalSize.Height - totalTextHeight;
+
+    // Рисуем строки
     foreach (string line in LinedText)
     {
-      Raylib.DrawTextEx(Resource.Material, line, Position.Vec2 + LocalPosition.Vec2 + new Vector2(0, offsetY), FontSize, Settings.LetterSpacing, Color);
+      Raylib.DrawTextEx(Resource.Material, line, Position.Vec2 + LocalPosition.Vec2 + new Vector2(offsetX, offsetY + offsetYAdjustment), FontSize, Settings.BetweenLetterSpacing, Color);
       offsetY += OneSymbolSize.Y + Settings.LineSpacing;
     }
   }
