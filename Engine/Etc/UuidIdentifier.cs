@@ -1,6 +1,9 @@
+using ImGuiNET;
+using StreamlineEngine.Engine.Etc.Interfaces;
+
 namespace StreamlineEngine.Engine.Etc;
 
-public class UuidIdentifier
+public class UuidIdentifier : IDebuggerTreeObject
 {
   public bool Initialized { get; protected set; }
   private List<string> OnceSaid { get; } = [];
@@ -59,4 +62,13 @@ public class UuidIdentifier
   }
   protected void Critical(Context context, string message, bool once = false) =>
     Print(context, "crit", ConsoleColor.Red, ConsoleColor.Black, message, once);
+
+  public virtual void DebuggerTree(Context context) { }
+
+  public virtual void DebuggerInfo(Context context)
+  {
+    ImGui.Text($"UUID: {Uuid}");
+    ImGui.Text($"Short UUID: {ShortUuid}");
+    ImGui.Text($"Initialized: {(Initialized ? "Yes" : "No")}");
+  }
 }

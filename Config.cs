@@ -25,7 +25,7 @@ public struct Config
   public const string ResourcesPackageName = "resources";
   public const string ResourcesPath = "Resources/";
   
-  public const int FpsLock = 0;
+  public const int FpsLock = -1;
   public static readonly Vector2 WindowSize = new(1280, 720);
   public static readonly Color WindowBackgroundColor = Color.Black;
   public const string WindowTitleInit = "Streamline Engine";
@@ -33,22 +33,4 @@ public struct Config
   public const ConfigFlags WindowConfigFlags = ConfigFlags.AlwaysRunWindow | ConfigFlags.HighDpiWindow;
 
   public const bool DebugModeByDefault = true;
-  public static readonly string[] PostInitPhrases = [
-    "Enjoy! :D",
-    "Good to see you there!",
-    "All systems go! Time to roll.",
-    "Ready for action!",
-    "Code’s alive, time to thrive!",
-    "Mission start!"
-  ];
-  public static readonly string[] ByePhrases = [
-    "Too-da-loo, kangaroo!",
-    "See you later, alligator!",
-    "Gotta dash, moustache!",
-    "Take care, polar bear!",
-    "See you soon, raccoon!",
-    "Bye-bye, butterfly!",
-    "Catch you later, navigator!",
-    "Hasta mañana, iguana!"
-  ];
 }

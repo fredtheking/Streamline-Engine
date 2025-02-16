@@ -11,4 +11,5 @@ public class Managers(Context context)
   public KeybindManager Keybind { get; } = new();
   public PackageManager Package { get; } = new(context);
   public RenderManager Render { get; } = new();
+  public SettingsManager Settings { get; } = new();
 }

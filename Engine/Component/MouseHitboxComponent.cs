@@ -75,7 +75,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     });
   }
 
-  private bool DecideHover()
+  private bool DecideHover(Context context)
   {
     switch (Figure.Type)
     {
@@ -89,7 +89,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     return false;
   }
 
-  public override void Enter(Context context)
+  private void Reset()
   {
     Hover = false;
     Press = [false, false, false];
@@ -100,9 +100,16 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     Drag = [false, false, false];
   }
 
+  public override void Enter(Context context)
+  {
+    Reset();
+  }
+
   public override void Update(Context context)
   {
-    Hover = DecideHover();
+    if (context.Managers.Debug.TurnedOn && context.Debugger.Show) { Reset(); return; }
+    
+    Hover = DecideHover(context);
     for (int i = 0; i < Press.Length; i++)
     {
       Press[i] = Raylib.IsMouseButtonPressed((MouseButton)i);

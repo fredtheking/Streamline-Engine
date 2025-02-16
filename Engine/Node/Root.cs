@@ -1,3 +1,4 @@
+using ImGuiNET;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 
@@ -14,11 +15,18 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
   public Folder CurrentScene { get; private set; }
   public Folder[] ActiveChildren { get; private set; } = [];
   public Folder[] Scenes { get; private init; }
-
+  
+  public Root(params Folder[] children) {
+    Name = "Root";
+    Children = children.ToList();
+    Scenes = Children.Where(c => c.Type == FolderNodeType.Scene).ToArray();
+  }
+  
   public void Init(Context context)
   {
     InitOnce(() =>
     {
+      context.Debugger.CurrentTreeInfo = DebuggerInfo;
       foreach (Folder node in Children)
       {
         node.Init(context);
@@ -108,10 +116,25 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
     Change(context, Scenes[index]);
   }
 
-  public Root(params Folder[] children) {
-    Name = "Root";
-    Children = children.ToList();
-    Scenes = Children.Where(c => c.Type == FolderNodeType.Scene).ToArray();
+  public override void DebuggerTree(Context context)
+  {
+    if (ImGui.SmallButton(ShortUuid))
+      context.Debugger.CurrentTreeInfo = DebuggerInfo;
+    ImGui.SameLine();
+    if (ImGui.TreeNode(Name))
+    {
+      foreach (Folder node in Children) 
+        node.DebuggerTree(context);
+      ImGui.TreePop();
+    }
+  }
+
+  public override void DebuggerInfo(Context context)
+  {
+    ImGui.Text($"Name: {Name}");
+    base.DebuggerInfo(context);
+    ImGui.Separator();
+    ImGui.Text($"TypeOf: {GetType().Name}");
   }
 }
 #endif

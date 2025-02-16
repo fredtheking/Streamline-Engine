@@ -38,7 +38,7 @@ public class Context
     Raylib.SetConfigFlags(Config.WindowConfigFlags);
     Raylib.InitWindow((int)Config.WindowSize.X, (int)Config.WindowSize.Y, Config.WindowTitleInit);
     Raylib.InitAudioDevice();
-    rlImGui.Setup(true);
+    rlImGui.Setup();
     Raylib.SetTargetFPS(Config.FpsLock);
     Managers.Debug.Separator(ConsoleColor.Yellow, "Window and audio initialised. Starting import and registration of game assets...");
     Registration.MaterialsInitChanges(this);
@@ -50,7 +50,7 @@ public class Context
     Managers.Debug.Separator(ConsoleColor.Yellow, "Structs import done! Starting root initialisation...");
     Looper.Init(this);
     Looper.CheckInitCorrect(this);
-    Managers.Debug.Separator(ConsoleColor.Green, "Initialisation fully ended! " + Config.PostInitPhrases[new Random().Next(Config.PostInitPhrases.Length)]);
+    Managers.Debug.Separator(ConsoleColor.Green, "Initialisation fully ended! " + Defaults.PostInitPhrases[new Random().Next(Defaults.PostInitPhrases.Length)]);
   }
 
   private void Loop()
@@ -79,7 +79,7 @@ public class Context
     rlImGui.Shutdown();
     Raylib.CloseWindow();
     Raylib.CloseAudioDevice();
-    Managers.Debug.Separator(ConsoleColor.Green, Config.ByePhrases[new Random().Next(Config.ByePhrases.Length)]);
+    Managers.Debug.Separator(ConsoleColor.Green, Defaults.ByePhrases[new Random().Next(Defaults.ByePhrases.Length)]);
   }
   #endif
 }

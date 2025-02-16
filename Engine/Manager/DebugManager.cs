@@ -5,6 +5,7 @@ namespace StreamlineEngine.Engine.Manager;
 
 public class DebugManager
 {
+  public bool ShowBorders { get; set; } = Config.DebugModeByDefault;
   public bool TurnedOn { get; set; } = Config.DebugModeByDefault;
   public bool Changed { get; set; } = true;
   

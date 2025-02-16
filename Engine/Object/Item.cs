@@ -1,3 +1,5 @@
+using System.Numerics;
+using ImGuiNET;
 using Raylib_cs;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
@@ -151,6 +153,8 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public void DebugDraw(Context context)
   {
     foreach (ComponentTemplate c in ComponentsList) c.DebugDraw(context);
+    
+    if (!context.Managers.Debug.ShowBorders) return;
     foreach (ComponentTemplate c in ComponentsList)
     {
       PositionComponent? pos = ComponentTry<PositionComponent>();
@@ -162,4 +166,20 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   }
   
   public Item Clone() => (Item)MemberwiseClone();
+  public override void DebuggerTree(Context context)
+  {
+    if (ImGui.SmallButton(ShortUuid))
+      context.Debugger.CurrentTreeInfo = DebuggerInfo;
+    ImGui.SameLine();
+    ImGui.TextColored(new Vector4(1.0f, 1.0f, 0.13f, 1.0f), $"> {Name}");
+  }
+
+  public override void DebuggerInfo(Context context)
+  {
+    ImGui.Text($"Name: {Name}");
+    base.DebuggerInfo(context);
+    ImGui.Separator();
+    ImGui.Text($"TypeOf: {GetType().Name}");
+    ImGui.Text($"Subtype: {Type}");
+  }
 }
