@@ -72,7 +72,8 @@ public static class Registration
 
     public static Item ItemTextTest = new("TextTest", ItemObjectType.Dynamic,
       new SizeComponent(200, 100),
-      new PositionComponent(),
+      Item2Helper.Component<PositionComponent>(),
+      new ScriptComponent(new TextResizingToMouse()),
       new TextComponent("Hello, World! How are you doing? maybe you should be outside, touching grass?", Materials.FontConsolas, 20, Color.White, new 
           TextSettings.Builder()
         .DisableAutosize()
@@ -103,8 +104,8 @@ public static class Registration
       Items.Item3.Component<PositionComponent>()
       ));
     Items.Item4.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>().LocalPosition.Add(new Vector2(130, 0)));
-    Items.Item2Helper.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Set(Items.Item2.Component<PositionComponent>().Vec2 + new Vector2(33)));
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-70));
+    Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-340, 0));
   }
   
   public static void FoldersInitChanges(Context context)

@@ -17,11 +17,11 @@ public class TextComponent : ComponentTemplate
   public SizeComponent Size { get; set; }
   public FontMaterial Resource { get; set; }
   public RefObj<string> Text { get; set; }
-  public bool Changed { get; set; } = true;
+  public string[] LinedText { get; private set; }
   public float FontSize { get; set; }
   public Color Color { get; set; }
   public TextSettings Settings { get; set; }
-  public Vector2 MeasuredText { get; set; }
+  public Vector2 OneSymbolSize { get; set; }
   
   public TextComponent(string text, FontMaterial font, float size, Color color, TextSettings? extra = null)
   {
@@ -43,41 +43,13 @@ public class TextComponent : ComponentTemplate
     DebugBorderColor = Color.Green;
   }
 
-  public Vector2 MeasureText(Context context)
+  public Vector2 MeasureText(Context context, string msg)
   {
     bool notReady = !Resource.Ready();
     if (notReady) Resource.Load(context);
-    MeasuredText = Raylib.MeasureTextEx(Resource.Material, Text.Value, FontSize, Settings.LetterSpacing);
+    Vector2 measure = Raylib.MeasureTextEx(Resource.Material, msg, FontSize, Settings.LetterSpacing);
     if (notReady) Resource.Unload(context);
-    return MeasuredText;
-  }
-
-  public override void Update(Context context)
-  {
-    if (Changed) WrappedText();
-  }
-
-  private void WrappedText()
-  {
-    string[] words = Text.Value.Split(' ');
-    
-    List<string> lines = new List<string>();
-    string currentLine = "";
-    
-    while (words.Length > 0)
-    {
-      while (currentLine.Length < Size.Width)
-      {
-        currentLine += words[0] + " ";
-        words = words.Skip(1).ToArray();
-      }
-      currentLine.Remove(currentLine.Length - 1);
-      lines.Add(currentLine);
-      currentLine = "";
-    }
-
-    Text.Value = string.Join("\n", lines);
-    Changed = false;
+    return measure;
   }
 
   public override void Init(Context context)
@@ -86,7 +58,7 @@ public class TextComponent : ComponentTemplate
     {
       Item item = context.Managers.Object.GetByComponent(this);
       
-      MeasureText(context);
+      OneSymbolSize = MeasureText(context, "A");
       Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       item.AddMaterials(Resource);
@@ -95,8 +67,37 @@ public class TextComponent : ComponentTemplate
     });
   }
 
+  public override void Update(Context context)
+  {
+    string[] words = Text.Value.Split(' ');
+    
+    List<string> lines = [];
+    string currentLine = "";
+    
+    foreach (string word in words)
+    {
+      string temp = currentLine + word + " ";
+      if (MeasureText(context, temp[..^1]).X >= Size.Width + LocalSize.Width)
+      {
+        if (currentLine != "") currentLine = currentLine[..^1];
+        lines.Add(currentLine);
+        currentLine = word + " ";
+      }
+      else currentLine = temp;
+    }
+    lines.Add(currentLine);
+    
+    if (lines[0] == "") lines.RemoveAt(0);
+    LinedText = lines.ToArray();
+  }
+
   public override void Draw(Context context)
   {
-    Raylib.DrawTextEx(Resource.Material, Text.Value, Position.Vec2 + LocalPosition.Vec2, FontSize, Settings.LetterSpacing, Color);
+    float offsetY = 0;
+    foreach (string line in LinedText)
+    {
+      Raylib.DrawTextEx(Resource.Material, line, Position.Vec2 + LocalPosition.Vec2 + new Vector2(0, offsetY), FontSize, Settings.LetterSpacing, Color);
+      offsetY += OneSymbolSize.Y + Settings.LineSpacing;
+    }
   }
 }

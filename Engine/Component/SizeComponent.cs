@@ -44,9 +44,9 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
       else if (text is not null && text.Settings.Autosize)
       {
         Information(context, "Found text component! Using image size.", true);
-        text.MeasureText(context);
-        Width = text.MeasuredText.X;
-        Height = text.MeasuredText.Y;
+        Vector2 sizo = text.MeasureText(context, text.Text.Value);
+        Width = sizo.X;
+        Height = sizo.Y;
       }
       else if (image is null && text is null || !text.Settings.Autosize)
       {
