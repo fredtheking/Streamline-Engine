@@ -11,6 +11,7 @@ public enum ResourceType
   ImagePng,
   ImageJpg,
   SoundMp3,
+  FontTtf
 }
 
 public class PackageManager
@@ -20,6 +21,7 @@ public class PackageManager
     { ".png", ResourceType.ImagePng },
     { ".jpg", ResourceType.ImageJpg },
     { ".mp3", ResourceType.SoundMp3 },
+    { ".ttf", ResourceType.FontTtf }
   };
   private const string OutputExtension = ".serp";
   private const string IndexExtension = ".seri";
@@ -218,6 +220,11 @@ public class PackageManager
       Raylib.UnloadWave(wave);
       return (T)(object)sound;
     }
+    if (typeof(T) == typeof(Font))
+    {
+      return (T)(object)Raylib.LoadFontFromMemory(ext, resourceData, (int)Defaults.FontSize, [], 0);
+    }
+    
     throw new InvalidOperationException("Invalid resource type");
   }
 }

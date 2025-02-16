@@ -1,3 +1,4 @@
+using Raylib_cs;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Classes;
@@ -110,7 +111,7 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
       foreach (ComponentTemplate c in ComponentsList) c.Init(context);
       foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
       
-      context.Managers.Render.All.Add(this, (Draw, ComponentTry<LayerComponent>()?.Layer ?? new RefObj<int>(0)));
+      context.Managers.Render.All.Add(this, (Draw, DebugDraw, ComponentTry<LayerComponent>()?.Layer ?? new RefObj<int>(0)));
     });
   }
 
@@ -146,6 +147,18 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public void Draw(Context context)
   {
     foreach (ComponentTemplate c in ComponentsList) c.Draw(context);
+  }
+  public void DebugDraw(Context context)
+  {
+    foreach (ComponentTemplate c in ComponentsList) c.DebugDraw(context);
+    foreach (ComponentTemplate c in ComponentsList)
+    {
+      PositionComponent? pos = ComponentTry<PositionComponent>();
+      SizeComponent? size = ComponentTry<SizeComponent>();
+      if (size is null || pos is null) return;
+      
+      Raylib.DrawRectangleLines((int)pos.X, (int)pos.Y, (int)size.Width, (int)size.Height, c.DebugBorderColor);
+    }
   }
   
   public Item Clone() => (Item)MemberwiseClone();

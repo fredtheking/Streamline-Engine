@@ -26,12 +26,14 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   {
     Resource = material;
     CropInit = true;
+    DebugBorderColor = Color.Yellow;
   }
   
   public ImageComponent(ImageMaterial material, Rectangle crop)
   {
     Resource = material;
     Crop = crop;
+    DebugBorderColor = Color.Yellow;
   }
   
   public override void Init(Context context)
@@ -40,11 +42,12 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
     {
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
       Item item = context.Managers.Object.GetByComponent(this);
+      
       Position = item.ComponentTry<PositionComponent>() ?? Error(context, new PositionComponent(), "Item has no position component. Initialising default position.");
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       Border = item.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
     
-      if (item.ComponentTry<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Image rendering might look weird.");
+      if (item.ComponentTry<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Rendering might look weird.");
       item.AddMaterials(Resource);
       
       if (item.ComponentTry<FillComponent>() is not null) Information(context, "Image and Fill component are located in the same item. Be careful with declaring them!");

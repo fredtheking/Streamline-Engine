@@ -33,13 +33,22 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
       Item item = context.Managers.Object.GetByComponent(this);
 
       ImageComponent? image = item.ComponentTry<ImageComponent>();
+      TextComponent? text = item.ComponentTry<TextComponent>();
       if (image is not null)
       {
         Information(context, "Found image component! Using image size.", true);
         Width = image.Resource.Size.X;
         Height = image.Resource.Size.Y;
+        return;
       }
-      else
+      else if (text is not null && text.Settings.Autosize)
+      {
+        Information(context, "Found text component! Using image size.", true);
+        text.MeasureText(context);
+        Width = text.MeasuredText.X;
+        Height = text.MeasuredText.Y;
+      }
+      else if (image is null && text is null || !text.Settings.Autosize)
       {
         Width = Defaults.Size.X;
         Height = Defaults.Size.Y;

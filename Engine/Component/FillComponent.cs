@@ -17,8 +17,8 @@ public class FillComponent : ComponentTemplate, ICloneable<FillComponent>
   public FigureComponent Figure { get; set; }
   public Color Color { get; set; }
 
-  public FillComponent(Color color) { Color = color; }
-  public FillComponent() { Color = Color.White; }
+  public FillComponent(Color color) { Color = color; DebugBorderColor = Color.White; }
+  public FillComponent() { Color = Color.White; DebugBorderColor = Color.White; }
 
   public override void Init(Context context)
   {

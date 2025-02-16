@@ -3,7 +3,7 @@ using Raylib_cs;
 
 namespace StreamlineEngine.Engine.Etc;
 
-public enum AnimationChangingType { Selectable, Delta, Timer, Random }
+public enum AnimationChangingType { Selectable, Delta, Frame, Random }
 public enum InitType { Component, Material, Item, Folder }
 public enum FigureType { Rectangle, Rounded, Circle }
 public enum DebuggerType { Floating, Side }
@@ -22,6 +22,7 @@ public struct Defaults
   public const int RoundedSegments = 100;
   public const int ShortUuidLength = 3;
   public const float FrameTime = 1f / 24f;
+  public const float FontSize = 128f;
   
   public static readonly Color DebugHitboxColor = new(255, 0, 0, 75);
   public static readonly Color DebugTextBorderColor = new(0, 255, 0);

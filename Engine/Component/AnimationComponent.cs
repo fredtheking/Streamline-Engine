@@ -35,6 +35,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     Type = type;
     FrameTimeInit = true;
     CropInit = true;
+    DebugBorderColor = Color.Blue;
     PostSetting();
   }
   
@@ -44,6 +45,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     Type = type;
     FrameTime = 1f / fps;
     CropInit = true;
+    DebugBorderColor = Color.Blue;
     PostSetting();
   }
   
@@ -53,6 +55,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     Type = type;
     FrameTimeInit = true;
     Crop = crop;
+    DebugBorderColor = Color.Blue;
     PostSetting();
   }
   
@@ -62,12 +65,13 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     Type = type;
     FrameTime = 1f / fps;
     Crop = crop;
+    DebugBorderColor = Color.Blue;
     PostSetting();
   }
 
   private void PostSetting()
   {
-    Timer = Type is AnimationChangingType.Timer ? new SeTimer(FrameTime) : null;
+    Timer = Type is AnimationChangingType.Frame ? new SeTimer(FrameTime) : null;
     ElapsedTime = Type is AnimationChangingType.Delta ? 0f : null;
   }
   
@@ -83,10 +87,10 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
       Size = item.ComponentTry<SizeComponent>() ?? Error(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       Border = item.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
     
-      if (item.ComponentTry<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Image rendering might look weird.");
+      if (item.ComponentTry<FigureComponent>()?.Type is not FigureType.Rectangle) Error(context, "Animation component support only 'Rectangle' figure type! Rendering might look weird.");
       item.AddMaterials(Resource);
       
-      if (item.ComponentTry<FillComponent>() is not null) Information(context, "Image and Fill component are located in the same item. Be careful with declaring them!");
+      if (item.ComponentTry<FillComponent>() is not null) Information(context, "Animation and Fill component are located in the same item. Be careful with declaring them!");
     
       item.LocalLatePosSizeInit(this);
     });
@@ -94,12 +98,12 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
 
   public override void Enter(Context context)
   {
-    if (Type is AnimationChangingType.Timer) Timer!.Activate();
+    if (Type is AnimationChangingType.Frame) Timer!.Activate();
   }
 
   public override void Leave(Context context)
   {
-    if (Type is AnimationChangingType.Timer) Timer!.FactoryReset();
+    if (Type is AnimationChangingType.Frame) Timer!.FactoryReset();
   }
 
   public override void Update(Context context)
@@ -114,7 +118,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
           ElapsedTime -= FrameTime;
         }
         break;
-      case AnimationChangingType.Timer:
+      case AnimationChangingType.Frame:
         Timer!.Update();
         if (Timer.Target()) Index = (Index + 1) % Resource.Id.Length;
         break;

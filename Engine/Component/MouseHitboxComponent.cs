@@ -46,8 +46,8 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   public bool[] Drag { get; private set; } = [false, false, false];
   private bool ColorInit;
 
-  public MouseHitboxComponent() { ColorInit = true; }
-  public MouseHitboxComponent(Color debugColor) { Color = debugColor; }
+  public MouseHitboxComponent() { ColorInit = true; DebugBorderColor = Color.Red; }
+  public MouseHitboxComponent(Color debugColor) { Color = debugColor; DebugBorderColor = Color.Red; }
 
   public override void Init(Context context)
   {
@@ -115,10 +115,8 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     }
   }
 
-  public override void Draw(Context context)
+  public override void DebugDraw(Context context)
   {
-    if (!context.Managers.Debug.TurnedOn) return;
-
     switch (Figure.Type)
     {
       case FigureType.Rectangle or FigureType.Rounded:

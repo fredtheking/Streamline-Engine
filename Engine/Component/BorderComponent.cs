@@ -19,21 +19,25 @@ public class BorderComponent : ComponentTemplate
   {
     Thickness = 1f;
     Color = Color.LightGray;
+    DebugBorderColor = Color.Blank;
   }
   public BorderComponent(Color color)
   {
     Thickness = 1f;
     Color = color;
+    DebugBorderColor = Color.Blank;
   }
   public BorderComponent(float thickness)
   {
     Thickness = thickness;
     Color = Color.LightGray;
+    DebugBorderColor = Color.Blank;
   }
   public BorderComponent(float thickness, Color color)
   {
     Thickness = thickness;
     Color = color;
+    DebugBorderColor = Color.Blank;
   }
 
   public override void Init(Context context)

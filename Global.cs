@@ -24,9 +24,9 @@ public class Global : IScript
     #endif
   }
   public void LateUpdate(Context context) { }
-  public void PreDraw(Context context) { }
   public void Draw(Context context)
   {
     Raylib.DrawFPS(10, 10);
   }
+  public void DebugDraw(Context context) { }
 }

@@ -14,6 +14,6 @@ public abstract class CustomItemBehaviorTemplate : UuidIdentifier, IScript
   public virtual void EarlyUpdate(Context context) { }
   public virtual void Update(Context context) { }
   public virtual void LateUpdate(Context context) { }
-  public virtual void PreDraw(Context context) { }
   public virtual void Draw(Context context) { }
+  public virtual void DebugDraw(Context context) { }
 }

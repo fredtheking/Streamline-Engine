@@ -3,6 +3,7 @@ using Raylib_cs;
 using StreamlineEngine.CustomBehavior;
 using StreamlineEngine.Engine.Component;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Builders;
 using StreamlineEngine.Engine.Material;
 using StreamlineEngine.Engine.Node;
 using StreamlineEngine.Engine.Object;
@@ -19,6 +20,7 @@ public static class Registration
 {
   public struct Materials
   {
+    public static readonly FontMaterial FontConsolas = new(ResourcesIDs.Consolas);
     public static readonly ImageMaterial ImageMaterial = new(ResourcesIDs.Bg);
     public static readonly ImageMaterial AvatarMaterial = new(ResourcesIDs.Lion);
     public static readonly ImageCollectionMaterial Collection = new(ResourcesIDs.Jumpscare);
@@ -65,14 +67,25 @@ public static class Registration
       new PositionComponent(50),
       new ImageComponent(Materials.ImageMaterial),
       new MouseHitboxComponent(),
-       new ScriptComponent(new AddPositionOnClick())
+      new ScriptComponent(new AddPositionOnClick())
+    );
+
+    public static Item ItemTextTest = new("TextTest", ItemObjectType.Dynamic,
+      new SizeComponent(200, 100),
+      new PositionComponent(),
+      new TextComponent("Hello, World! How are you doing? maybe you should be outside, touching grass?", Materials.FontConsolas, 20, Color.White, new 
+          TextSettings.Builder()
+        .DisableAutosize()
+        .WrapLines()
+        .Build()
+      )
     );
   }
   
   public struct Folders
   {
     public static Folder Item = new("HelloFolder", FolderNodeType.Item, Items.Item);
-    public static Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2, Items.Item2Helper);
+    public static Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2, Items.Item2Helper, Items.ItemTextTest);
     
     public static Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3, Items.Item4);
     public static Folder FirstScene = new("FirstScene", FolderNodeType.Scene, Item);
@@ -87,8 +100,9 @@ public static class Registration
   public static void ItemsInitChanges(Context context)
   {
     Items.Item4.AddEarlyInit(InitType.Item, obj => obj.AddComponents(
-      new PositionComponent(Items.Item3.Component<PositionComponent>().X + 130, Items.Item3.Component<PositionComponent>().Y)
+      Items.Item3.Component<PositionComponent>()
       ));
+    Items.Item4.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>().LocalPosition.Add(new Vector2(130, 0)));
     Items.Item2Helper.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Set(Items.Item2.Component<PositionComponent>().Vec2 + new Vector2(33)));
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-70));
   }

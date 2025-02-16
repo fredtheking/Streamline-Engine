@@ -29,7 +29,7 @@ public class ImageMaterial : MaterialTemplate
     Raylib.UnloadTexture(texture);
   }
 
-  public override bool Ready() => Material is not null && Raylib.IsTextureValid((Texture2D)Material!);
+  public override bool Ready() => Material is not null && Raylib.IsTextureValid((Texture2D)Material);
 
   public override void Load(Context context)
   {
