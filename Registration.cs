@@ -71,12 +71,11 @@ public static class Registration
     );
 
     public static Item ItemTextTest = new("TextTest", ItemObjectType.Dynamic,
-      new SizeComponent(200, 100),
+      new SizeComponent(),
       new PositionComponent(300, 100),
-      new ScriptComponent(new TextResizingToMouse()),
+      //new ScriptComponent(new TextResizingToMouse()),
       new TextComponent("Hello, World! How are you doing?\nmaybe you should be outside, \ntouching grass?", Materials.FontConsolas, 20, Color.White, new 
           TextSettings.Builder()
-        .DisableAutosize()
         .SetAlignAxisX(TextSettings.TextAlign.Positive)
         .SetAlignAxisY(TextSettings.TextAlign.Center)
         .SetBetweenLetterSpacing(1)

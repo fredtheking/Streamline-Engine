@@ -74,6 +74,9 @@ public class TextComponent : ComponentTemplate
       LinedText = Text.Value.Split('\n');
       return;
     }
+
+    if (Text.Value.Count(c => c == '\n') > 0)
+      Warning(context, "You are using '\\n' char with wrapping turned on. Be aware or incorrect text rendering!", true);
     
     string[] words = Text.Value.Split(' ');
     
