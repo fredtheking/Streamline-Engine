@@ -73,8 +73,8 @@ public static class Registration
       new SizeComponent(),
       new PositionComponent(300, 100),
       //new ScriptComponent(new TextResizingToMouse()),
-      new TextComponent("Hello, World! How are you doing?\nmaybe you should go outside, and\ntouch some grass?", Materials.FontConsolas, 20, Color.White, new 
-          TextSettings.Builder()
+      new TextComponent("Hello, World! How are you doing?\nmaybe you should go outside, and\ntouch some grass?", Materials.FontConsolas, 20, Color.White, 
+        new TextSettings.Builder()
         .SetAlignAxisX(TextSettings.TextAlign.Positive)
         .SetAlignAxisY(TextSettings.TextAlign.Center)
         .SetBetweenLetterSpacing(1)

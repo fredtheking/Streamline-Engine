@@ -17,7 +17,7 @@ public class ImGuiOverlay : IScript
   }
   
   public bool Show { get; private set; } = true;
-  public Action<Context> CurrentTreeInfo { get; set; }
+  public List<Action<Context>> CurrentTreeInfo { get; private set; } = [];
   
   private static Vector2 LimitsY = new(-389, 5);
   private float AnchorPointY = LimitsY.X;
@@ -159,10 +159,7 @@ public class ImGuiOverlay : IScript
           ImGui.TableSetColumnIndex(0);
           context.Root.DebuggerTree(context);
           ImGui.TableSetColumnIndex(1);
-          CenterNextGroupY();
-          ImGui.BeginGroup();
-          CurrentTreeInfo(context);
-          ImGui.EndGroup();
+          if (CurrentTreeInfo.Count > 0) CurrentTreeInfo[^1](context);
           break;
       }
       ImGui.EndTable();

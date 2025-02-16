@@ -20,9 +20,12 @@ public class FontMaterial : MaterialTemplate
 
   public override void Init(Context context)
   {
-    Font font = context.Managers.Package.Unpack<Font>(Id);
-    Size = font.BaseSize;
-    Raylib.UnloadFont(font);
+    InitOnce(() =>
+    {
+      Font font = context.Managers.Package.Unpack<Font>(Id);
+      Size = font.BaseSize;
+      Raylib.UnloadFont(font);
+    });
   }
 
   public override bool Ready() => Material is not null && Raylib.IsFontValid((Font)Material);

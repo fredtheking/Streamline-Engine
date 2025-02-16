@@ -35,15 +35,18 @@ public class ImageCollectionMaterial : MaterialTemplate
 
   public override void Init(Context context)
   {
-    Texture2D[] textures = context.Managers.Package.UnpackMany<Texture2D>(Id);
-    List<Vector2> sizes = [];
-    foreach (Texture2D texture in textures)
+    InitOnce(() =>
     {
-      sizes.Add(new Vector2(texture.Width, texture.Height));
-      Raylib.UnloadTexture(texture);
-    }
-    Size = sizes.ToArray();
-    SharedSize = Size.All(s => s == Size[0]) ? Size[0] : !MultiSizeable ? Warning(context, Vector2.Zero, "Collection of images has different sizes. Total size is not initialised.") : Information(context, Vector2.Zero, "Collection is MultiSizeable. Total size is not initialised.");
+      Texture2D[] textures = context.Managers.Package.UnpackMany<Texture2D>(Id);
+      List<Vector2> sizes = [];
+      foreach (Texture2D texture in textures)
+      {
+        sizes.Add(new Vector2(texture.Width, texture.Height));
+        Raylib.UnloadTexture(texture);
+      }
+      Size = sizes.ToArray();
+      SharedSize = Size.All(s => s == Size[0]) ? Size[0] : !MultiSizeable ? Warning(context, Vector2.Zero, "Collection of images has different sizes. Total size is not initialised.") : Information(context, Vector2.Zero, "Collection is MultiSizeable. Total size is not initialised.");
+    });
   }
 
   public override bool Ready() => Material is not null && Material.All(m => Raylib.IsTextureValid(m));

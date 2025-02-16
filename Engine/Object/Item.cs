@@ -169,7 +169,7 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public override void DebuggerTree(Context context)
   {
     if (ImGui.SmallButton(ShortUuid))
-      context.Debugger.CurrentTreeInfo = DebuggerInfo;
+      context.Debugger.CurrentTreeInfo.Add(DebuggerInfo);
     ImGui.SameLine();
     ImGui.TextColored(new Vector4(1.0f, 1.0f, 0.13f, 1.0f), $"> {Name}");
   }
@@ -181,5 +181,27 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     ImGui.Separator();
     ImGui.Text($"TypeOf: {GetType().Name}");
     ImGui.Text($"Subtype: {Type}");
+    if (ImGui.TreeNode("Components"))
+    {
+      foreach (ComponentTemplate component in ComponentsList)
+      {
+        if (ImGui.SmallButton(component.ShortUuid))
+          context.Debugger.CurrentTreeInfo.Add(component.DebuggerInfo);
+        ImGui.SameLine();
+        ImGui.Text(component.GetType().Name);
+      }
+      ImGui.TreePop();
+    }
+    if (ImGui.TreeNode("Materials"))
+    {
+      foreach (MaterialTemplate material in MaterialsList)
+      {
+        if (ImGui.SmallButton(material.ShortUuid))
+          context.Debugger.CurrentTreeInfo.Add(material.DebuggerInfo);
+        ImGui.SameLine();
+        ImGui.Text(material.GetType().Name);
+      }
+      ImGui.TreePop();
+    }
   }
 }

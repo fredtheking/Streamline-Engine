@@ -24,9 +24,12 @@ public class ImageMaterial : MaterialTemplate
 
   public override void Init(Context context)
   {
-    Texture2D texture = context.Managers.Package.Unpack<Texture2D>(Id);
-    Size = new Vector2(texture.Width, texture.Height);
-    Raylib.UnloadTexture(texture);
+    InitOnce(() =>
+    {
+      Texture2D texture = context.Managers.Package.Unpack<Texture2D>(Id);
+      Size = new Vector2(texture.Width, texture.Height);
+      Raylib.UnloadTexture(texture);
+    });
   }
 
   public override bool Ready() => Material is not null && Raylib.IsTextureValid((Texture2D)Material);

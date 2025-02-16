@@ -7,7 +7,8 @@ public class ObjectManager
 {
   public List<Item> All { get; } = [];
   
-  public Item GetByComponent(ComponentTemplate component) => All.First(i => i.ComponentsList.Contains(component));
+  public Item GetByComponent(ComponentTemplate material) => All.First(i => i.ComponentsList.Contains(material));
+  public Item GetByMaterial(MaterialTemplate material) => All.First(i => i.MaterialsList.Contains(material));
   public Item GetByName(string name) => All.First(i => i.Name == name);
   public Item GetByUuid(string uuid) => All.First(i => i.Uuid == uuid);
   

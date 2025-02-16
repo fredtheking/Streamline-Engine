@@ -1,4 +1,6 @@
+using ImGuiNET;
 using StreamlineEngine.Engine.Etc.Interfaces;
+using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Etc.Templates;
 
@@ -28,4 +30,21 @@ public class MaterialTemplate : UuidIdentifier
     throw new CallNotAllowedException("Should not be called");
   public void Draw(Context context) =>
     throw new CallNotAllowedException("Should not be called");
+
+  public override void DebuggerInfo(Context context)
+  {
+    Item parent = context.Managers.Object.GetByMaterial(this);
+    
+    if (ImGui.SmallButton("Back"))
+      context.Debugger.CurrentTreeInfo.RemoveAt(context.Debugger.CurrentTreeInfo.Count - 1);
+    ImGui.SameLine();
+    ImGui.Text("to parent Item");
+    
+    if (ImGui.SmallButton(parent.ShortUuid))
+      context.Debugger.CurrentTreeInfo.Add(parent.DebuggerInfo);
+    ImGui.SameLine();
+    ImGui.Text($"Parent Item: {parent.Name}");
+    ImGui.Separator();
+    base.DebuggerInfo(context);
+  }
 }

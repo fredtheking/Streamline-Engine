@@ -26,7 +26,7 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
   {
     InitOnce(() =>
     {
-      context.Debugger.CurrentTreeInfo = DebuggerInfo;
+      context.Debugger.CurrentTreeInfo.Add(DebuggerInfo);
       foreach (Folder node in Children)
       {
         node.Init(context);
@@ -119,7 +119,7 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
   public override void DebuggerTree(Context context)
   {
     if (ImGui.SmallButton(ShortUuid))
-      context.Debugger.CurrentTreeInfo = DebuggerInfo;
+      context.Debugger.CurrentTreeInfo.Add(DebuggerInfo);
     ImGui.SameLine();
     if (ImGui.TreeNode(Name))
     {
