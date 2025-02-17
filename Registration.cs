@@ -18,7 +18,7 @@ namespace StreamlineEngine;
 #if !RESOURCES
 public static class Registration
 {
-  public struct Materials
+  public class Materials
   {
     public static readonly FontMaterial FontConsolas = new(ResourcesIDs.Consolas);
     public static readonly ImageMaterial ImageMaterial = new(ResourcesIDs.Bg);
@@ -27,9 +27,9 @@ public static class Registration
     public static readonly ImageCollectionMaterial MethoidCollection = ImageCollectionMaterial.FromImageMaterial(AvatarMaterial, 3);
   }
   
-  public struct Items
+  public class Items
   {
-    public static Item Item = new("HelloItem", ItemObjectType.Dynamic,
+    public static readonly Item Item = new("HelloItem", ItemObjectType.Dynamic,
       new SizeComponent(200),
       new PositionComponent(),
       new FigureComponent(FigureType.Rounded, .2f),
@@ -39,7 +39,7 @@ public static class Registration
       new ScriptComponent(new PressChange())
     );
 
-    public static Item Item2 = new("Hello2Item", ItemObjectType.Dynamic,
+    public static readonly Item Item2 = new("Hello2Item", ItemObjectType.Dynamic,
       new SizeComponent(200),
       new PositionComponent(),
       new LayerComponent(-1),
@@ -48,7 +48,7 @@ public static class Registration
       new BorderComponent(4f, Color.Blue)
     );
     
-    public static Item Item2Helper = new("Hello2Helper", ItemObjectType.Dynamic,
+    public static readonly Item Item2Helper = new("Hello2Helper", ItemObjectType.Dynamic,
       new SizeComponent(200),
       new PositionComponent(),
       new FigureComponent(FigureType.Rectangle, .2f),
@@ -56,12 +56,12 @@ public static class Registration
       new BorderComponent(4f, Color.Orange)
     );
     
-    public static Item Item4 = new("GlobalThingo2", ItemObjectType.Static,
+    public static readonly Item Item4 = new("GlobalThingo2", ItemObjectType.Static,
       new SizeComponent(100),
       new ImageComponent(Materials.AvatarMaterial)
     );
     
-    public static Item Item3 = new("GlobalThingo", ItemObjectType.Dynamic,
+    public static readonly Item Item3 = new("GlobalThingo", ItemObjectType.Dynamic,
       new SizeComponent(100),
       new PositionComponent(50),
       new ImageComponent(Materials.ImageMaterial),
@@ -69,29 +69,29 @@ public static class Registration
       new ScriptComponent(new AddPositionOnClick())
     );
 
-    public static Item ItemTextTest = new("TextTest", ItemObjectType.Dynamic,
-      new SizeComponent(),
-      new PositionComponent(300, 100),
+    public static readonly Item ItemTextTest = new("TextTest", ItemObjectType.Dynamic,
+      new SizeComponent(1280, 70),
+      new PositionComponent(0, 0),
       //new ScriptComponent(new TextResizingToMouse()),
-      new TextComponent("Hello, World! How are you doing?\nmaybe you should go outside, and\ntouch some grass?", Materials.FontConsolas, 20, Color.White, 
+      new TextComponent("TestScene", Materials.FontConsolas, 20, Color.White, 
         new TextSettings.Builder()
-        .SetAlignAxisX(TextSettings.TextAlign.Positive)
-        .SetAlignAxisY(TextSettings.TextAlign.Center)
-        .SetBetweenLetterSpacing(1)
-        .SetLineSpacing(-2)
-        .Build()
+          .SetAlignAxisX(TextSettings.TextAlign.Center)
+          .SetAlignAxisY(TextSettings.TextAlign.Center)
+          .SetBetweenLetterSpacing(-1)
+          .SetLineSpacing(-2)
+          .Build()
       )
     );
   }
   
-  public struct Folders
+  public class Folders
   {
-    public static Folder Item = new("HelloFolder", FolderNodeType.Item, Items.Item);
-    public static Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2, Items.Item2Helper, Items.ItemTextTest);
+    public static readonly Folder Item = new("HelloFolder", FolderNodeType.Item, Items.Item);
+    public static readonly Folder Item2 = new("Hello2Folder", FolderNodeType.Item, Items.Item2, Items.Item2Helper, Items.ItemTextTest);
     
-    public static Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3, Items.Item4);
-    public static Folder FirstScene = new("FirstScene", FolderNodeType.Scene, Item);
-    public static Folder SecondScene = new("SecondScene", FolderNodeType.Scene, Item2);
+    public static readonly Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3, Items.Item4);
+    public static readonly Folder FirstScene = new("FirstScene", FolderNodeType.Scene, Item);
+    public static readonly Folder SecondScene = new("SecondScene", FolderNodeType.Scene, Item2);
   }
   
   public static void MaterialsInitChanges(Context context)

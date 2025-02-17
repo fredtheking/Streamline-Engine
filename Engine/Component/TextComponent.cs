@@ -63,8 +63,8 @@ public class TextComponent : ComponentTemplate
       Size = item.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       item.AddMaterials(Resource);
 
-      if (Settings.Wrap && Settings.AlignX is not TextSettings.TextAlign.Negative)
-        Information(context, "X Alignment have been changed, but there is no point at doing it, since Wrapping is turned on (unless your string is short). Keep it in mind");
+      if (Settings is { Wrap: true, AlignX: not TextSettings.TextAlign.Negative })
+        Warning(context, "X Alignment has been changed. Since wrapping is on, it may cause some visual bugs or be out of 'debug border' (because wrapping is already aligning text).");
       
       item.LocalLatePosSizeInit(this);
     });

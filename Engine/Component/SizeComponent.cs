@@ -44,6 +44,7 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
       else if (text is not null && text.Settings.Autosize)
       {
         Information(context, "Found text component! Using text length.", true);
+        if (text.Settings.Wrap) Warning(context, "Its better to enter a size if wrapping in TextComponent is turned on.");
         Vector2 sizo = text.MeasureText(context, text.Text.Value);
         Width = sizo.X;
         Height = sizo.Y;

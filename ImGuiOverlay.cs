@@ -16,8 +16,8 @@ public class ImGuiOverlay : IScript
     TreeProperties,
   }
   
-  public bool Show { get; private set; } = true;
-  public List<Action<Context>> CurrentTreeInfo { get; private set; } = [];
+  public bool Show { get; private set; }
+  public List<Action<Context>> CurrentTreeInfo { get; } = [];
   
   private static Vector2 LimitsY = new(-389, 5);
   private float AnchorPointY = LimitsY.X;
