@@ -23,9 +23,8 @@ public class ImGuiOverlay : IScript
   private float AnchorPointY = LimitsY.X;
   private float FollowPointY = LimitsY.X;
   private Modes State;
-  
-  private float RunningTextOffset = Config.WindowSize.X/2 - 69;
-  private string RunningText = "Initialisation!!!";
+
+  private List<RunningTextObject> RunningTextObjects = [new(Config.WindowSize.X)];
   
   private long MemoryUsed = Process.GetCurrentProcess().WorkingSet64;
   private SeTimer MemoryUpdateTimer = new SeTimer(1.69f, startOnCreate: true);
@@ -167,17 +166,56 @@ public class ImGuiOverlay : IScript
           break;
       }
       ImGui.EndTable();
-      
-      RunningTextOffset -= 222f * Raylib.GetFrameTime();
-      if (RunningTextOffset < -ImGui.CalcTextSize(RunningText).X)
-      {
-        RunningTextOffset = ImGui.GetWindowWidth();
-        RunningText = Defaults.RunningPhrases[new Random().Next(Defaults.RunningPhrases.Length)];
-        ImGui.SetCursorPosX(RunningTextOffset);
-      }
-      
-      ImGui.SetCursorPosX(RunningTextOffset);
-      ImGui.Text(RunningText);
+      RunningText();
+    }
+  }
+
+  private void RunningText()
+  {
+    RunningTextObject[] initial = RunningTextObjects.ToArray();
+    foreach (RunningTextObject obj in initial)
+    {
+      obj.Update(RunningTextObjects);
+      obj.Draw();
     }
   }
 }
+
+internal class RunningTextObject
+{
+  public float Offset;
+  public float Size;
+  public string Text;
+  public bool CreatedChild;
+
+  public RunningTextObject(float offset)
+  {
+    Text = Defaults.RunningPhrases[new Random().Next(Defaults.RunningPhrases.Length)] + "\t\t\t\t|\t\t\t\t";
+    Offset = offset;
+  }
+
+  public void Update(List<RunningTextObject> objs)
+  {
+    Offset -= 123f * Raylib.GetFrameTime();
+    Size = ImGui.CalcTextSize(Text).X;
+    
+    if (Offset + Size < 0)
+      objs.Remove(this);
+    
+    if (!CreatedChild && Offset < ImGui.GetWindowWidth() - Size)
+    {
+      CreatedChild = true;
+      RunningTextObject lastObj = objs.Last(); 
+      objs.Add(new RunningTextObject(lastObj.Offset + lastObj.Size));
+    } 
+  }
+  
+  public void Draw()
+  {
+    ImGui.SetCursorPosX(Offset);
+    ImGui.Text(Text);
+    ImGui.SameLine();
+  }
+}
+
+

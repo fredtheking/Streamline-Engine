@@ -11,7 +11,9 @@ public enum ResourceType
   ImagePng,
   ImageJpg,
   SoundMp3,
-  FontTtf
+  FontTtf,
+  ShaderVertex,
+  ShaderFragment
 }
 
 public class PackageManager
@@ -21,7 +23,9 @@ public class PackageManager
     { ".png", ResourceType.ImagePng },
     { ".jpg", ResourceType.ImageJpg },
     { ".mp3", ResourceType.SoundMp3 },
-    { ".ttf", ResourceType.FontTtf }
+    { ".ttf", ResourceType.FontTtf },
+    { ".vs", ResourceType.ShaderVertex },
+    { ".fs", ResourceType.ShaderFragment }
   };
   private const string OutputExtension = ".serp";
   private const string IndexExtension = ".seri";
@@ -29,8 +33,9 @@ public class PackageManager
   private const string StructName = "ResourcesIDs";
   private const string ExportGeneratedPath = "../../../Generated/";
   private readonly long[] _offsetTable;
-  
-  #if RESOURCES
+  private FileStream _fileStream;
+
+#if RESOURCES
   private long _lastOffset = 0;
   private int _resourceId = 0;
   #endif
@@ -40,23 +45,26 @@ public class PackageManager
     List<long> table = [];
     #if !RESOURCES
     
+    string fileFilename = "Generated/" + ResourceName + OutputExtension;
     string indexFilename = "Generated/" + ResourceName + IndexExtension;
-    if (File.Exists(indexFilename))
+    if (File.Exists(fileFilename) && File.Exists(indexFilename))
     {
-      using var indexStream = new FileStream(indexFilename, FileMode.Open);
-      
-      indexStream.Position = indexStream.Length - 4;
-      byte[] countBytes = new byte[4];
-      indexStream.ReadExactly(countBytes, 0, countBytes.Length);
-      indexStream.Position = 0;
-      
-      int count = BitConverter.ToInt32(countBytes, 0);
-      for (int i = 0; i < count; i++)
+      using (var indexStream = new FileStream(indexFilename, FileMode.Open))
       {
-        byte[] offsetBytes = new byte[8];
-        indexStream.ReadExactly(offsetBytes, 0, offsetBytes.Length);
-        table.Add(BitConverter.ToInt64(offsetBytes));
+        indexStream.Position = indexStream.Length - 4;
+        byte[] countBytes = new byte[4];
+        indexStream.ReadExactly(countBytes, 0, countBytes.Length);
+        indexStream.Position = 0;
+      
+        int count = BitConverter.ToInt32(countBytes, 0);
+        for (int i = 0; i < count; i++)
+        {
+          byte[] offsetBytes = new byte[8];
+          indexStream.ReadExactly(offsetBytes, 0, offsetBytes.Length);
+          table.Add(BitConverter.ToInt64(offsetBytes));
+        }
       }
+      _fileStream = new FileStream(fileFilename, FileMode.Open, FileAccess.Read);
     } 
     else context.Managers.Debug.Warning("No resource files / index file found. Ignore this warning if you dont plan on using external resources (such as textures, sounds, fonts and so on).");
     
@@ -143,18 +151,17 @@ public class PackageManager
     
     if (resourceID >= _offsetTable.Length)
       throw new IndexOutOfRangeException("Resource ID is out of range");
-
-    using var fileStream = new FileStream(resourcesFilename, FileMode.Open);
-    fileStream.Seek(_offsetTable[resourceID], SeekOrigin.Begin);
+    
+    _fileStream.Seek(_offsetTable[resourceID], SeekOrigin.Begin);
     
     Span<byte> headerBuffer = stackalloc byte[8];
     
-    fileStream.ReadExactly(headerBuffer);
+    _fileStream.ReadExactly(headerBuffer);
     int sizeLength = BitConverter.ToInt32(headerBuffer[..4]);
     ResourceType resourceType = (ResourceType)BitConverter.ToInt32(headerBuffer[4..]);
       
     byte[] resourceData = new byte[sizeLength];
-    fileStream.ReadExactly(resourceData, 0, sizeLength);
+    _fileStream.ReadExactly(resourceData, 0, sizeLength);
     return LoadResourceByType<T>(resourceData, resourceType);
   }
   
@@ -220,10 +227,8 @@ public class PackageManager
       Raylib.UnloadWave(wave);
       return (T)(object)sound;
     }
-    if (typeof(T) == typeof(Font))
-    {
+    if (typeof(T) == typeof(Font)) 
       return (T)(object)Raylib.LoadFontFromMemory(ext, resourceData, (int)Defaults.FontSize, [], 0);
-    }
     
     throw new InvalidOperationException("Invalid resource type");
   }

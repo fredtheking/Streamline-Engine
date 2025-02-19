@@ -21,7 +21,7 @@ public class Global : IScript
       context.Root.Next(context);
     if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.F3)) 
       context.Managers.Debug.Toggle();
-    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Grave)) 
+    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Grave) && context.Managers.Debug.TurnedOn) 
       context.Debugger.Switch();
     #endif
   }
