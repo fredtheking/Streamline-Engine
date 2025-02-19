@@ -1,3 +1,4 @@
+using System.Numerics;
 using ImGuiNET;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
@@ -121,6 +122,7 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
     if (ImGui.SmallButton(ShortUuid))
       context.Debugger.CurrentTreeInfo.Add(DebuggerInfo);
     ImGui.SameLine();
+    
     if (ImGui.TreeNode(Name))
     {
       foreach (Folder node in Children) 
@@ -133,8 +135,8 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
   {
     ImGui.Text($"Name: {Name}");
     base.DebuggerInfo(context);
-    ImGui.Separator();
     ImGui.Text($"TypeOf: {GetType().Name}");
+    ImGui.Separator();
   }
 }
 #endif

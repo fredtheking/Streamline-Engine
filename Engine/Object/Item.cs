@@ -99,7 +99,7 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public void AddLateInit(InitType type, Action<Item> action) =>
     LateInitActions.Add((type, action));
 
-  public void LocalLatePosSizeInit(dynamic component, bool pos = true, bool size = true)
+  public void LocalPosSizeToLateInit(dynamic component, bool pos = true, bool size = true)
   {
     if (pos) AddLateInit(InitType.Component, obj => component.LocalPosition = new PositionComponent(0));
     if (size) AddLateInit(InitType.Component, obj => component.LocalSize = new SizeComponent(0));
@@ -168,19 +168,26 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public Item Clone() => (Item)MemberwiseClone();
   public override void DebuggerTree(Context context)
   {
+    ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f));
     if (ImGui.SmallButton(ShortUuid))
       context.Debugger.CurrentTreeInfo.Add(DebuggerInfo);
     ImGui.SameLine();
-    ImGui.TextColored(new Vector4(1.0f, 1.0f, 0.13f, 1.0f), $"> {Name}");
+    ImGui.PopStyleColor();
+    Vector4 color = Type switch
+    {
+      ItemObjectType.Dynamic => new Vector4(1.0f, 1.0f, 0.13f, 1.0f),
+      ItemObjectType.Static => new Vector4(0.6f, 0.2f, 0.8f, 1.0f)
+    };
+    ImGui.TextColored(color, $"> {Name}");
   }
 
   public override void DebuggerInfo(Context context)
   {
     ImGui.Text($"Name: {Name}");
     base.DebuggerInfo(context);
-    ImGui.Separator();
     ImGui.Text($"TypeOf: {GetType().Name}");
     ImGui.Text($"Subtype: {Type}");
+    ImGui.Separator();
     if (ImGui.TreeNode("Components"))
     {
       foreach (ComponentTemplate component in ComponentsList)

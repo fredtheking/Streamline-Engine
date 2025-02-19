@@ -49,7 +49,7 @@ public class BorderComponent : ComponentTemplate
       Size = item.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
       Figure = item.ComponentTry<FigureComponent>() ?? Warning(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
     
-      item.LocalLatePosSizeInit(this);
+      item.LocalPosSizeToLateInit(this);
     });
   }
 

@@ -70,5 +70,6 @@ public class UuidIdentifier : IDebuggerTreeObject
     ImGui.Text($"UUID: {Uuid}");
     ImGui.Text($"Short UUID: {ShortUuid}");
     ImGui.Text($"Initialized: {(Initialized ? "Yes" : "No")}");
+    ImGui.Separator();
   }
 }

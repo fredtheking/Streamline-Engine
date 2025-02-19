@@ -24,7 +24,7 @@
     "path": "Sound/venjent.mp3"
   },
   "Consolas":{
-    "type":"single",
-    "path":"Font/consolas.ttf"
+    "type": "single",
+    "path": "Font/consolas.ttf"
   }
 }

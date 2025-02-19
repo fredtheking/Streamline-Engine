@@ -53,7 +53,7 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
       
       if (item.ComponentTry<FillComponent>() is not null) Information(context, "Image and Fill component are located in the same item. Be careful with declaring them!");
     
-      item.LocalLatePosSizeInit(this);
+      item.LocalPosSizeToLateInit(this);
     });
   }
 

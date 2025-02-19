@@ -15,8 +15,8 @@ public class ImGuiOverlay : IScript
     MainInfo,
     TreeProperties,
   }
-  
-  public bool Show { get; private set; }
+
+  public bool Show { get; private set; } = true;
   public List<Action<Context>> CurrentTreeInfo { get; } = [];
   
   private static Vector2 LimitsY = new(-389, 5);
@@ -41,8 +41,12 @@ public class ImGuiOverlay : IScript
   public void Enter(Context context) { }
   public void Leave(Context context) { }
   public void EarlyUpdate(Context context) { }
-  public void Update(Context context) { }
+  public void Update(Context context) { if (Show) OnlyDropdownUpdate(context); }
   public void LateUpdate(Context context) { }
+  public void OnlyDropdownUpdate(Context context)
+  {
+    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Backspace) && CurrentTreeInfo.Count > 1) CurrentTreeInfo.Remove(CurrentTreeInfo[^1]);
+  }
   public void Draw(Context context)
   {
     AnchorPointY = Show && context.Managers.Debug.TurnedOn ? LimitsY.Y : LimitsY.X;

@@ -66,7 +66,7 @@ public class TextComponent : ComponentTemplate
       if (Settings is { Wrap: true, AlignX: not TextSettings.TextAlign.Negative })
         Warning(context, "X Alignment has been changed. Since wrapping is on, it may cause some visual bugs or be out of 'debug border' (because wrapping is already aligning text).");
       
-      item.LocalLatePosSizeInit(this);
+      item.LocalPosSizeToLateInit(this);
     });
   }
 
@@ -124,14 +124,12 @@ public class TextComponent : ComponentTemplate
         totalTextWidth = Math.Max(totalTextWidth, MeasureText(context, line).X);
       offsetX = Size.Width + LocalSize.Width - totalTextWidth;
     }
-
-    // Центрирование по оси Y
+    
     if (Settings.AlignY == TextSettings.TextAlign.Center) 
       offsetYAdjustment = (Size.Height + LocalSize.Height - totalTextHeight) / 2;
     else if (Settings.AlignY == TextSettings.TextAlign.Positive) 
       offsetYAdjustment = Size.Height + LocalSize.Height - totalTextHeight;
-
-    // Рисуем строки
+    
     foreach (string line in LinedText)
     {
       Raylib.DrawTextEx(Resource.Material, line, Position.Vec2 + LocalPosition.Vec2 + new Vector2(offsetX, offsetY + offsetYAdjustment), FontSize, Settings.BetweenLetterSpacing, Color);

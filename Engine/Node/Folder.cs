@@ -1,3 +1,4 @@
+using System.Numerics;
 using ImGuiNET;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
@@ -76,13 +77,46 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
 
   public override void DebuggerTree(Context context)
   {
+    ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f));
+    
     if (ImGui.SmallButton(ShortUuid))
       context.Debugger.CurrentTreeInfo.Add(DebuggerInfo);
     ImGui.SameLine();
+    
+    DefineColor();
     if (ImGui.TreeNode(Name)){
       foreach (dynamic child in Children ?? [])
         child.DebuggerTree(context);
       ImGui.TreePop();
+    }
+    
+    ImGui.PopStyleColor(5); 
+  }
+
+  private void DefineColor()
+  {
+    switch (Type)
+    {
+      case FolderNodeType.Scene:
+        ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(.5f, .9f, 1f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.Header, new Vector4(0f, .4f, .8f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(.2f, .4f, .7f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.HeaderActive, new Vector4(0.0f, 0.6f, 1.0f, 1.0f));
+
+        break;
+      case FolderNodeType.Node:
+        ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f, .4f, .4f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.Header, new Vector4(.4f, .4f, 1f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(.4f, .1f, .1f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.HeaderActive, new Vector4(.5f, .4f, .3f, 1f));
+        break;
+      case FolderNodeType.Item:
+        ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(0f, 1f, 0f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.Header, new Vector4(0f, .8f, 0f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(.2f, .6f, .2f, 1f));
+        ImGui.PushStyleColor(ImGuiCol.HeaderActive, new Vector4(0f, .7f, 0f, 1f));
+
+        break;
     }
   }
 
@@ -90,8 +124,9 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
   {
     ImGui.Text($"Name: {Name}");
     base.DebuggerInfo(context);
-    ImGui.Separator();
     ImGui.Text($"TypeOf: {GetType().Name}");
     ImGui.Text($"Subtype: {Type}");
+    ImGui.Separator();
+    
   }
 }

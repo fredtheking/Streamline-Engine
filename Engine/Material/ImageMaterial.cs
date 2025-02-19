@@ -48,5 +48,11 @@ public class ImageMaterial : MaterialTemplate
 
   public static ImageMaterial FromImageCollectionMaterial(ImageCollectionMaterial material, int index) =>
     new ImageMaterial(material.Id[index], material.LoadOnNeed);
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    
+  }
 }
 
