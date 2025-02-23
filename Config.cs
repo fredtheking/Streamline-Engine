@@ -14,6 +14,7 @@ public struct Config
     Registration.Folders.GlobalFolder,
     Registration.Folders.FirstScene,
     Registration.Folders.SecondScene,
+    Registration.Folders.ThirdScene,
     #endif
   ];
   

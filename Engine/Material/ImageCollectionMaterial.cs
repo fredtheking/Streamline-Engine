@@ -16,17 +16,15 @@ public class ImageCollectionMaterial : MaterialTemplate
   public Shader? Shader { get; private set; } = null;
   private TextureFilter Filter { get; set; } = TextureFilter.Point;
 
-  public ImageCollectionMaterial(int[] resourceIds, bool loadOnNeedOnly = false, bool multiSizeable = false)
+  public ImageCollectionMaterial(int[] resourceIds, bool multiSizeable = false)
   {
     Id = resourceIds;
-    LoadOnNeed = loadOnNeedOnly;
     MultiSizeable = multiSizeable;
   }
   
-  public ImageCollectionMaterial(Range resourceIds, bool loadOnNeedOnly = false, bool multiSizeable = false)
+  public ImageCollectionMaterial(Range resourceIds, bool multiSizeable = false)
   {
     Id = Extra.RangeToArray(resourceIds);
-    LoadOnNeed = loadOnNeedOnly;
     MultiSizeable = multiSizeable;
   }
 
@@ -49,7 +47,8 @@ public class ImageCollectionMaterial : MaterialTemplate
     });
   }
 
-  public override bool Ready() => Material is not null && Material.All(m => Raylib.IsTextureValid(m));
+  public override bool Ready() => 
+    Material is not null && Material.All(m => Raylib.IsTextureValid(m));
 
   public override void Load(Context context)
   {
@@ -64,5 +63,5 @@ public class ImageCollectionMaterial : MaterialTemplate
   }
   
   public static ImageCollectionMaterial FromImageMaterial(ImageMaterial material, int repeat = 1) =>
-    new ImageCollectionMaterial(Enumerable.Repeat(material.Id, repeat).ToArray(), material.LoadOnNeed);
+    new ImageCollectionMaterial(Enumerable.Repeat(material.Id, repeat).ToArray());
 }

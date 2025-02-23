@@ -127,8 +127,8 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   
   public void Leave(Context context)
   {
-    foreach (MaterialTemplate m in MaterialsList) m.Leave(context);
     foreach (ComponentTemplate c in ComponentsList) c.Leave(context);
+    foreach (MaterialTemplate m in MaterialsList) m.Leave(context);
   }
   public void EarlyUpdate(Context context)
   {
@@ -166,6 +166,8 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   }
   
   public Item Clone() => (Item)MemberwiseClone();
+  
+  #if !RESOURCES
   public override void DebuggerTree(Context context)
   {
     ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f));
@@ -211,4 +213,5 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
       ImGui.TreePop();
     }
   }
+  #endif
 }

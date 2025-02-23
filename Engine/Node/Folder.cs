@@ -74,7 +74,8 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
       else child.Draw(context);
     }
   }
-
+  
+  #if !RESOURCES
   public override void DebuggerTree(Context context)
   {
     ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f));
@@ -127,6 +128,6 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
     ImGui.Text($"TypeOf: {GetType().Name}");
     ImGui.Text($"Subtype: {Type}");
     ImGui.Separator();
-    
   }
+  #endif
 }

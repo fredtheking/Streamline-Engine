@@ -17,7 +17,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
   public SizeComponent Size { get; set; }
   public BorderComponent Border { get; set; }
   public ImageCollectionMaterial Resource { get; init; }
-  public AnimationChangingType Type { get; init; }
+  public AnimationChangingType Type { get; set; }
   public SeTimer? Timer { get; private set; }
   private float? ElapsedTime { get; set; }
   public float FrameTime { get; set; }

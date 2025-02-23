@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if !RESOURCES
+using System.Diagnostics;
 using System.Numerics;
 using ImGuiNET;
 using Raylib_cs;
@@ -217,5 +218,4 @@ internal class RunningTextObject
     ImGui.SameLine();
   }
 }
-
-
+#endif

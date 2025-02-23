@@ -20,6 +20,8 @@ public static class Registration
 {
   public class Materials
   {
+    public static readonly SoundMaterial VenjentTestSound = new(ResourcesIDs.VenjentSound);
+    public static readonly SoundMaterial SetSound = new(ResourcesIDs.SetSound);
     public static readonly FontMaterial FontConsolas = new(ResourcesIDs.Consolas);
     public static readonly ImageMaterial ImageMaterial = new(ResourcesIDs.Bg);
     public static readonly ImageMaterial AvatarMaterial = new(ResourcesIDs.Lion);
@@ -36,7 +38,8 @@ public static class Registration
       new FillComponent(Color.White),
       new BorderComponent(4f, Color.Red),
       new MouseHitboxComponent(),
-      new ScriptComponent(new PressChange())
+      new ScriptComponent(new PressChange()),
+      new SoundComponent(Materials.VenjentTestSound, stopOnLeave: false)
     );
 
     public static readonly Item Item2 = new("Hello2Item", ItemObjectType.Dynamic,
@@ -44,10 +47,10 @@ public static class Registration
       new PositionComponent(),
       new LayerComponent(-1),
       new ScriptComponent(new BonnieScript()),
-      new AnimationComponent(Materials.Collection, AnimationChangingType.Random, 19),
+      new AnimationComponent(Materials.Collection, AnimationChangingType.Delta, 19),
       new BorderComponent(4f, Color.Blue)
     );
-    
+
     public static readonly Item Item2Helper = new("Hello2Helper", ItemObjectType.Dynamic,
       new SizeComponent(200),
       new PositionComponent(),
@@ -66,7 +69,8 @@ public static class Registration
       new PositionComponent(50),
       new ImageComponent(Materials.ImageMaterial),
       new MouseHitboxComponent(),
-      new ScriptComponent(new AddPositionOnClick())
+      new ScriptComponent(new AddPositionOnClick()),
+      new SoundComponent(Materials.SetSound, overrideSound: false)
     );
 
     public static readonly Item ItemTextTest = new("TextTest", ItemObjectType.Dynamic,
@@ -92,6 +96,7 @@ public static class Registration
     public static readonly Folder GlobalFolder = new("GlobalNode", FolderNodeType.Item, Items.Item3, Items.Item4);
     public static readonly Folder FirstScene = new("FirstScene", FolderNodeType.Scene, Item);
     public static readonly Folder SecondScene = new("SecondScene", FolderNodeType.Scene, Item2);
+    public static readonly Folder ThirdScene = new("ThirdScene", FolderNodeType.Scene);
   }
   
   public static void MaterialsInitChanges(Context context)
@@ -106,7 +111,7 @@ public static class Registration
       ));
     Items.Item4.AddLateInit(InitType.Item, obj => obj.Component<ImageComponent>().LocalPosition.Add(new Vector2(130, 0)));
     Items.Item.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-70));
-    Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-20));
+    Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-300, 0));
   }
   
   public static void FoldersInitChanges(Context context)

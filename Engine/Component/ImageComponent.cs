@@ -15,7 +15,7 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   public SizeComponent LocalSize { get; set; }
   public SizeComponent Size { get; set; }
   public BorderComponent Border { get; set; }
-  public ImageMaterial Resource { get; set; }
+  public ImageMaterial Resource { get; init; }
   /// <summary>
   /// By default, crop is {0, 0, width, height} (full image, no crop)
   /// </summary>

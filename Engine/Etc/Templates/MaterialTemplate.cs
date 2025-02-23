@@ -13,7 +13,7 @@ public class MaterialTemplate : UuidIdentifier
   
   public virtual void Load(Context context) => throw new NotOverriddenException("'Load' function is not overridden!");
   public virtual void Unload(Context context) => throw new NotOverriddenException("'Unload' function is not overridden!");
-  public virtual void Init(Context context) { }
+  public virtual void Init(Context context) { InitOnce(() => {}); }
 
   public virtual void Enter(Context context)
   {
@@ -30,7 +30,8 @@ public class MaterialTemplate : UuidIdentifier
     throw new CallNotAllowedException("Should not be called");
   public void Draw(Context context) =>
     throw new CallNotAllowedException("Should not be called");
-
+  
+  #if !RESOURCES
   public override void DebuggerInfo(Context context)
   {
     Item parent = context.Managers.Object.GetByMaterial(this);
@@ -47,4 +48,5 @@ public class MaterialTemplate : UuidIdentifier
     ImGui.Separator();
     base.DebuggerInfo(context);
   }
+  #endif
 }

@@ -11,6 +11,7 @@ public enum ResourceType
   ImagePng,
   ImageJpg,
   SoundMp3,
+  SoundWav,
   FontTtf,
   ShaderVertex,
   ShaderFragment
@@ -23,6 +24,7 @@ public class PackageManager
     { ".png", ResourceType.ImagePng },
     { ".jpg", ResourceType.ImageJpg },
     { ".mp3", ResourceType.SoundMp3 },
+    { ".wav", ResourceType.SoundWav },
     { ".ttf", ResourceType.FontTtf },
     { ".vs", ResourceType.ShaderVertex },
     { ".fs", ResourceType.ShaderFragment }

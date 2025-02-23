@@ -107,8 +107,10 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
 
   public override void Update(Context context)
   {
+    #if !RESOURCES
     if (context.Managers.Debug.TurnedOn && context.Debugger.Show) { Reset(); return; }
-    
+    #endif    
+
     Hover = DecideHover(context);
     for (int i = 0; i < Press.Length; i++)
     {

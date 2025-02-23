@@ -13,10 +13,9 @@ public class ImageMaterial : MaterialTemplate
   public Shader? Shader { get; private set; } = null;
   private TextureFilter Filter { get; set; } = TextureFilter.Point;
 
-  public ImageMaterial(int resourceId, bool loadOnNeedOnly = false)
+  public ImageMaterial(int resourceId)
   {
     Id = resourceId;
-    LoadOnNeed = loadOnNeedOnly;
   }
 
   public void AddFilter(TextureFilter filter) => Filter = filter;
@@ -32,7 +31,8 @@ public class ImageMaterial : MaterialTemplate
     });
   }
 
-  public override bool Ready() => Material is not null && Raylib.IsTextureValid((Texture2D)Material);
+  public override bool Ready() => 
+    Material is not null && Raylib.IsTextureValid((Texture2D)Material);
 
   public override void Load(Context context)
   {
@@ -47,12 +47,6 @@ public class ImageMaterial : MaterialTemplate
   }
 
   public static ImageMaterial FromImageCollectionMaterial(ImageCollectionMaterial material, int index) =>
-    new ImageMaterial(material.Id[index], material.LoadOnNeed);
-
-  public override void DebuggerInfo(Context context)
-  {
-    base.DebuggerInfo(context);
-    
-  }
+    new ImageMaterial(material.Id[index]);
 }
 
