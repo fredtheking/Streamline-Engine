@@ -14,7 +14,6 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
   public FolderNodeType Type { get; set; }
   public List<dynamic>? Parent { get; set; } = [];
   public List<dynamic>? Children { get; set; }
-  public PositionComponent Position = new(0);
   
   public Folder(string name, FolderNodeType type, params dynamic[] children) {
     Name = name;
