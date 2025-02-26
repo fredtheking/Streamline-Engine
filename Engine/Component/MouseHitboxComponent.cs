@@ -54,13 +54,12 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     InitOnce(() =>
     {
       if (ColorInit) Color = Defaults.DebugHitboxColor;
-    
-      Item item = context.Managers.Object.GetByComponent(this);
-      Position = item.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = item.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      Figure = item.ComponentTry<FigureComponent>() ?? Warning(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
-      Border = Figure.Type == FigureType.Rounded ? item.ComponentTry<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
-      item.LocalPosSizeToLateInit(this);
+      
+      Position = Parent.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = Parent.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Figure = Parent.ComponentTry<FigureComponent>() ?? Warning(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
+      Border = Figure.Type == FigureType.Rounded ? Parent.ComponentTry<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
+      Parent.LocalPosSizeToLateInit(this);
 
       switch (Figure.Type)
       {

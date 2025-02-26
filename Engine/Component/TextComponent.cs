@@ -56,17 +56,15 @@ public class TextComponent : ComponentTemplate
   {
     InitOnce(() =>
     {
-      Item item = context.Managers.Object.GetByComponent(this);
-      
       OneSymbolSize = MeasureText(context, "A");
-      Position = item.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = item.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      item.AddMaterials(Resource);
+      Position = Parent.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = Parent.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Parent.AddMaterials(Resource);
 
       if (Settings is { Wrap: true, AlignX: not TextSettings.TextAlign.Negative })
         Warning(context, "X Alignment has been changed. Since wrapping is on, it may cause some visual bugs or be out of 'debug border' (because wrapping is already aligning text).");
       
-      item.LocalPosSizeToLateInit(this);
+      Parent.LocalPosSizeToLateInit(this);
     });
   }
 

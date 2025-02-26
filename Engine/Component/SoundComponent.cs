@@ -29,10 +29,7 @@ public class SoundComponent : ComponentTemplate
 
   public override void Init(Context context)
   {
-    InitOnce(() =>
-    {
-      context.Managers.Object.GetByComponent(this).AddMaterials(Resource);
-    });
+    InitOnce(() => context.Managers.Object.GetByComponent(this).AddMaterials(Resource));
   }
 
   public override void Update(Context context)

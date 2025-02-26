@@ -37,6 +37,14 @@ public class PressChange : CustomItemBehaviorTemplate
     
     if (_hitbox.Click[(int)MouseButton.Left])
       _sound.Play();
+
+    if (_hitbox.Click[(int)MouseButton.Right])
+    {
+      if (_sound.State != SoundPlayingState.Paused)
+        _sound.Pause();
+      else if (_sound.State == SoundPlayingState.Paused)
+        _sound.Resume();
+    }
     
     selected = _hitbox.Drag[(int)MouseButton.Left];
     _hitbox.Color = colors[selected ? 1 : 0];

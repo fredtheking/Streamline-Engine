@@ -82,18 +82,17 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.SharedSize);
       if (FrameTimeInit) FrameTime = Defaults.FrameTime;
       
-      Item item = context.Managers.Object.GetByComponent(this);
-      Position = item.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = item.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      Border = item.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
+      Position = Parent.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
+      Size = Parent.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
+      Border = Parent.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
 
-      FigureComponent? figure = item.ComponentTry<FigureComponent>();
+      FigureComponent? figure = Parent.ComponentTry<FigureComponent>();
       if (figure is not null && figure.Type is not FigureType.Rectangle) Error(context, "Animation component support only 'Rectangle' figure type! Rendering might look weird.");
-      item.AddMaterials(Resource);
+      Parent.AddMaterials(Resource);
       
-      if (item.ComponentTry<FillComponent>() is not null) Information(context, "Animation and Fill component are located in the same item. Be careful with declaring them!");
+      if (Parent.ComponentTry<FillComponent>() is not null) Information(context, "Animation and Fill component are located in the same item. Be careful with declaring them!");
     
-      item.LocalPosSizeToLateInit(this);
+      Parent.LocalPosSizeToLateInit(this);
     });
   }
 

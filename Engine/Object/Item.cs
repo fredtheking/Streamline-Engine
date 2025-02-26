@@ -110,7 +110,11 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
     InitOnce(() =>
     {
       foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
-      foreach (ComponentTemplate c in ComponentsList) c.Init(context);
+      foreach (ComponentTemplate c in ComponentsList)
+      {
+        c.Parent = this;
+        c.Init(context);
+      }
       foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
       
       context.Managers.Render.All.Add(this, (Draw, DebugDraw, ComponentTry<LayerComponent>()?.Layer ?? new RefObj<int>(0)));
@@ -141,10 +145,6 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public void LateUpdate(Context context)
   {
     foreach (ComponentTemplate c in ComponentsList) c.LateUpdate(context);
-  }
-  public void PreDraw(Context context)
-  {
-    foreach (ComponentTemplate c in ComponentsList) c.PreDraw(context);
   }
   public void Draw(Context context)
   {
