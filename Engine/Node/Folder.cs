@@ -126,7 +126,6 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
   {
     ImGui.Text($"Name: {Name}");
     base.DebuggerInfo(context);
-    ImGui.Text($"TypeOf: {GetType().Name}");
     ImGui.Text($"Subtype: {Type}");
     ImGui.Separator();
   }

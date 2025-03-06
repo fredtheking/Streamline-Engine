@@ -39,7 +39,12 @@ public static class Registration
       new BorderComponent(4f, Color.Red),
       new MouseHitboxComponent(),
       new ScriptComponent(new PressChange()),
-      new SoundComponent(Materials.VenjentTestSound, stopOnLeave: false)
+      new SoundComponent(Materials.VenjentTestSound, stopOnLeave: false),
+      new TextComponent("VIBING!", Materials.FontConsolas, 20, Color.Black, new TextSettings.Builder()
+        .SetAlignAxisX(TextSettings.TextAlign.Center)
+        .SetAlignAxisY(TextSettings.TextAlign.Center)
+        .Build()
+      )
     );
 
     public static readonly Item Item2 = new("Hello2Item", ItemObjectType.Dynamic,
@@ -47,7 +52,7 @@ public static class Registration
       new PositionComponent(),
       new LayerComponent(-1),
       new ScriptComponent(new BonnieScript()),
-      new AnimationComponent(Materials.Collection, AnimationChangingType.Delta, 19),
+      new AnimationComponent(Materials.Collection, AnimationChangingType.DeltaSynced, 19),
       new BorderComponent(4f, Color.Blue)
     );
 

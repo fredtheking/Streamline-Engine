@@ -1,4 +1,5 @@
 using System.Numerics;
+using ImGuiNET;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Classes;
@@ -71,8 +72,8 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
 
   private void PostSetting()
   {
-    Timer = Type is AnimationChangingType.Frame ? new SeTimer(FrameTime) : null;
-    ElapsedTime = Type is AnimationChangingType.Delta ? 0f : null;
+    Timer = Type is AnimationChangingType.FrameSynced ? new SeTimer(FrameTime) : null;
+    ElapsedTime = Type is AnimationChangingType.DeltaSynced ? 0f : null;
   }
   
   public override void Init(Context context)
@@ -98,19 +99,19 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
 
   public override void Enter(Context context)
   {
-    if (Type is AnimationChangingType.Frame) Timer!.Activate();
+    if (Type is AnimationChangingType.FrameSynced) Timer!.Activate();
   }
 
   public override void Leave(Context context)
   {
-    if (Type is AnimationChangingType.Frame) Timer!.FactoryReset();
+    if (Type is AnimationChangingType.FrameSynced) Timer!.FactoryReset();
   }
 
   public override void Update(Context context)
   {
     switch (Type)
     {
-      case AnimationChangingType.Delta:
+      case AnimationChangingType.DeltaSynced:
         ElapsedTime += Raylib.GetFrameTime();
         while (ElapsedTime >= FrameTime)
         {
@@ -118,7 +119,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
           ElapsedTime -= FrameTime;
         }
         break;
-      case AnimationChangingType.Frame:
+      case AnimationChangingType.FrameSynced:
         Timer!.Update();
         if (Timer.Target()) Index = (Index + 1) % Resource.Id.Length;
         break;
@@ -130,7 +131,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
 
   public override void Draw(Context context)
   {
-    if (Type == AnimationChangingType.Selectable) IndexNormalize();
+    if (Type == AnimationChangingType.Manual) IndexNormalize();
     Raylib.DrawTexturePro(Resource.Material![Index], Crop, new Rectangle(Position.Vec2  + LocalPosition.Vec2 + new Vector2(Border.Thickness), Size.Vec2  + LocalSize.Vec2 - new Vector2(Border.Thickness*2)), Vector2.Zero, 0, Color.White);
   }
   
@@ -140,5 +141,21 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
   {
     if (Index > Resource.Id.Length - 1) Index = 0;
     else if (Index < 0) Index = Resource.Id.Length - 1;
+  }
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    ImGui.Text($"Position: {Position.Vec2}  +  {LocalPosition.Vec2}");
+    ImGui.Text($"Size: {Size.Vec2}  +  {LocalSize.Vec2}");
+    ImGui.Text($"Crop: {Crop}");
+    ImGui.Separator();
+    ImGui.Text("Resource:");
+    ImGui.SameLine();
+    if (ImGui.SmallButton(Resource.ShortUuid))
+      context.Debugger.CurrentTreeInfo.Add(Resource.DebuggerInfo);
+    ImGui.Text($"Index: {Index}");
+    ImGui.Text($"FPS/Frame Time: {1f / FrameTime}/{FrameTime}");
+    ImGui.Text($"Animation Changing Type: {Type}");
   }
 }

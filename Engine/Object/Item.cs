@@ -187,7 +187,6 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   {
     ImGui.Text($"Name: {Name}");
     base.DebuggerInfo(context);
-    ImGui.Text($"TypeOf: {GetType().Name}");
     ImGui.Text($"Subtype: {Type}");
     ImGui.Separator();
     if (ImGui.TreeNode("Components"))

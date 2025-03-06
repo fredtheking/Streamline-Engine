@@ -66,6 +66,7 @@ public class Context
       Looper.LateUpdate(this);
       Looper.Draw(this);
       Managers.Render.Render(this);
+      Looper.ChangeScenes(this);
 
       rlImGui.End();
       Raylib.EndDrawing();

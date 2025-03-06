@@ -47,6 +47,7 @@ public class MaterialTemplate : UuidIdentifier
     ImGui.Text($"Parent Item: {parent.Name}");
     ImGui.Separator();
     base.DebuggerInfo(context);
+    ImGui.Text($"Loaded: {(Ready() ? "Yes" : "No")}");
   }
   #endif
 }

@@ -67,6 +67,7 @@ public class UuidIdentifier : IDebuggerTreeObject
 
   public virtual void DebuggerInfo(Context context)
   {
+    ImGui.Text($"TypeOf: {GetType().Name}");
     ImGui.Text($"UUID: {Uuid}");
     ImGui.Text($"Short UUID: {ShortUuid}");
     ImGui.Text($"Initialized: {(Initialized ? "Yes" : "No")}");

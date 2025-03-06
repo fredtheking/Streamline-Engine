@@ -10,12 +10,13 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
 {
   private List<dynamic>? _children;
   public string Name { get; set; }
-  public bool Active { get; set; }
+  public bool Active { get; set; } = true;
   public List<object>? Parent { get; set; } = null;
   public List<Folder> Children { get; set; }
   public Folder CurrentScene { get; private set; }
   public Folder[] ActiveChildren { get; private set; } = [];
   public Folder[] Scenes { get; private init; }
+  public Folder? ChangeSceneTo { get; private set; }
   
   public Root(params Folder[] children) {
     Name = "Root";
@@ -70,8 +71,16 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
       node.Draw(context);
   }
 
-  public void Change(Context context, Folder folder)
+  public void Change(Context context, Folder folder, bool force = false)
   {
+    if (!force)
+    {
+      ChangeSceneTo = folder;
+      return;
+    }
+
+    ChangeSceneTo = null;
+    
     if (folder.Type != FolderNodeType.Scene)
     {
       Critical(context, "Expected a FolderNode of type Scene, got: " + folder.Type);
@@ -135,8 +144,12 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
   {
     ImGui.Text($"Name: {Name}");
     base.DebuggerInfo(context);
-    ImGui.Text($"TypeOf: {GetType().Name}");
-    ImGui.Separator();
+    if (ImGui.TreeNode("Scenes Children"))
+    {
+      foreach (Folder scene in Scenes)
+        ImGui.Text($"{scene.ShortUuid} - {scene.Name}");
+      ImGui.TreePop();
+    }
   }
 }
 #endif

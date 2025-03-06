@@ -54,5 +54,10 @@ public static class Looper
     context.Global.Draw(context);
     context.Debugger.Draw(context);
   }
+  public static void ChangeScenes(Context context)
+  {
+    if (context.Root.ChangeSceneTo is null) return;
+    context.Root.Change(context, context.Root.ChangeSceneTo!, true);
+  }
 }
 #endif
