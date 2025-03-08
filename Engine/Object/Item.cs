@@ -16,6 +16,7 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public List<Folder> Parent { get; private set; } = [];
   public bool Active { get; set; } = true;
   public ItemObjectType Type { get; set; }
+  private int ComponentsInitCount { get; set; }
   public List<ComponentTemplate> ComponentsList { get; } = [];
   public List<MaterialTemplate> MaterialsList { get; } = [];
   public List<(InitType, Action<Item>)> LateInitActions { get; } = [];
@@ -79,12 +80,18 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   public T[]? MaterialsTry<T>() where T : MaterialTemplate =>
     MaterialsList.Where(mat => mat is T) as T[];
 
-  public void AddComponents(params List<ComponentTemplate> component) => 
-    component.ForEach(c => ComponentsList.Add(c));
-  public void RemoveExactComponents(params List<ComponentTemplate> component) => 
-    component.ForEach(c => ComponentsList.Remove(c));
+  private void LateRecalculateComponentsInitCount(Action action)
+  {
+    action();
+    ComponentsInitCount = ComponentsList.Count;
+  }
+
+  public void AddComponents(params List<ComponentTemplate> component) =>
+    LateRecalculateComponentsInitCount(() => component.ForEach(c => ComponentsList.Add(c)));
+  public void RemoveExactComponents(params List<ComponentTemplate> component) =>
+    LateRecalculateComponentsInitCount(() => component.ForEach(c => ComponentsList.Remove(c)));
   public void RemoveAllComponents<T>() where T : ComponentTemplate => 
-    ComponentsList.Where(obj => obj is T).ToList().ForEach(obj => ComponentsList.Remove(obj));
+    LateRecalculateComponentsInitCount(() => ComponentsList.Where(obj => obj is T).ToList().ForEach(obj => ComponentsList.Remove(obj)));
 
   public void AddMaterials(params List<MaterialTemplate> material) => 
     material.ForEach(m => MaterialsList.Add(m));
@@ -109,11 +116,12 @@ public class Item : UuidIdentifier, IScript, ICloneable<Item>
   {
     InitOnce(() =>
     {
+      ComponentsInitCount = ComponentsList.Count;
       foreach (var p in EarlyInitActions.OrderBy(p => p.Item1)) p.Item2(this);
-      foreach (ComponentTemplate c in ComponentsList)
+      for (int i = 0; i < ComponentsInitCount; i++)
       {
-        c.Parent = this;
-        c.Init(context);
+        ComponentsList[i].Parent = this;
+        ComponentsList[i].Init(context);
       }
       foreach (var p in LateInitActions.OrderBy(p => p.Item1)) p.Item2(this);
       

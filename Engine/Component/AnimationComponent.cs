@@ -27,45 +27,50 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
   /// By default, crop is {0, 0, width, height} (full image, no crop)
   /// </summary>
   public Rectangle Crop { get; set; }
+  public Color Color { get; set; }
   private bool CropInit { get; set; }
   private bool FrameTimeInit { get; set; }
 
-  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type)
+  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, Color? color = null)
   {
     Resource = collection;
     Type = type;
     FrameTimeInit = true;
     CropInit = true;
+    Color = color ?? Color.White;
     DebugBorderColor = Color.Blue;
     PostSetting();
   }
   
-  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, int fps)
+  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, int fps, Color? color = null)
   {
     Resource = collection;
     Type = type;
     FrameTime = 1f / fps;
     CropInit = true;
+    Color = color ?? Color.White;
     DebugBorderColor = Color.Blue;
     PostSetting();
   }
   
-  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, Rectangle crop)
+  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, Rectangle crop, Color? color = null)
   {
     Resource = collection;
     Type = type;
     FrameTimeInit = true;
     Crop = crop;
+    Color = color ?? Color.White;
     DebugBorderColor = Color.Blue;
     PostSetting();
   }
   
-  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, int fps, Rectangle crop)
+  public AnimationComponent(ImageCollectionMaterial collection, AnimationChangingType type, int fps, Rectangle crop, Color? color = null)
   {
     Resource = collection;
     Type = type;
     FrameTime = 1f / fps;
     Crop = crop;
+    Color = color ?? Color.White;
     DebugBorderColor = Color.Blue;
     PostSetting();
   }
@@ -82,17 +87,53 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     {
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.SharedSize);
       if (FrameTimeInit) FrameTime = Defaults.FrameTime;
+
+      PositionComponent? position = Parent.ComponentTry<PositionComponent>();
+      if (position is null)
+      {
+        Warning(context, "Item has no position component. Initialising default position.");
+        Position = new PositionComponent();
+        Parent.AddComponents(Position);
+        Position.Init(context);
+      }
+      else
+      {
+        Information(context, "Found position component!");
+        Position = position;
+      }
       
-      Position = Parent.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = Parent.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      Border = Parent.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
+      SizeComponent? size = Parent.ComponentTry<SizeComponent>();
+      if (size is null)
+      {
+        Warning(context, "Item has no size component. Initialising default size.");
+        Size = new SizeComponent();
+        Parent.AddComponents(Size);
+        Size.Init(context);
+      }
+      else
+      {
+        Information(context, "Found size component!");
+        Size = size;
+      }
+      
+      BorderComponent? border = Parent.ComponentTry<BorderComponent>();
+      if (border is null)
+      {
+        Warning(context, "Item has no border component. Initialising junk border.");
+        Border = new BorderComponent{ Junk = true };
+      }
+      else
+      {
+        Information(context, "Found border component!");
+        Border = border;
+      }
 
       FigureComponent? figure = Parent.ComponentTry<FigureComponent>();
       if (figure is not null && figure.Type is not FigureType.Rectangle) Error(context, "Animation component support only 'Rectangle' figure type! Rendering might look weird.");
-      Parent.AddMaterials(Resource);
-      
+
       if (Parent.ComponentTry<FillComponent>() is not null) Information(context, "Animation and Fill component are located in the same item. Be careful with declaring them!");
-    
+
+      Parent.AddMaterials(Resource);
       Parent.LocalPosSizeToLateInit(this);
     });
   }
@@ -132,7 +173,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
   public override void Draw(Context context)
   {
     if (Type == AnimationChangingType.Manual) IndexNormalize();
-    Raylib.DrawTexturePro(Resource.Material![Index], Crop, new Rectangle(Position.Vec2  + LocalPosition.Vec2 + new Vector2(Border.Thickness), Size.Vec2  + LocalSize.Vec2 - new Vector2(Border.Thickness*2)), Vector2.Zero, 0, Color.White);
+    Raylib.DrawTexturePro(Resource.Material![Index], Crop, new Rectangle(Position.Vec2  + LocalPosition.Vec2 + new Vector2(Border.Thickness), Size.Vec2  + LocalSize.Vec2 - new Vector2(Border.Thickness*2)), Vector2.Zero, 0, Color);
   }
   
   public AnimationComponent Clone() => (AnimationComponent)MemberwiseClone();
@@ -148,6 +189,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     base.DebuggerInfo(context);
     ImGui.Text($"Position: {Position.Vec2}  +  {LocalPosition.Vec2}");
     ImGui.Text($"Size: {Size.Vec2}  +  {LocalSize.Vec2}");
+    Extra.ColorToColoredImGuiText(Color);
     ImGui.Text($"Crop: {Crop}");
     ImGui.Separator();
     ImGui.Text("Resource:");

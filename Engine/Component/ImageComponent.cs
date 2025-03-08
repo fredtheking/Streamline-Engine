@@ -41,10 +41,46 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
     InitOnce(() =>
     {
       if (CropInit) Crop = new Rectangle(Vector2.Zero, Resource.Size);
+
+      PositionComponent? position = Parent.ComponentTry<PositionComponent>();
+      if (position is null)
+      {
+        Warning(context, "Item has no position component. Initialising default position.");
+        Position = new PositionComponent();
+        Parent.AddComponents(Position);
+        Position.Init(context);
+      }
+      else
+      {
+        Information(context, "Found position component!");
+        Position = position;
+      }
       
-      Position = Parent.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = Parent.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      Border = Parent.ComponentTry<BorderComponent>() ?? new BorderComponent(0);
+      SizeComponent? size = Parent.ComponentTry<SizeComponent>();
+      if (size is null)
+      {
+        Warning(context, "Item has no size component. Initialising default size.");
+        Size = new SizeComponent();
+        Parent.AddComponents(Size);
+        Size.Init(context);
+      }
+      else
+      {
+        Information(context, "Found size component!");
+        Size = size;
+      }
+      
+      BorderComponent? border = Parent.ComponentTry<BorderComponent>();
+      if (border is null)
+      {
+        Warning(context, "Item has no border component. Initialising junk border.");
+        Border = new BorderComponent{ Junk = true };
+      }
+      else
+      {
+        Information(context, "Found border component!");
+        Border = border;
+      }
       
       FigureComponent? figure = Parent.ComponentTry<FigureComponent>();
       if (figure is not null && figure.Type is not FigureType.Rectangle) Error(context, "Image component support only 'Rectangle' figure type! Rendering might look weird.");

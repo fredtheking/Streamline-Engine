@@ -35,10 +35,16 @@ public class PositionComponent : ComponentTemplate, ICloneable<PositionComponent
       Y = Defaults.Position.Y;
       
       SizeComponent? size = Parent.ComponentTry<SizeComponent>();
-      if (size is null) return;
-    
-      size.Init(context);
+      if (size is null)
+      {
+        Warning(context, "Item has no size component. Initialising default size.");
+        size = new SizeComponent();
+        Parent.AddComponents(size);
+        size.Init(context);
+      }
+
       Information(context, "Found size component! Using size to center position.");
+      size.Init(context);
       X -= size.Width / 2;
       Y -= size.Height / 2;
     });

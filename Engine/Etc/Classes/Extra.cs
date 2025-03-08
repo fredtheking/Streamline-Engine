@@ -1,4 +1,7 @@
+using System.Numerics;
 using System.Text.Json;
+using ImGuiNET;
+using Raylib_cs;
 
 namespace StreamlineEngine.Engine.Etc.Classes;
 
@@ -26,5 +29,18 @@ public static class Extra
     if (dict == null)
       throw new NullReferenceException("Resources JSON is empty!");
     return dict;
+  }
+
+  public static void ColorToColoredImGuiText(Color color, string colorName = "Color")
+  {
+    ImGui.Text(colorName);
+    ImGui.SameLine();
+    ImGui.TextColored(new Vector4(255, 0, 0, 255), color.R.ToString());
+    ImGui.SameLine();
+    ImGui.TextColored(new Vector4(0, 255, 0, 255), color.G.ToString());
+    ImGui.SameLine();
+    ImGui.TextColored(new Vector4(0, 0, 255, 255), color.B.ToString());
+    ImGui.SameLine();
+    ImGui.Text(color.A.ToString());
   }
 }

@@ -55,10 +55,60 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     {
       if (ColorInit) Color = Defaults.DebugHitboxColor;
       
-      Position = Parent.ComponentTry<PositionComponent>() ?? Warning(context, new PositionComponent(), "Item has no position component. Initialising default position.");
-      Size = Parent.ComponentTry<SizeComponent>() ?? Warning(context, new SizeComponent(), "Item has no size component. Initialising default size.");
-      Figure = Parent.ComponentTry<FigureComponent>() ?? Warning(context, new FigureComponent(), "Item has no figure component. Initialising default figure.");
-      Border = Figure.Type == FigureType.Rounded ? Parent.ComponentTry<BorderComponent>() ?? new BorderComponent(0, Color.Blank) : new BorderComponent(0, Color.Blank);
+      PositionComponent? position = Parent.ComponentTry<PositionComponent>();
+      if (position is null)
+      {
+        Warning(context, "Item has no position component. Initialising default position.");
+        Position = new PositionComponent();
+        Parent.AddComponents(Position);
+        Position.Init(context);
+      }
+      else
+      {
+        Information(context, "Found position component!");
+        Position = position;
+      }
+      
+      SizeComponent? size = Parent.ComponentTry<SizeComponent>();
+      if (size is null)
+      {
+        Warning(context, "Item has no size component. Initialising default size.");
+        Size = new SizeComponent();
+        Parent.AddComponents(Size);
+        Size.Init(context);
+      }
+      else
+      {
+        Information(context, "Found size component!");
+        Size = size;
+      }
+      
+      FigureComponent? figure = Parent.ComponentTry<FigureComponent>();
+      if (figure is null)
+      {
+        Warning(context, "Item has no figure component. Initialising default figure.");
+        Figure = new FigureComponent();
+        Parent.AddComponents(Figure);
+        Figure.Init(context);
+      }
+      else
+      {
+        Information(context, "Found figure component!");
+        Figure = figure;
+      }
+      
+      BorderComponent? border = Parent.ComponentTry<BorderComponent>();
+      if (border is not null && border.Figure.Type == FigureType.Rounded)
+      {
+        Information(context, "Found border component!");
+        Border = border;
+      }
+      else
+      {
+        Warning(context, "Item has no border component. Initialising junk border.");
+        Border = new BorderComponent{ Junk = true };
+      }
+      
       Parent.LocalPosSizeToLateInit(this);
 
       switch (Figure.Type)

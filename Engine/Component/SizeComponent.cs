@@ -38,7 +38,6 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
         Information(context, "Found image component! Using image size.", true);
         Width = image.Resource.Size.X;
         Height = image.Resource.Size.Y;
-        return;
       }
       else if (text is not null && text.Settings.Autosize)
       {
