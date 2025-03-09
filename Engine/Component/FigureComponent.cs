@@ -28,6 +28,6 @@ public class FigureComponent : ComponentTemplate
   {
     base.DebuggerInfo(context);
     ImGui.Text($"Type: {Type}");
-    ImGui.Text($"Roundness: {Roundness}");
+    if (Type == FigureType.Rounded) ImGui.Text($"Roundness: {Roundness}");
   }
 }

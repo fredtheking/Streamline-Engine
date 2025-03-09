@@ -1,6 +1,8 @@
 using System.Numerics;
+using ImGuiNET;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Object;
@@ -187,4 +189,20 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
   }
   
   public MouseHitboxComponent Clone() => (MouseHitboxComponent)MemberwiseClone();
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
+    ImGui.Separator();
+    Extra.LinkToAnotherObjectImGui(context, "Figure", Figure);
+    Extra.LinkToAnotherObjectImGui(context, "Border", Border);
+    ImGui.Text($"Hover: {Hover}");
+    ImGui.Text($"Press: [{Press[0]}, {Press[1]}, {Press[2]}]");
+    ImGui.Text($"Click: [{Click[0]}, {Click[1]}, {Click[2]}]");
+    ImGui.Text($"Release: [{Release[0]}, {Release[1]}, {Release[2]}]");
+    ImGui.Text($"Down: [{Down[0]}, {Down[1]}, {Down[2]}]");
+    ImGui.Text($"Hold: [{Hold[0]}, {Hold[1]}, {Hold[2]}]");
+    ImGui.Text($"Drag: [{Drag[0]}, {Drag[1]}, {Drag[2]}]");
+  }
 }

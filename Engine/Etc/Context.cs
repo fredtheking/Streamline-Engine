@@ -41,9 +41,9 @@ public class Context
     rlImGui.Setup();
     Raylib.SetTargetFPS(Config.FpsLock);
     Managers.Debug.Separator(ConsoleColor.Yellow, "Window and audio initialised. Starting import and registration of game assets...");
-    Registration.MaterialsInitChanges(this);
-    Registration.ItemsInitChanges(this);
-    Registration.FoldersInitChanges(this);
+    Registration.MaterialsEarlyInitChanges(this);
+    Registration.ItemsEarlyInitChanges(this);
+    Registration.FoldersEarlyInitChanges(this);
     Managers.Resource.RegisterFromStruct(this);
     Managers.Object.RegisterFromStruct();
     Managers.Node.RegisterFromStruct();

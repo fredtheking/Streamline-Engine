@@ -122,14 +122,9 @@ public class BorderComponent : ComponentTemplate
   public override void DebuggerInfo(Context context)
   {
     base.DebuggerInfo(context);
-    ImGui.Text($"Position: {Position.Vec2}  +  {LocalPosition.Vec2}");
-    ImGui.Text($"Size: {Size.Vec2}  +  {LocalSize.Vec2}");
-    Extra.ColorToColoredImGuiText(Color);
+    Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
     ImGui.Separator();
-    ImGui.Text("Figure:");
-    ImGui.SameLine();
-    if (ImGui.SmallButton(Figure.ShortUuid))
-      context.Debugger.CurrentTreeInfo.Add(Figure.DebuggerInfo);
+    Extra.LinkToAnotherObjectImGui(context, "Figure", Figure);
     ImGui.Text($"Thickness: {Thickness}");
   }
 }

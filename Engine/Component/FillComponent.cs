@@ -1,5 +1,7 @@
+using ImGuiNET;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Object;
@@ -87,4 +89,12 @@ public class FillComponent : ComponentTemplate, ICloneable<FillComponent>
   }
   
   public FillComponent Clone() => (FillComponent)MemberwiseClone();
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
+    ImGui.Separator();
+    Extra.LinkToAnotherObjectImGui(context, "Figure", Figure);
+  }
 }

@@ -39,7 +39,7 @@ public static class Registration
       new BorderComponent(4f, Color.Red),
       new MouseHitboxComponent(),
       new ScriptComponent(new PressChange()),
-      new SoundComponent(Materials.VenjentTestSound, stopOnLeave: false),
+      new SoundComponent(Materials.VenjentTestSound, true),
       new TextComponent("VIBING!", Materials.FontConsolas, 20, Color.Black, new TextSettings.Builder()
         .SetAlignAxisX(TextSettings.TextAlign.Center)
         .SetAlignAxisY(TextSettings.TextAlign.Center)
@@ -104,12 +104,12 @@ public static class Registration
     public static readonly Folder ThirdScene = new("ThirdScene", FolderNodeType.Scene);
   }
   
-  public static void MaterialsInitChanges(Context context)
+  public static void MaterialsEarlyInitChanges(Context context)
   {
     Materials.ImageMaterial.AddFilter(TextureFilter.Bilinear);
   }
   
-  public static void ItemsInitChanges(Context context)
+  public static void ItemsEarlyInitChanges(Context context)
   {
     Items.Item4.AddEarlyInit(InitType.Item, obj => obj.AddComponents(
       Items.Item3.Component<PositionComponent>()
@@ -119,7 +119,7 @@ public static class Registration
     Items.Item2.AddLateInit(InitType.Item, obj => obj.Component<PositionComponent>().Add(-300, 0));
   }
   
-  public static void FoldersInitChanges(Context context)
+  public static void FoldersEarlyInitChanges(Context context)
   {
     
   }

@@ -150,6 +150,7 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
         ImGui.Text($"{scene.ShortUuid} - {scene.Name}");
       ImGui.TreePop();
     }
+    ImGui.Text($"Current Scene: {CurrentScene.Name} ({CurrentScene.ShortUuid})");
   }
 }
 #endif

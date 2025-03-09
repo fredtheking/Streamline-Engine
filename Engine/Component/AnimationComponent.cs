@@ -187,15 +187,11 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
   public override void DebuggerInfo(Context context)
   {
     base.DebuggerInfo(context);
-    ImGui.Text($"Position: {Position.Vec2}  +  {LocalPosition.Vec2}");
-    ImGui.Text($"Size: {Size.Vec2}  +  {LocalSize.Vec2}");
-    Extra.ColorToColoredImGuiText(Color);
+    Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
     ImGui.Text($"Crop: {Crop}");
     ImGui.Separator();
-    ImGui.Text("Resource:");
-    ImGui.SameLine();
-    if (ImGui.SmallButton(Resource.ShortUuid))
-      context.Debugger.CurrentTreeInfo.Add(Resource.DebuggerInfo);
+    Extra.LinkToAnotherObjectImGui(context, "Border", Border);
+    Extra.LinkToAnotherObjectImGui(context, "Resource", Resource);
     ImGui.Text($"Index: {Index}");
     ImGui.Text($"FPS/Frame Time: {1f / FrameTime}/{FrameTime}");
     ImGui.Text($"Animation Changing Type: {Type}");

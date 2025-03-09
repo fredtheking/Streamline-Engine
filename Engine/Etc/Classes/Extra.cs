@@ -2,6 +2,8 @@ using System.Numerics;
 using System.Text.Json;
 using ImGuiNET;
 using Raylib_cs;
+using StreamlineEngine.Engine.Component;
+using StreamlineEngine.Engine.Etc.Templates;
 
 namespace StreamlineEngine.Engine.Etc.Classes;
 
@@ -42,5 +44,30 @@ public static class Extra
     ImGui.TextColored(new Vector4(0, 0, 255, 255), color.B.ToString());
     ImGui.SameLine();
     ImGui.Text(color.A.ToString());
+  }
+  
+  public static void LinkToAnotherObjectImGui(Context context, string name, dynamic obj) {
+    ImGui.Text($"{name}:");
+    ImGui.SameLine();
+    if (ImGui.SmallButton(obj.ShortUuid))
+      context.Debugger.CurrentTreeInfo.Add(obj.DebuggerInfo);
+  }
+
+  public static void TransformImGuiInfo(PositionComponent? position = null, SizeComponent? size = null,
+    Color? color = null, PositionComponent? localPosition = null, SizeComponent? localSize = null)
+  {
+    if (position is not null) ImGui.Text($"Position: {position.Vec2}");
+    if (position is not null && localPosition is not null)
+    {
+      ImGui.SameLine();
+      ImGui.Text($"  +   {localPosition.Vec2}");
+    }
+    if (size is not null) ImGui.Text($"Size: {size.Vec2}");
+    if (size is not null && localSize is not null)
+    {
+      ImGui.SameLine();
+      ImGui.Text($"  +   {localSize.Vec2}");
+    }
+    if (color is not null) ColorToColoredImGuiText(color.Value);
   }
 }

@@ -1,6 +1,8 @@
 using System.Numerics;
+using ImGuiNET;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Material;
@@ -20,20 +22,23 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
   /// By default, crop is {0, 0, width, height} (full image, no crop)
   /// </summary>
   public Rectangle Crop { get; set; }
+  public Color Color { get; set; }
   private bool CropInit { get; set; }
 
-  public ImageComponent(ImageMaterial material)
+  public ImageComponent(ImageMaterial material, Color? color = null)
   {
     Resource = material;
     CropInit = true;
     DebugBorderColor = Color.Yellow;
+    Color = color ?? Color.White;
   }
   
-  public ImageComponent(ImageMaterial material, Rectangle crop)
+  public ImageComponent(ImageMaterial material, Rectangle crop, Color? color = null)
   {
     Resource = material;
     Crop = crop;
     DebugBorderColor = Color.Yellow;
+    Color = color ?? Color.White;
   }
   
   public override void Init(Context context)
@@ -94,8 +99,18 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
 
   public override void Draw(Context context)
   {
-    Raylib.DrawTexturePro((Texture2D)Resource.Material!, Crop, new Rectangle(Position.Vec2  + LocalPosition.Vec2 + new Vector2(Border.Thickness), Size.Vec2  + LocalSize.Vec2 - new Vector2(Border.Thickness*2)), Vector2.Zero, 0, Color.White);
+    Raylib.DrawTexturePro((Texture2D)Resource.Material!, Crop, new Rectangle(Position.Vec2  + LocalPosition.Vec2 + new Vector2(Border.Thickness), Size.Vec2  + LocalSize.Vec2 - new Vector2(Border.Thickness*2)), Vector2.Zero, 0, Color);
   }
   
   public ImageComponent Clone() => (ImageComponent)MemberwiseClone();
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
+    ImGui.Text($"Crop: {Crop}");
+    ImGui.Separator();
+    Extra.LinkToAnotherObjectImGui(context, "Border", Border);
+    Extra.LinkToAnotherObjectImGui(context, "Resource", Resource);
+  }
 }
