@@ -1,5 +1,7 @@
+using ImGuiNET;
 using Raylib_cs;
 using StreamlineEngine.Engine.Etc;
+using StreamlineEngine.Engine.Etc.Classes;
 using StreamlineEngine.Engine.Etc.Templates;
 using StreamlineEngine.Engine.Material;
 
@@ -68,5 +70,15 @@ public class SoundComponent : ComponentTemplate
   public override void Leave(Context context)
   {
     if (StopOnLeave) Raylib.StopSound(Resource.Material);
+  }
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    Extra.LinkToAnotherObjectImGui(context, "Resource", Resource);
+    ImGui.Text($"State: {State}");
+    ImGui.Text($"Loop: {Loop}");
+    ImGui.Text($"Override Sound: {OverrideSound}");
+    ImGui.Text($"Stop On Leave: {StopOnLeave}");
   }
 }

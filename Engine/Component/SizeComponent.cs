@@ -1,4 +1,5 @@
 using System.Numerics;
+using ImGuiNET;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
@@ -56,4 +57,11 @@ public class SizeComponent : ComponentTemplate, ICloneable<SizeComponent>
   }
   
   public SizeComponent Clone() => (SizeComponent)MemberwiseClone();
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    ImGui.Text($"Width: {Width}");
+    ImGui.Text($"Height: {Height}");
+  }
 }

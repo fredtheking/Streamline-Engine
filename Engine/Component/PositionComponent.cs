@@ -1,4 +1,5 @@
 using System.Numerics;
+using ImGuiNET;
 using StreamlineEngine.Engine.Etc;
 using StreamlineEngine.Engine.Etc.Interfaces;
 using StreamlineEngine.Engine.Etc.Templates;
@@ -51,4 +52,11 @@ public class PositionComponent : ComponentTemplate, ICloneable<PositionComponent
   }
   
   public PositionComponent Clone() => (PositionComponent)MemberwiseClone();
+
+  public override void DebuggerInfo(Context context)
+  {
+    base.DebuggerInfo(context);
+    ImGui.Text($"X: {X}");
+    ImGui.Text($"Y: {Y}");
+  }
 }

@@ -197,12 +197,6 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     ImGui.Separator();
     Extra.LinkToAnotherObjectImGui(context, "Figure", Figure);
     Extra.LinkToAnotherObjectImGui(context, "Border", Border);
-    ImGui.Text($"Hover: {Hover}");
-    ImGui.Text($"Press: [{Press[0]}, {Press[1]}, {Press[2]}]");
-    ImGui.Text($"Click: [{Click[0]}, {Click[1]}, {Click[2]}]");
-    ImGui.Text($"Release: [{Release[0]}, {Release[1]}, {Release[2]}]");
-    ImGui.Text($"Down: [{Down[0]}, {Down[1]}, {Down[2]}]");
-    ImGui.Text($"Hold: [{Hold[0]}, {Hold[1]}, {Hold[2]}]");
-    ImGui.Text($"Drag: [{Drag[0]}, {Drag[1]}, {Drag[2]}]");
+    
   }
 }

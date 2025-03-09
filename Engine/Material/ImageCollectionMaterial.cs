@@ -63,5 +63,5 @@ public class ImageCollectionMaterial : MaterialTemplate
   }
   
   public static ImageCollectionMaterial FromImageMaterial(ImageMaterial material, int repeat = 1) =>
-    new ImageCollectionMaterial(Enumerable.Repeat(material.Id, repeat).ToArray());
+    new(Enumerable.Repeat(material.Id, repeat).ToArray());
 }
