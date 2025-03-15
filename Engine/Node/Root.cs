@@ -134,7 +134,17 @@ public class Root : UuidIdentifier, IFolder<Folder>, IScript
     
     if (ImGui.TreeNode(Name))
     {
-      foreach (Folder node in Children) 
+      if (Children.Count == 0)
+      {
+        ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f));
+        ImGui.BeginDisabled();
+        ImGui.SmallButton("null..null");
+        ImGui.EndDisabled();
+        ImGui.SameLine();
+        ImGui.Text("> No children");
+        ImGui.PopStyleColor();
+      }
+      else foreach (Folder node in Children) 
         node.DebuggerTree(context);
       ImGui.TreePop();
     }

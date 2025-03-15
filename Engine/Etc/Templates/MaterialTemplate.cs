@@ -4,15 +4,15 @@ using StreamlineEngine.Engine.Object;
 
 namespace StreamlineEngine.Engine.Etc.Templates;
 
-public class MaterialTemplate : UuidIdentifier
+public abstract class MaterialTemplate : UuidIdentifier
 {
   public int Id { get; protected set; }
   public dynamic? Material { get; protected set; }
   public bool LoadOnNeed { get; protected init; }
-  public virtual bool Ready() => throw new NotOverriddenException("'Ready' function is not overridden!");
+  public abstract bool Ready();
   
-  public virtual void Load(Context context) => throw new NotOverriddenException("'Load' function is not overridden!");
-  public virtual void Unload(Context context) => throw new NotOverriddenException("'Unload' function is not overridden!");
+  public abstract void Load(Context context);
+  public abstract void Unload(Context context);
   public virtual void Init(Context context) { InitOnce(() => {}); }
 
   public virtual void Enter(Context context)

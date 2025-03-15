@@ -196,7 +196,7 @@ public class MouseHitboxComponent : ComponentTemplate, ICloneable<MouseHitboxCom
     Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
     ImGui.Separator();
     Extra.LinkToAnotherObjectImGui(context, "Figure", Figure);
-    Extra.LinkToAnotherObjectImGui(context, "Border", Border);
+    Extra.LinkToProbablyJunkObjectImGui(context, "Border", Border);
     
   }
 }

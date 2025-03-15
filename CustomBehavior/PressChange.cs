@@ -45,6 +45,11 @@ public class PressChange : CustomItemBehaviorTemplate
       else if (_sound.State == SoundPlayingState.Paused)
         _sound.Resume();
     }
+
+    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Minus))
+      _sound.Volume -= 0.1f;
+    else if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Equal))
+      _sound.Volume += 0.1f;
     
     selected = _hitbox.Drag[(int)MouseButton.Left];
     _hitbox.Color = colors[selected ? 1 : 0];

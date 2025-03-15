@@ -87,12 +87,22 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
     
     DefineColor();
     if (ImGui.TreeNode(Name)){
-      foreach (dynamic child in Children ?? [])
+      if (Children is null || Children.Count == 0)
+      {
+        ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f));
+        ImGui.BeginDisabled();
+        ImGui.SmallButton("null..null");
+        ImGui.EndDisabled();
+        ImGui.SameLine();
+        ImGui.Text("> No children");
+        ImGui.PopStyleColor();
+      }
+      else foreach (dynamic child in Children ?? [])
         child.DebuggerTree(context);
       ImGui.TreePop();
     }
     
-    ImGui.PopStyleColor(5); 
+    ImGui.PopStyleColor(5);
   }
 
   private void DefineColor()
@@ -104,7 +114,6 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
         ImGui.PushStyleColor(ImGuiCol.Header, new Vector4(0f, .4f, .8f, 1f));
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(.2f, .4f, .7f, 1f));
         ImGui.PushStyleColor(ImGuiCol.HeaderActive, new Vector4(0.0f, 0.6f, 1.0f, 1.0f));
-
         break;
       case FolderNodeType.Node:
         ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(1f, .4f, .4f, 1f));
@@ -117,7 +126,6 @@ public class Folder : UuidIdentifier, IFolder<object>, IScript
         ImGui.PushStyleColor(ImGuiCol.Header, new Vector4(0f, .8f, 0f, 1f));
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(.2f, .6f, .2f, 1f));
         ImGui.PushStyleColor(ImGuiCol.HeaderActive, new Vector4(0f, .7f, 0f, 1f));
-
         break;
     }
   }

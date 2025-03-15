@@ -14,14 +14,18 @@ public class SoundComponent : ComponentTemplate
   public bool OverrideSound { get; set; }
   public bool StopOnLeave { get; set; }
   public SoundPlayingState State { get; private set; }
+  public float Volume { get; set; }
+  public bool ResetVolumeOnLeave { get; set; }
   private bool _paused;
 
-  public SoundComponent(SoundMaterial sound, bool loop = false, bool overrideSound = true, bool stopOnLeave = true)
+  public SoundComponent(SoundMaterial sound, bool loop = false, bool overrideSound = true, bool stopOnLeave = true, float volume = 1f, bool resetVolumeOnLeave = false)
   {
     Resource = sound;
     Loop = loop;
     OverrideSound = overrideSound;
     StopOnLeave = stopOnLeave;
+    Volume = volume;
+    ResetVolumeOnLeave = resetVolumeOnLeave;
   }
 
   public void Play() => State = SoundPlayingState.Started;
@@ -36,6 +40,9 @@ public class SoundComponent : ComponentTemplate
 
   public override void Update(Context context)
   {
+    Volume = Math.Clamp(Volume, 0f, 1f);
+    Raylib.SetSoundVolume(Resource.Material, Volume);
+    
     switch (State)
     {
       case SoundPlayingState.Stopped:
@@ -69,6 +76,8 @@ public class SoundComponent : ComponentTemplate
 
   public override void Leave(Context context)
   {
+    Raylib.SetSoundVolume(Resource.Material, Resource.DefaultVolume);
+    if (ResetVolumeOnLeave) Volume = 1f;
     if (StopOnLeave) Raylib.StopSound(Resource.Material);
   }
 

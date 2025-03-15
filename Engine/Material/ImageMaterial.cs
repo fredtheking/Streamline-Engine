@@ -10,7 +10,7 @@ namespace StreamlineEngine.Engine.Material;
 public class ImageMaterial : MaterialTemplate
 {
   public Vector2 Size { get; private set; }
-  public Shader? Shader { get; private set; } = null;
+  public Shader? Shader { get; private set; }
   private TextureFilter Filter { get; set; } = TextureFilter.Point;
 
   public ImageMaterial(int resourceId)
@@ -30,6 +30,7 @@ public class ImageMaterial : MaterialTemplate
       Raylib.UnloadTexture(texture);
     });
   }
+
 
   public override bool Ready() => 
     Material is not null && Raylib.IsTextureValid((Texture2D)Material);

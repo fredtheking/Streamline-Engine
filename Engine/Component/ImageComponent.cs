@@ -110,7 +110,7 @@ public class ImageComponent : ComponentTemplate, ICloneable<ImageComponent>
     Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
     ImGui.Text($"Crop: {Crop}");
     ImGui.Separator();
-    Extra.LinkToAnotherObjectImGui(context, "Border", Border);
+    Extra.LinkToProbablyJunkObjectImGui(context, "Border", Border);
     Extra.LinkToAnotherObjectImGui(context, "Resource", Resource);
   }
 }

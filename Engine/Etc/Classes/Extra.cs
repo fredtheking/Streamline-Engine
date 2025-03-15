@@ -46,11 +46,23 @@ public static class Extra
     ImGui.Text(color.A.ToString());
   }
   
-  public static void LinkToAnotherObjectImGui(Context context, string name, dynamic obj) {
+  public static void LinkToAnotherObjectImGui(Context context, string name, dynamic obj, bool disable = false) {
     ImGui.Text($"{name}:");
     ImGui.SameLine();
+    ImGui.BeginDisabled(disable);
     if (ImGui.SmallButton(obj.ShortUuid))
-      context.Debugger.CurrentTreeInfo.Add(obj.DebuggerInfo);
+      context.Debugger.CurrentTreeInfo.Add(ctx => obj.DebuggerInfo(ctx));
+    ImGui.EndDisabled();
+  }
+  
+  public static void LinkToProbablyJunkObjectImGui(Context context, string name, dynamic obj) {
+    if (obj.Junk)
+    {
+      ImGui.TextColored(new Vector4(255, 0, 0, 255), "JUNK!");
+      ImGui.SameLine();
+      LinkToAnotherObjectImGui(context, name, obj, true);
+    }
+    else LinkToAnotherObjectImGui(context, name, obj);
   }
 
   public static void TransformImGuiInfo(PositionComponent? position = null, SizeComponent? size = null,

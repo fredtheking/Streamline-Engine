@@ -190,7 +190,7 @@ public class AnimationComponent : ComponentTemplate, ICloneable<AnimationCompone
     Extra.TransformImGuiInfo(Position, Size, Color, LocalPosition, LocalSize);
     ImGui.Text($"Crop: {Crop}");
     ImGui.Separator();
-    Extra.LinkToAnotherObjectImGui(context, "Border", Border);
+    Extra.LinkToProbablyJunkObjectImGui(context, "Border", Border);
     Extra.LinkToAnotherObjectImGui(context, "Resource", Resource);
     ImGui.Text($"Index: {Index}");
     ImGui.Text($"FPS/Frame Time: {1f / FrameTime}/{FrameTime}");

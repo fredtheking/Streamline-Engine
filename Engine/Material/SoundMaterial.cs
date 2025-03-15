@@ -7,9 +7,12 @@ namespace StreamlineEngine.Engine.Material;
 
 public class SoundMaterial : MaterialTemplate
 {
-  public SoundMaterial(int resourceId)
+  public float DefaultVolume { get; init; }
+  
+  public SoundMaterial(int resourceId, float defaultVolume = 1f)
   {
     Id = resourceId;
+    DefaultVolume = defaultVolume;
   }
 
   public override bool Ready() =>
