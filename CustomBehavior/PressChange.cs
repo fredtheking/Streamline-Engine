@@ -12,6 +12,7 @@ public class PressChange : CustomItemBehaviorTemplate
   private BorderComponent _border;
   private FillComponent _fill;
   private SoundComponent _sound;
+  private TextComponent _text;
   
   Color[] colors;
   Color[] borderColors;
@@ -29,6 +30,7 @@ public class PressChange : CustomItemBehaviorTemplate
     _border = Parent.Component<BorderComponent>();
     _fill = Parent.Component<FillComponent>();
     _sound = Parent.Component<SoundComponent>();
+    _text = Parent.Component<TextComponent>();
   }
 
   public override void Update(Context context)
@@ -37,6 +39,8 @@ public class PressChange : CustomItemBehaviorTemplate
     
     if (_hitbox.Click[(int)MouseButton.Left])
       _sound.Play();
+    if (_hitbox.Click[(int)MouseButton.Middle])
+      _sound.Stop();
 
     if (_hitbox.Click[(int)MouseButton.Right])
     {
@@ -46,14 +50,16 @@ public class PressChange : CustomItemBehaviorTemplate
         _sound.Resume();
     }
 
-    if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Minus))
-      _sound.Volume -= 0.1f;
-    else if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Equal))
-      _sound.Volume += 0.1f;
+    if (_hitbox.Hover)
+    {
+      _sound.Volume += Raylib.GetMouseWheelMoveV().Y/10f;
+    }
+    _sound.Volume = Math.Round(_sound.Volume, 1);
     
     selected = _hitbox.Drag[(int)MouseButton.Left];
     _hitbox.Color = colors[selected ? 1 : 0];
     _border.Color = borderColors[selected ? 1 : 0];
     _fill.Color = fillColors[selected ? 1 : 0];
+    _text.Text.Value = $"{_sound.State}\nVol: {_sound.Volume*100}%";
   }
 }

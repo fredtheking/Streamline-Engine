@@ -14,9 +14,10 @@ public class SoundComponent : ComponentTemplate
   public bool OverrideSound { get; set; }
   public bool StopOnLeave { get; set; }
   public SoundPlayingState State { get; private set; }
-  public float Volume { get; set; }
+  public double Volume { get; set; }
   public bool ResetVolumeOnLeave { get; set; }
   private bool _paused;
+  private bool _started;
 
   public SoundComponent(SoundMaterial sound, bool loop = false, bool overrideSound = true, bool stopOnLeave = true, float volume = 1f, bool resetVolumeOnLeave = false)
   {
@@ -41,22 +42,24 @@ public class SoundComponent : ComponentTemplate
   public override void Update(Context context)
   {
     Volume = Math.Clamp(Volume, 0f, 1f);
-    Raylib.SetSoundVolume(Resource.Material, Volume);
+    Raylib.SetSoundVolume(Resource.Material, (float)Volume);
     
     switch (State)
     {
       case SoundPlayingState.Stopped:
         if (Raylib.IsSoundPlaying(Resource.Material)) Raylib.StopSound(Resource.Material);
         _paused = false;
+        _started = false;
         break;
       case SoundPlayingState.Started:
         if (OverrideSound) Raylib.StopSound(Resource.Material);
         Raylib.PlaySound(Resource.Material);
         State = SoundPlayingState.Playing;
+        _started = true;
         _paused = false;
         break;
       case SoundPlayingState.Playing:
-        if (!Raylib.IsSoundPlaying(Resource.Material) && _paused)
+        if (!Raylib.IsSoundPlaying(Resource.Material) && _paused && _started)
           Raylib.ResumeSound(Resource.Material);
         _paused = false;
         break;
@@ -65,13 +68,14 @@ public class SoundComponent : ComponentTemplate
         _paused = true;
         break;
       case SoundPlayingState.Ended:
+        _started = false;
         if (Loop) Play();
         else Stop();
         break;
     }
     
-    if (!Raylib.IsSoundPlaying(Resource.Material) && State == SoundPlayingState.Playing) 
-      State = SoundPlayingState.Ended;
+    if (!Raylib.IsSoundPlaying(Resource.Material) && State == SoundPlayingState.Playing)
+      State = !_started ? SoundPlayingState.Stopped : SoundPlayingState.Ended;
   }
 
   public override void Leave(Context context)

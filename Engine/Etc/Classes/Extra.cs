@@ -50,8 +50,10 @@ public static class Extra
     ImGui.Text($"{name}:");
     ImGui.SameLine();
     ImGui.BeginDisabled(disable);
+    #if !RESOURCES
     if (ImGui.SmallButton(obj.ShortUuid))
       context.Debugger.CurrentTreeInfo.Add(ctx => obj.DebuggerInfo(ctx));
+    #endif
     ImGui.EndDisabled();
   }
   

@@ -17,7 +17,7 @@ public class ImGuiOverlay : IScript
     TreeProperties,
   }
 
-  public bool Show { get; private set; } = true;
+  public bool Show { get; private set; } = false;
   public List<Action<Context>> CurrentTreeInfo { get; } = [];
   
   private static Vector2 LimitsY = new(-389, 5);
@@ -43,7 +43,7 @@ public class ImGuiOverlay : IScript
   public void EarlyUpdate(Context context) { }
   public void Update(Context context) { if (Show) OnlyDropdownUpdate(context); }
   public void LateUpdate(Context context) { }
-  public void OnlyDropdownUpdate(Context context)
+  private void OnlyDropdownUpdate(Context context)
   {
     if (context.Managers.Keybind.IsKeyPressed(KeyboardKey.Backspace) && CurrentTreeInfo.Count > 1) CurrentTreeInfo.Remove(CurrentTreeInfo[^1]);
   }
@@ -55,8 +55,8 @@ public class ImGuiOverlay : IScript
     
     if (FollowPointY <= LimitsY.X + 3) return;
     
-    var Targeto = Math.Pow(1f - (FollowPointY + LimitsY.X) / (LimitsY.Y + LimitsY.X) + 1f, .5f);
-    ImGui.PushStyleVar(ImGuiStyleVar.Alpha, (float)Targeto);
+    var target = Math.Pow(1f - (FollowPointY + LimitsY.X) / (LimitsY.Y + LimitsY.X) + 1f, .5f);
+    ImGui.PushStyleVar(ImGuiStyleVar.Alpha, (float)target);
     ImGui.Begin("Debugger", ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse);
     
     if (context.Managers.Debug.Changed) ImGui.SetWindowFocus();
